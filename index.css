@@ -1,0 +1,23 @@
+:root {
+    font-size: 16px;
+    color: black;
+}
+
+.navBarColor {
+    background: linear-gradient(#6acbe0, #6859ea);
+    padding-left: 2rem;
+    /* : black; */
+}
+
+.formPadding{
+    padding-top: 2rem;
+}
+
+.partnerImageSize{
+    width: 90rem;
+    height: 60vh;
+}
+
+.pp{
+    padding-left: 10rem;
+}
