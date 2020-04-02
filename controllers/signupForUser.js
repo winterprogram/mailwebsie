@@ -6,8 +6,7 @@ const randomize = require('randomatic')
 const model = require('./../models/Signup')
 const mongoose = require('mongoose')
 const signup = mongoose.model('signupforuser')
-// adding email and password check lib
-const check = require('./../libs/regex')
+
 // adding empty check 
 const emptyCheck = require('./../libs/emptyCheck')
 //adding api response structure 
@@ -28,13 +27,13 @@ let userData = (req, res) => {
     let firstCheckEmail = () => {
         return new Promise((resolve, reject) => {
             let regex = /^[a-zA-z]+\W?\w+\W+[a-z]+\W+\w+/
-            console.log(req.body.email)
+            // console.log(req.body.email)
             if ((req.body.email).match(regex)) {
                 let response = api.apiresponse(false, 200, "Email passed the check", null)
-                console.log(req.body.email)
+                // console.log(req.body.email)
                 resolve(response)
             } else {
-                let response = api.apiresponse(true, 500, 'something went wrong', null)
+                let response = api.apiresponse(true, 500, 'email doesn\'t pass', null)
                 reject(response)
             }
         })
@@ -45,13 +44,13 @@ let userData = (req, res) => {
         return new Promise((resolve,reject)=>{
             let regex = /^[a-zA-Z]+\d+/
             let pass = req.body.password;
-            console.log(pass)
+            // console.log(pass)
             if (pass.match(regex) && (pass.length >= 6)) {
-                console.log(pass)
+                // console.log(pass)
                 let response = api.apiresponse(false, 200, "password passed the check", null)
                 resolve(response)
             } else {
-                let response = api.apiresponse(true, 500, 'something went wrong', null)
+                let response = api.apiresponse(true, 500, 'password doesn\'t pass', null)
                 reject(response)
             }
     
@@ -63,13 +62,13 @@ let userData = (req, res) => {
         return new Promise((resolve, reject) => {
             let regex = /^[0-9]{10}/
             let mobile = req.body.mobileNumber
-            console.log(mobile)
+            // console.log(mobile)
             if (mobile.match(regex)) {
                 let response = api.apiresponse(false, 200, "mobileno passed the check", null)
-                console.log(mobile)
+                // console.log(mobile)
                 resolve(response)
             } else {
-                let response = api.apiresponse(true, 500, 'something went wrong', null)
+                let response = api.apiresponse(true, 500, 'mobileno doesn\'t pass', null)
                 reject(response)
             }
         })
@@ -79,15 +78,15 @@ let userData = (req, res) => {
     let savedata = () => {
         return new Promise((resolve, reject) => {
             signup.findOne({ email: req.body.email}).exec((err, data) => {
+                // console.log(data)
                 if (err) {
-                    let response = api.apiresponse(true, 500, 'something went wrong', null)
+                    let response = api.apiresponse(true, 500, 'something went wrong while creating user during inital stage', null)
                     reject(response)
                 } else if (emptyCheck.emptyCheck(data)) {
-                    console.log(data)
-                    let userId = randomize('Aa0', 6)
+                    let userid = randomize('Aa0', 6)
                     let valid = "1";
                     let userinfo = new signup({
-                        userId: userId,
+                        userid: userid,
                         fullName: (req.body.fullName).toLowerCase(),
                         mobileNumber: req.body.mobileNumber,
                         password: passencry.passhash(req.body.password),
@@ -99,9 +98,10 @@ let userData = (req, res) => {
                         dob: req.body.dob,
                         createdon: Date.now()
                     })
-                    userinfo.save((err, result) => {
+                    userinfo.save((err, result)=> {
+                        // console.log(result)
                         if (err) {
-                            let response = api.apiresponse(true, 500, 'failed to create a new user', null)
+                            let response = api.apiresponse(true, 500, 'failed to create a new user', err)
                             reject(response)
                         } else if (emptyCheck.emptyCheck(result)) {
                             let response = api.apiresponse(true, 404, 'blank data received', null)
@@ -133,8 +133,9 @@ let userData = (req, res) => {
     }).catch((err) => {
         console.log("errorhandler");
         console.log(err);
-        res.status(err.status)
-        res.send(err)
+       
+            res.send(err)
+        
     })
 
 }

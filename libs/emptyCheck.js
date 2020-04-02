@@ -1,8 +1,8 @@
 let emptyCheck = (data) => {
     if (data == undefined || data == null || data == '') {
-        return false;
-    } else {
         return true;
+    } else {
+        return false;
     }
 }
 

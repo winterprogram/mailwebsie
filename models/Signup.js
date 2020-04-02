@@ -35,7 +35,7 @@ const userSignup = new Schema({
         type: String
     },
     dob: {
-        type: Date,
+        type: String,
     },
     createdon:{
         type:Date
