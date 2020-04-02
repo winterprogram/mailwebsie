@@ -41,7 +41,7 @@ let userData = (req, res) => {
 
     // check for password 
     let passcheck = () => {
-        return new Promise((resolve,reject)=>{
+        return new Promise((resolve, reject) => {
             let regex = /^[a-zA-Z]+\d+/
             let pass = req.body.password;
             // console.log(pass)
@@ -53,31 +53,43 @@ let userData = (req, res) => {
                 let response = api.apiresponse(true, 500, 'password doesn\'t pass', null)
                 reject(response)
             }
-    
+
         })
     }
-        
+
     //mobile no check for 10 digit
     let mobilenoCheck = () => {
         return new Promise((resolve, reject) => {
-            let regex = /^[0-9]{10}/
-            let mobile = req.body.mobileNumber
-            // console.log(mobile)
-            if (mobile.match(regex)) {
-                let response = api.apiresponse(false, 200, "mobileno passed the check", null)
-                // console.log(mobile)
-                resolve(response)
-            } else {
-                let response = api.apiresponse(true, 500, 'mobileno doesn\'t pass', null)
-                reject(response)
-            }
+            signup.find({ mobileNumber: req.body.mobileNumber }).exec((err, result) => {
+                if (err) {
+                    let response = api.apiresponse(true, 500, 'something went wrong while checking mobile number', null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(result)) {
+                    let regex = /^[0-9]{10}/
+                    let mobile = req.body.mobileNumber
+                    // console.log(mobile)
+                    if (mobile.match(regex)) {
+                        let response = api.apiresponse(false, 200, "mobileno passed the check", null)
+                        // console.log(mobile)
+                        resolve(response)
+                    } else {
+                        let response = api.apiresponse(true, 500, 'mobileno doesn\'t pass', null)
+                        reject(response)
+                    }
+                } else {
+                    let response = api.apiresponse(true, 500, 'user already exist', err)
+                    reject(response)
+                }
+
+            })
+
         })
     }
 
     // save data
     let savedata = () => {
         return new Promise((resolve, reject) => {
-            signup.findOne({ email: req.body.email}).exec((err, data) => {
+            signup.find({ "email": req.body.email, "mobileNumber": req.body.mobileNumber }).exec((err, data) => {
                 // console.log(data)
                 if (err) {
                     let response = api.apiresponse(true, 500, 'something went wrong while creating user during inital stage', null)
@@ -98,7 +110,7 @@ let userData = (req, res) => {
                         dob: req.body.dob,
                         createdon: Date.now()
                     })
-                    userinfo.save((err, result)=> {
+                    userinfo.save((err, result) => {
                         // console.log(result)
                         if (err) {
                             let response = api.apiresponse(true, 500, 'failed to create a new user', err)
@@ -107,7 +119,7 @@ let userData = (req, res) => {
                             let response = api.apiresponse(true, 404, 'blank data received', null)
                             reject(response)
                         } else {
-                        
+
                             resolve(result)
 
                         }
@@ -127,15 +139,18 @@ let userData = (req, res) => {
     }
 
     firstCheckEmail(req, res).then(passcheck).then(mobilenoCheck).then(savedata).then((resolve) => {
-        // eventemiter.emit('welcomemail', resolve.email)
+        console.log(resolve)
+        // setTimeout(() => {
+        //     eventemiter.emit('welcomemail', resolve.email)
+        // }, 1000)
         let response = api.apiresponse(false, "200", 'user registered', resolve)
         res.send(response)
     }).catch((err) => {
         console.log("errorhandler");
         console.log(err);
-       
-            res.send(err)
-        
+
+        res.send(err)
+
     })
 
 }
