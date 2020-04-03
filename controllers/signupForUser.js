@@ -12,8 +12,6 @@ const emptyCheck = require('./../libs/emptyCheck')
 const api = require('./../libs/apiresponse')
 // adding password encry lib
 const passencry = require('./../libs/passEncry')
-// adding node mailer
-const email = require('./../events/mailsender')
 // events
 const event = require('events')
 const eventemiter = new event.EventEmitter();
