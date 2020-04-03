@@ -6,7 +6,6 @@ const randomize = require('randomatic')
 const model = require('./../models/Signup')
 const mongoose = require('mongoose')
 const signup = mongoose.model('signupforuser')
-
 // adding empty check 
 const emptyCheck = require('./../libs/emptyCheck')
 //adding api response structure 
@@ -18,8 +17,49 @@ const email = require('./../events/mailsender')
 // events
 const event = require('events')
 const eventemiter = new event.EventEmitter();
+// node mailer
+const nodemailer = require("nodemailer");
+
+eventemiter.on('welcomemail', (email) => {
+    console.log(email)
+    async function main() {
+
+        let testAccount = await nodemailer.createTestAccount();
+
+        let transporter = nodemailer.createTransport({
+            host: '',
+            port: 587,
+            secure: false,
+            auth: {
+                user: '', //add user password
+                pass: ''
+            }
+        });
+
+        // send mail with defined transport object
+        let info = await transporter.sendMail({
+            from: '"Fred Foo 👻" ', // sender address
+            to: email, // list of receivers
+            subject: "Hello ✔", // Subject line
+            text: "Hello world?", // plain text body
+            html: "<b>Hello world?</b>" // html body
+        });
+        console.log(`mail is sent successfullt to ${email}`)
+
+        console.log("Message sent: %s", info.messageId);
+        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+
+        // Preview only available when sending through an Ethereal account
+        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+        // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    }
+
+    main().catch(console.error);
 
 
+
+})
+// mailer ends here
 
 // check for user email with "@ and ." mobile number to be 10 digit and password criteria minimum 6 digit 
 let userData = (req, res) => {
@@ -119,9 +159,7 @@ let userData = (req, res) => {
                             let response = api.apiresponse(true, 404, 'blank data received', null)
                             reject(response)
                         } else {
-
                             resolve(result)
-
                         }
                     })
                 } else {
@@ -129,20 +167,17 @@ let userData = (req, res) => {
                     reject(response)
                 }
             })
-
-
-
-
-
         })
-
     }
 
     firstCheckEmail(req, res).then(passcheck).then(mobilenoCheck).then(savedata).then((resolve) => {
-        console.log(resolve)
-        // setTimeout(() => {
-        //     eventemiter.emit('welcomemail', resolve.email)
-        // }, 1000)
+        console.log(resolve.email)
+        // let email = resolve.email
+        // addtimeout as per the email api call limit 
+        setTimeout(() => {
+            eventemiter.emit('welcomemail', ((resolve.email).toString()))
+        }, 1000)
+
         let response = api.apiresponse(false, "200", 'user registered', resolve)
         res.send(response)
     }).catch((err) => {
@@ -150,9 +185,7 @@ let userData = (req, res) => {
         console.log(err);
 
         res.send(err)
-
     })
-
 }
 
 module.exports = {

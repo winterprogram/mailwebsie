@@ -8,8 +8,19 @@ let passhash = (pass) => {
     return hash;
 }
 
+let passcheck = (pass, oldpass, callback) => {
+    bcrypt.compare(pass, oldpass, function (err, result) {
+        if (err) {
+            callback(err, null)
+        } else {
+            callback(null, result)
+        }
+    });
+}
+
 
 
 module.exports = {
-    passhash: passhash
+    passhash: passhash,
+    passcheck: passcheck
 }
