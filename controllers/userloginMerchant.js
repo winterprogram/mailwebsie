@@ -78,18 +78,37 @@ let userlogin = (req, res) => {
         }
         )
     }
+    let jwtTokengen = (merchantData) => {
+        return new Promise((resolve, reject) => {
+            jwt.generateToken(merchantData, ((err, result) => {
+                if (err) {
+                    let response = api.apiresponse(true, 'Error while generating Jwt token stage', 500, null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(result)) {
+                    let response = api.apiresponse(true, 'data while generating jwt is vacant', 404, null)
+                    reject(response)
+                } else {
+                    result.userid = merchantData.userid
+                    result.merchantData = merchantData.data[0]
+                    // console.log(result)
+                    resolve(result)
+                }
+            }))
+        })
+
+    }
 
 
-    mobileDigitCheck(req, res).then(userLoginFinal).then((resolve) => {
+    mobileDigitCheck(req, res).then(userLoginFinal).then(jwtTokengen).then((resolve) => {
         // console.log(resolve.data[0])
-        resolve = resolve.data[0]
-        resolve._id = undefined
-        resolve.password = undefined
-        resolve.createdon = undefined
-        resolve.__v = undefined
-        resolve.dob = undefined
-        resolve.mobileNumber = undefined
-        resolve.email = undefined
+        // resolve = resolve.data[0]
+        resolve.merchantData._id = undefined
+        resolve.merchantData.password = undefined
+        resolve.merchantData.createdon = undefined
+        resolve.merchantData.__v = undefined
+        resolve.merchantData.dob = undefined
+        // resolve.merchantData.mobileNumber = undefined
+        // resolve.merchantData.email = undefined
         let apis = api.apiresponse(false, 'successful login', 200, resolve)
         res.send(apis)
     }).catch((err) => {

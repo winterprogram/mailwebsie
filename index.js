@@ -51,6 +51,7 @@ fs.readdirSync(model).forEach(function (file) {
     let mainpath = require(model + '/' + file)
     mainpath.signup
     mainpath.signupmerchant
+    mainpath.tokenuser
     // console.log(mainpath)
 })
 

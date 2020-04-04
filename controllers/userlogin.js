@@ -6,6 +6,8 @@ const randomize = require('randomatic')
 const model = require('./../models/Signup')
 const mongoose = require('mongoose')
 const signup = mongoose.model('signupforuser')
+const modelauth = require('./../models/Userauthtoken')
+const tokenuser = mongoose.model('usertoken')
 // adding empty check 
 const emptyCheck = require('./../libs/emptyCheck')
 //adding api response structure 
@@ -89,17 +91,49 @@ let userlogin = (req, res) => {
                     let response = api.apiresponse(true, 'data while generating jwt is vacant', 404, null)
                     reject(response)
                 } else {
-                    result.userid = userData.userid
+                    result.userid = userData.data[0].userid
                     result.userData = userData.data[0]
                     // console.log(result)
+                    let token = new tokenuser({
+                        userid: result.userid,
+                        authtoken: result.token,
+                        secreatekey: result.tokensecreate,
+                        // userinfo: (result.userData),
+                        createdon: Date.now()
+                    })
+                    token.save((error, authtokendetails) => {
+                        if (error) {
+                            let response = api.apiresponse(true, 'Error while storing Jwt token stage -2', 500, error)
+                            reject(response)
+                        } else if ((emptyCheck.emptyCheck(authtokendetails))) {
+                            let response = api.apiresponse(true, 'Error while storing Jwt token empty data', 404, null)
+                            reject(response)
+                        } else {
+                            // let auth = authtokendetails.toObject()
+                            // console.log(authtokendetails)
+                            let a = api.apiresponse(true, 'user token stored successfully(1st login)', 403, authtokendetails)
+                            resolve(a)
+                        }
+                    })
+                    // console.log(result)
+                    // result.userinfo._id = undefined
+                    // result.userinfo.password = undefined
+                    // result.userinfo.createdon = undefined
+                    // result.userinfo.__v = undefined
+                    // result.userinfo.dob = undefined
+                    // result.userinfo.city = undefined
                     resolve(result)
+                    // console.log(result)
                 }
             }))
         })
 
     }
+
+
+
     mobileDigitCheck(req, res).then(userLoginFinal).then(jwtTokengen).then((resolve) => {
-        console.log(resolve.userData)
+         console.log(resolve.userData)
         // resolve.userData
         resolve.userData._id = undefined
         resolve.userData.password = undefined
@@ -109,7 +143,7 @@ let userlogin = (req, res) => {
         // resolve.mobileNumber = undefined
         // resolve.email = undefined
         resolve.userData.city = undefined
-        
+
         let apis = api.apiresponse(false, 'successful login', 200, resolve)
         res.send(apis)
     }).catch((err) => {
