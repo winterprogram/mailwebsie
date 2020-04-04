@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const merchant = new Schema({
-    userid: {
+    merchantid: {
         type: String,
         unique: true,
         default: 'default001',

@@ -134,10 +134,10 @@ let merchantData = (req, res) => {
                     reject(response)
                 } else if (emptyCheck.emptyCheck(data)) {
 
-                    let userid = randomize('Aa0', 6)
+                    let merchantid = randomize('Aa0', 6)
                     let valid = "1";
                     let userinfo = new merchant({
-                        userid: userid,
+                        merchantid: merchantid,
                         fullName: (req.body.fullName).toLowerCase(),
                         mobileNumber: req.body.mobileNumber,
                         password: passencry.passhash(req.body.password),

@@ -115,15 +115,9 @@ let userlogin = (req, res) => {
                             resolve(a)
                         }
                     })
-                    // console.log(result)
-                    // result.userinfo._id = undefined
-                    // result.userinfo.password = undefined
-                    // result.userinfo.createdon = undefined
-                    // result.userinfo.__v = undefined
-                    // result.userinfo.dob = undefined
-                    // result.userinfo.city = undefined
+                   
                     resolve(result)
-                    // console.log(result)
+                    
                 }
             }))
         })

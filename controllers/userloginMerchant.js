@@ -6,6 +6,8 @@ const randomize = require('randomatic')
 const model = require('./../models/Signup')
 const mongoose = require('mongoose')
 const merchant = mongoose.model('signupforusermerchant')
+const token = require('./../models/Merchantauthtoken')
+const mertoken = mongoose.model('merchantinfo')
 // adding empty check 
 const emptyCheck = require('./../libs/emptyCheck')
 //adding api response structure 
@@ -15,7 +17,8 @@ const passencry = require('./../libs/passEncry')
 // events
 const event = require('events')
 const eventemiter = new event.EventEmitter();
-
+// importing jwt token lib
+const jwt = require('./../libs/jswt')
 
 let userlogin = (req, res) => {
 
@@ -40,7 +43,7 @@ let userlogin = (req, res) => {
 
 
         })
-    } 
+    }
 
 
     let userLoginFinal = () => {
@@ -63,7 +66,7 @@ let userlogin = (req, res) => {
                         if (error) {
                             let apis = api.apiresponse(true, 'password didn\'t match / wrong password', 404, null)
                             reject(apis)
-                        } else if((data[0].valid == 0)){
+                        } else if ((data[0].valid == 0)) {
                             let apis = api.apiresponse(true, 'Merchant doesn\'t have right\'s to access', 503, null)
                             reject(apis)
                         }
@@ -88,8 +91,29 @@ let userlogin = (req, res) => {
                     let response = api.apiresponse(true, 'data while generating jwt is vacant', 404, null)
                     reject(response)
                 } else {
-                    result.userid = merchantData.userid
+                    result.merchantid = merchantData.merchantid
                     result.merchantData = merchantData.data[0]
+                    let tok = new mertoken({
+                        merchantid: result.merchantid,
+                        authtoken: result.token,
+                        secreatekey: result.tokensecreate,
+                        // userinfo: (result.userData),
+                        createdon: Date.now()
+                    })
+                    tok.save((error, authtokendetails) => {
+                        if (error) {
+                            let response = api.apiresponse(true, 'Error while storing Jwt token stage -2', 500, error)
+                            reject(response)
+                        } else if ((emptyCheck.emptyCheck(authtokendetails))) {
+                            let response = api.apiresponse(true, 'Error while storing Jwt token empty data', 404, null)
+                            reject(response)
+                        } else {
+                            // let auth = authtokendetails.toObject()
+                            // console.log(authtokendetails)
+                            let a = api.apiresponse(true, 'user token stored successfully(1st login)', 403, authtokendetails)
+                            resolve(a)
+                        }
+                    })
                     // console.log(result)
                     resolve(result)
                 }
