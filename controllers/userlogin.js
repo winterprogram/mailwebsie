@@ -15,7 +15,8 @@ const passencry = require('./../libs/passEncry')
 // events
 const event = require('events')
 const eventemiter = new event.EventEmitter();
-
+// importing jwt token lib
+const jwt = require('./../libs/jswt')
 
 let userlogin = (req, res) => {
 
@@ -63,7 +64,11 @@ let userlogin = (req, res) => {
                         if (error) {
                             let apis = api.apiresponse(true, 'password didn\'t match / wrong password', 404, null)
                             reject(apis)
-                        } else {
+                        } else if ((data[0].valid == 0)) {
+                            let apis = api.apiresponse(true, 'User doesn\'t have rights to access', 503, null)
+                            reject(apis)
+                        }
+                        else {
                             let apis = api.apiresponse(false, 'password  match', 200, data)
                             resolve(apis)
                         }
@@ -74,16 +79,37 @@ let userlogin = (req, res) => {
         }
         )
     }
-    mobileDigitCheck(req, res).then(userLoginFinal).then((resolve) => {
-        // console.log(resolve.data[0])
-        resolve = resolve.data[0]
-        resolve._id = undefined
-        resolve.password = undefined
-        resolve.createdon = undefined
-        resolve.__v = undefined
-        resolve.dob = undefined
-        resolve.mobileNumber = undefined
-        resolve.email = undefined
+    let jwtTokengen = (userData) => {
+        return new Promise((resolve, reject) => {
+            jwt.generateToken(userData, ((err, result) => {
+                if (err) {
+                    let response = api.apiresponse(true, 'Error while generating Jwt token stage', 500, null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(result)) {
+                    let response = api.apiresponse(true, 'data while generating jwt is vacant', 404, null)
+                    reject(response)
+                } else {
+                    result.userid = userData.userid
+                    result.userData = userData.data[0]
+                    // console.log(result)
+                    resolve(result)
+                }
+            }))
+        })
+
+    }
+    mobileDigitCheck(req, res).then(userLoginFinal).then(jwtTokengen).then((resolve) => {
+        console.log(resolve.userData)
+        // resolve.userData
+        resolve.userData._id = undefined
+        resolve.userData.password = undefined
+        resolve.userData.createdon = undefined
+        resolve.userData.__v = undefined
+        resolve.userData.dob = undefined
+        // resolve.mobileNumber = undefined
+        // resolve.email = undefined
+        resolve.userData.city = undefined
+        
         let apis = api.apiresponse(false, 'successful login', 200, resolve)
         res.send(apis)
     }).catch((err) => {

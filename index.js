@@ -50,6 +50,7 @@ fs.readdirSync(model).forEach(function (file) {
     (~file.indexOf('.js'))
     let mainpath = require(model + '/' + file)
     mainpath.signup
+    mainpath.signupmerchant
     // console.log(mainpath)
 })
 
