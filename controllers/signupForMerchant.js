@@ -68,7 +68,7 @@ let merchantData = (req, res) => {
             // console.log(req.body.email)
             if ((req.body.email).match(regex)) {
                 let response = api.apiresponse(false, 200, "Email passed the check", null)
-                // console.log(req.body.email)
+                console.log(req.body.fullname)
                 resolve(response)
             } else {
                 let response = api.apiresponse(true, 500, 'email doesn\'t pass', null)
@@ -98,25 +98,28 @@ let merchantData = (req, res) => {
     //mobile no check for 10 digit
     let mobilenoCheck = () => {
         return new Promise((resolve, reject) => {
-            merchant.find({ mobileNumber: req.body.mobileNumber }).exec((err, result) => {
+            merchant.find({ mobilenumber: req.body.mobilenumber }).exec((err, result) => {
+                console.log(req.body.mobilenumber)
                 if (err) {
                     let response = api.apiresponse(true, 500, 'something went wrong while checking mobile number', null)
                     reject(response)
-                } else if (emptyCheck.emptyCheck(result)) {
+                }
+                else if (emptyCheck.emptyCheck(result)) {
                     let regex = /^[0-9]{10}/
-                    let mobile = req.body.mobileNumber
-                    // console.log(mobile)
+                    let mobile = req.body.mobilenumber
+
                     if (mobile.match(regex)) {
                         let response = api.apiresponse(false, 200, "mobileno passed the check", null)
-                        // console.log(mobile)
+                        //  console.log(mobile)
                         resolve(response)
                     } else {
                         let response = api.apiresponse(true, 500, 'mobileno doesn\'t pass', null)
                         reject(response)
                     }
-                } else {
+                } 
+                else {
                     let response = api.apiresponse(true, 500, 'user already exist', err)
-                    reject(response)
+                    resolve(response)
                 }
 
             })
@@ -127,7 +130,7 @@ let merchantData = (req, res) => {
     // save data
     let savedata = () => {
         return new Promise((resolve, reject) => {
-            merchant.find({ "email": req.body.email, "mobileNumber": req.body.mobileNumber }).exec((err, data) => {
+            merchant.find({ email: req.body.email }).exec((err, data) => {
                 // console.log(data)
                 if (err) {
                     let response = api.apiresponse(true, 500, 'something went wrong while creating user during inital stage', null)
@@ -138,10 +141,10 @@ let merchantData = (req, res) => {
                     let valid = "1";
                     let userinfo = new merchant({
                         merchantid: merchantid,
-                        fullName: (req.body.fullName).toLowerCase(),
-                        mobileNumber: req.body.mobileNumber,
+                        fullname: req.body.fullname,
+                        mobilenumber: req.body.mobilenumber,
                         password: passencry.passhash(req.body.password),
-                        email: (req.body.email).toLowerCase(),
+                        email: (req.body.email),
                         city: req.body.city,
                         zipcode: req.body.zipcode,
                         gender: req.body.gender,
@@ -161,6 +164,7 @@ let merchantData = (req, res) => {
                             reject(response)
                         } else {
                             resolve(result)
+                            console.log(result)
                         }
                     })
                 } else {
@@ -172,7 +176,7 @@ let merchantData = (req, res) => {
     }
 
     firstCheckEmail(req, res).then(passcheck).then(mobilenoCheck).then(savedata).then((resolve) => {
-        console.log(resolve.email)
+        console.log(resolve)
         // let email = resolve.email
         // addtimeout as per the email api call limit 
         setTimeout(() => {

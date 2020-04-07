@@ -8,11 +8,11 @@ const merchant = new Schema({
         default: 'default001',
         index: true
     },
-    fullName: {
+    fullname: {
         type: String,
         default: ''
     },
-    mobileNumber: {
+    mobilenumber: {
         type: String,
         default: ''
     },
@@ -38,7 +38,7 @@ const merchant = new Schema({
         type: String
     },
     category: {
-        type: Array
+        type: String
     },
     valid: {
         type: String
