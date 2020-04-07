@@ -37,7 +37,7 @@ const merchant = new Schema({
     gender: {
         type: String
     },
-    category: {
+    Category: {
         type: String
     },
     valid: {

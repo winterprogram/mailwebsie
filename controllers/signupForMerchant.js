@@ -64,11 +64,12 @@ let merchantData = (req, res) => {
     // basic check
     let firstCheckEmail = () => {
         return new Promise((resolve, reject) => {
+            
             let regex = /^[a-zA-z]+\W?\w+\W+[a-z]+\W+\w+/
             // console.log(req.body.email)
             if ((req.body.email).match(regex)) {
                 let response = api.apiresponse(false, 200, "Email passed the check", null)
-                console.log(req.body.fullname)
+                // console.log(req.body.fullname)
                 resolve(response)
             } else {
                 let response = api.apiresponse(true, 500, 'email doesn\'t pass', null)
@@ -99,7 +100,7 @@ let merchantData = (req, res) => {
     let mobilenoCheck = () => {
         return new Promise((resolve, reject) => {
             merchant.find({ mobilenumber: req.body.mobilenumber }).exec((err, result) => {
-                console.log(req.body.mobilenumber)
+                console.log(req.body.Category)
                 if (err) {
                     let response = api.apiresponse(true, 500, 'something went wrong while checking mobile number', null)
                     reject(response)
@@ -119,7 +120,7 @@ let merchantData = (req, res) => {
                 } 
                 else {
                     let response = api.apiresponse(true, 500, 'user already exist', err)
-                    resolve(response)
+                    reject(response)
                 }
 
             })
@@ -150,7 +151,7 @@ let merchantData = (req, res) => {
                         gender: req.body.gender,
                         address: req.body.address,
                         geolocation: req.body.geolocation,
-                        category: req.body.category,
+                        Category: req.body.Category,
                         valid: valid,
                         createdon: Date.now()
                     })
