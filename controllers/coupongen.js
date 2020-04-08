@@ -87,6 +87,8 @@ let coupongen = (req, res) => {
                                 couponcode: couponcode,
                                 startdate: req.body.startdate,
                                 enddate: req.body.enddate,
+                                discount: req.body.discount,
+                                faltdiscountupto: req.body.faltdiscountupto,
                                 valid: valid
                             })
                             coupondata.save((err, datainfo) => {
@@ -115,6 +117,8 @@ let coupongen = (req, res) => {
                                 couponcode: couponcode,
                                 startdate: req.body.startdate,
                                 enddate: req.body.enddate,
+                                discount: req.body.discount,
+                                faltdiscountupto: req.body.faltdiscountupto,
                                 valid: valid
                             })
                             coupondata.save((err, datainfo) => {

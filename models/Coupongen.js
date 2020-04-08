@@ -11,6 +11,15 @@ let coupondata = new Schema({
         type: String,
         index: true
     },
+    discount: {
+        type: String,
+        required: false
+
+    },
+    faltdiscountupto: {
+        type: String,
+        required: true
+    },
     startdate: {
         type: String
     },
