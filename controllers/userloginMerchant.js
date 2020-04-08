@@ -20,16 +20,16 @@ const eventemiter = new event.EventEmitter();
 // importing jwt token lib
 const jwt = require('./../libs/jswt')
 
-let userlogin = (req, res) => {
+let merchantlogin = (req, res) => {
 
     let mobileDigitCheck = () => {
         return new Promise((resolve, reject) => {
-            if (emptyCheck.emptyCheck(req.body.mobileNumber)) {
+            if (emptyCheck.emptyCheck(req.body.mobilenumber)) {
                 let apis = api.apiresponse(true, 'mobilenumber can\'t be empty', 400, null)
                 reject(apis)
             } else {
                 let regex = /^[0-9]{10}/
-                let mobile = req.body.mobileNumber
+                let mobile = req.body.mobilenumber
                 // console.log(mobile)
                 if (mobile.match(regex)) {
                     let response = api.apiresponse(false, 200, "mobileno passed the check", null)
@@ -48,7 +48,7 @@ let userlogin = (req, res) => {
 
     let userLoginFinal = () => {
         return new Promise((resolve, reject) => {
-            merchant.find({ mobileNumber: req.body.mobileNumber }).exec((err, data) => {
+            merchant.find({ mobilenumber: req.body.mobilenumber }).exec((err, data) => {
                 // console.log(data[0].password)
                 if (err) {
                     let apis = api.apiresponse(true, 'error at last stage ', 500, null)
@@ -91,7 +91,8 @@ let userlogin = (req, res) => {
                     let response = api.apiresponse(true, 'data while generating jwt is vacant', 404, null)
                     reject(response)
                 } else {
-                    result.merchantid = merchantData.merchantid
+                    // console.log(merchantData.data[0].merchantid)
+                    result.merchantid = merchantData.data[0].merchantid
                     result.merchantData = merchantData.data[0]
                     let tok = new mertoken({
                         merchantid: result.merchantid,
@@ -131,7 +132,7 @@ let userlogin = (req, res) => {
         resolve.merchantData.createdon = undefined
         resolve.merchantData.__v = undefined
         resolve.merchantData.dob = undefined
-        // resolve.merchantData.mobileNumber = undefined
+        // resolve.merchantData.mobilenumber = undefined
         // resolve.merchantData.email = undefined
         let apis = api.apiresponse(false, 'successful login', 200, resolve)
         res.send(apis)
@@ -143,5 +144,5 @@ let userlogin = (req, res) => {
 }
 
 module.exports = {
-    userlogin: userlogin
+    merchantlogin: merchantlogin
 }

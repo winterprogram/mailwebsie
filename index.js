@@ -59,6 +59,7 @@ fs.readdirSync(model).forEach(function (file) {
     mainpath.signup
     mainpath.signupmerchant
     mainpath.tokenuser
+    mainpath.couponinfo
     // console.log(mainpath)
 })
 

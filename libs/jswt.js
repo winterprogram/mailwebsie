@@ -35,7 +35,7 @@ let verifyClaim = (token, cb) => {
         }
         else {
             console.log("user verified");
-            // console.log(decoded);
+             console.log(decoded);
             cb(null, decoded);
         }
 
@@ -44,6 +44,9 @@ let verifyClaim = (token, cb) => {
 
 
 }// end verify claim 
+
+
+
 
 module.exports = {
     generateToken: generateToken,
