@@ -90,8 +90,22 @@ let merchantlogin = (req, res) => {
                 } else if (emptyCheck.emptyCheck(result)) {
                     let response = api.apiresponse(true, 'data while generating jwt is vacant', 404, null)
                     reject(response)
-                } else {
+                }
+
+                else {
                     // console.log(merchantData.data[0].merchantid)
+                    mertoken.deleteOne({ merchantid: merchantData.data[0].merchantid }).exec((err, result) => {
+                        if (err) {
+                            let response = api.apiresponse(true, 'error while deleting the merchant token', 504, null)
+                            reject(response)
+                        } else if (emptyCheck.emptyCheck(result)) {
+                            let response = api.apiresponse(true, 'error while deleting the merchant token', 400, null)
+                            reject(response)
+                        } else {
+                            let response = api.apiresponse(true, 'data successfully deleted adding new one', 200, result)
+                            resolve(response)
+                        }
+                    })
                     result.merchantid = merchantData.data[0].merchantid
                     result.merchantData = merchantData.data[0]
                     let tok = new mertoken({
@@ -106,11 +120,12 @@ let merchantlogin = (req, res) => {
                             let response = api.apiresponse(true, 'Error while storing Jwt token stage -2', 500, error)
                             reject(response)
                         } else if ((emptyCheck.emptyCheck(authtokendetails))) {
+
                             let response = api.apiresponse(true, 'Error while storing Jwt token empty data', 404, null)
                             reject(response)
                         } else {
                             // let auth = authtokendetails.toObject()
-                            // console.log(authtokendetails)
+                            //  console.log(authtokendetails)
                             let a = api.apiresponse(true, 'user token stored successfully(1st login)', 403, authtokendetails)
                             resolve(a)
                         }

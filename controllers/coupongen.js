@@ -32,21 +32,23 @@ let coupongen = (req, res) => {
             // data = mertoken.find().select('-_v-_ID').lean()
             // console.log(data)
 
-            mertoken.find({ merchantid: "Z5Kkwp" }).exec((err, result) => {
+            mertoken.find({ merchantid: "ZfIOzN" }).exec((err, result) => {
                 // console.log(result[0].authtoken)
-                // jwt.verifyToken(result[0].authtoken, result[0].secreatekey, ((error, userdata) => {
-                //     if (error) {
-                //         let response = api.apiresponse(true, ' some error at stage 1.0 verifyclaim', 503, null)
-                //         reject(response)
-                //     } else if (emptyCheck.emptyCheck(userdata)) {
-                //         let response = api.apiresponse(true, ' token can\'t be blank logout user', 500, null)
-                //         reject(response)
-                //     } else {
-                //         let response = api.apiresponse(false, 'token stisfies the claim', 200, userdata)
-                //         resolve(response)
-                //     }
-                // }
-                // ))
+                jwt.verifyToken(result[0].authtoken, ((error, userdata) => {
+                    // console.log(error)
+                    if (error) {
+                        let response = api.apiresponse(true, 'token expired please logout user', 503, error)
+                        // console.log(error)
+                        reject(response)
+                    } else if (emptyCheck.emptyCheck(userdata)) {
+                        let response = api.apiresponse(true, ' token can\'t be blank logout user', 500, null)
+                        reject(response)
+                    } else {
+                        let response = api.apiresponse(false, 'token stisfies the claim', 200, userdata)
+                        resolve(response)
+                    }
+                }
+                ))
 
                 if (err) {
                     let response = api.apiresponse(true, ' some error at stage 1.1 verifyclaim', 503, null)
@@ -64,7 +66,7 @@ let coupongen = (req, res) => {
 
     let usergencoupon = () => {
         return new Promise((resolve, reject) => {
-            mertoken.find({ merchantid: "Z5Kkwp" }).exec((err, result) => {
+            mertoken.find({ merchantid: "ZfIOzN" }).exec((err, result) => {
                 if (err) {
                     let response = api.apiresponse(true, ' some error at stage 1 usergencoupon', 500, null)
                     reject(response)
@@ -83,7 +85,7 @@ let coupongen = (req, res) => {
                             let couponcode = randomize('Aa0', 6)
                             let valid = 1
                             let coupondata = new coupon({
-                                merchantid: "Z5Kkwp",
+                                merchantid: "ZfIOzN",
                                 couponcode: couponcode,
                                 startdate: req.body.startdate,
                                 enddate: req.body.enddate,
@@ -113,7 +115,7 @@ let coupongen = (req, res) => {
                             let couponcode = randomize('Aa0', 6)
                             let valid = 1
                             let coupondata = new coupon({
-                                merchantid: "Z5Kkwp",
+                                merchantid: "ZfIOzN",
                                 couponcode: couponcode,
                                 startdate: req.body.startdate,
                                 enddate: req.body.enddate,
