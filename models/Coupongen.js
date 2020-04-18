@@ -21,13 +21,16 @@ let coupondata = new Schema({
         required: true
     },
     startdate: {
-        type: String
+        type: String,
+        index: true
     },
     enddate: {
-        type: String
+        type: String,
+        index: true
     },
     valid: {
-        type: String
+        type: String,
+        index: true
     }
 })
 

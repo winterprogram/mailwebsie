@@ -10,11 +10,13 @@ const tokendata = new Schema({
     },
     authtoken: {
         type: String,
-        default: ''
+        default: '',
+        index: true
     },
     secreatekey: {
         type: String,
-        default: ''
+        default: '',
+        index: true
     },
     userinfo: {
         type: String

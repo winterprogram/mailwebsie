@@ -32,7 +32,8 @@ const userSignup = new Schema({
         type: String
     },
     valid: {
-        type: String
+        type: String,
+        index: true
     },
     dob: {
         type: String,

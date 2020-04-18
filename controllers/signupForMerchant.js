@@ -148,7 +148,7 @@ let merchantData = (req, res) => {
                         email: (req.body.email),
                         city: req.body.city,
                         zipcode: req.body.zipcode,
-                        gender: req.body.gender,
+                        shopname: req.body.shopname,
                         address: req.body.address,
                         geolocation: req.body.geolocation,
                         Category: req.body.Category,

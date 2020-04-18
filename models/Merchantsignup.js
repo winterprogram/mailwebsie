@@ -14,7 +14,8 @@ const merchant = new Schema({
     },
     mobilenumber: {
         type: String,
-        default: ''
+        default: '',
+        index: true
     },
     password: {
         type: String
@@ -29,19 +30,23 @@ const merchant = new Schema({
         type: String
     },
     geolocation: {
-        type: Array
+        type: Array,
+        index: true
     },
     zipcode: {
-        type: String
+        type: String,
+        index: true
     },
-    gender: {
+    shopname: {
         type: String
     },
     Category: {
-        type: String
+        type: String,
+        index: true
     },
     valid: {
-        type: String
+        type: String,
+        index: true
     },
     createdon: {
         type: Date
