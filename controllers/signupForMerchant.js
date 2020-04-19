@@ -79,22 +79,22 @@ let merchantData = (req, res) => {
     }
 
     // check for password 
-    let passcheck = () => {
-        return new Promise((resolve, reject) => {
-            let regex = /^[a-zA-Z]+\d+/
-            let pass = req.body.password;
-            // console.log(pass)
-            if (pass.match(regex) && (pass.length >= 6)) {
-                // console.log(pass)
-                let response = api.apiresponse(false, 200, "password passed the check", null)
-                resolve(response)
-            } else {
-                let response = api.apiresponse(true, 500, 'password doesn\'t pass', null)
-                reject(response)
-            }
+    // let passcheck = () => {
+    //     return new Promise((resolve, reject) => {
+    //         let regex = /^[a-zA-Z]+\d+/
+    //         let pass = req.body.password;
+    //         // console.log(pass)
+    //         if (pass.match(regex) && (pass.length >= 6)) {
+    //             // console.log(pass)
+    //             let response = api.apiresponse(false, 200, "password passed the check", null)
+    //             resolve(response)
+    //         } else {
+    //             let response = api.apiresponse(true, 500, 'password doesn\'t pass', null)
+    //             reject(response)
+    //         }
 
-        })
-    }
+    //     })
+    // }
 
     //mobile no check for 10 digit
     let mobilenoCheck = () => {
@@ -176,7 +176,7 @@ let merchantData = (req, res) => {
         })
     }
 
-    firstCheckEmail(req, res).then(passcheck).then(mobilenoCheck).then(savedata).then((resolve) => {
+    firstCheckEmail(req, res).then(mobilenoCheck).then(savedata).then((resolve) => {
         console.log(resolve)
         // let email = resolve.email
         // addtimeout as per the email api call limit 
