@@ -151,7 +151,7 @@ let merchantData = (req, res) => {
                         shopname: req.body.shopname,
                         address: req.body.address,
                         geolocation: req.body.geolocation,
-                        Category: req.body.Category,
+                        category: req.body.category,
                         valid: valid,
                         createdon: Date.now()
                     })

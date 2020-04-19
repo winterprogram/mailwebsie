@@ -40,7 +40,7 @@ const merchant = new Schema({
     shopname: {
         type: String
     },
-    Category: {
+    category: {
         type: String,
         index: true
     },
