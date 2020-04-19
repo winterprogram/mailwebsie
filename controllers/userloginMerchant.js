@@ -61,8 +61,10 @@ let merchantlogin = (req, res) => {
                 }
                 else {
                     // console.log(data)
-                    //  console.log(data[0].password)
+
+                    //   console.log(req.body.password)
                     passencry.passcheck(req.body.password, data[0].password, ((error, result) => {
+                        // console.log(result)
                         if (error) {
                             let apis = api.apiresponse(true, 'password didn\'t match / wrong password', 404, null)
                             reject(apis)
@@ -70,9 +72,12 @@ let merchantlogin = (req, res) => {
                             let apis = api.apiresponse(true, 'Merchant doesn\'t have right\'s to access', 503, null)
                             reject(apis)
                         }
-                        else {
+                        else if(result == true) {
                             let apis = api.apiresponse(false, 'password  match', 200, data)
                             resolve(apis)
+                        }else{
+                            let apis = api.apiresponse(true, 'password didn\'t match / wrong password', 404, null)
+                            reject(apis)
                         }
                     }))
                 }
