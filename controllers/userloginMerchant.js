@@ -66,7 +66,7 @@ let merchantlogin = (req, res) => {
                     passencry.passcheck(req.body.password, data[0].password, ((error, result) => {
                         // console.log(result)
                         if (error) {
-                            let apis = api.apiresponse(true, 'password didn\'t match / wrong password', 404, null)
+                            let apis = api.apiresponse(true, 'Something went wrong', 500, null)
                             reject(apis)
                         } else if ((data[0].valid == 0)) {
                             let apis = api.apiresponse(true, 'Merchant doesn\'t have right\'s to access', 503, null)
