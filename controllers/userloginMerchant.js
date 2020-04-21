@@ -98,7 +98,7 @@ let merchantlogin = (req, res) => {
                 }
 
                 else {
-                    // console.log(merchantData.data[0].merchantid)
+                     console.log(merchantData.data[0].merchantid)
                     mertoken.deleteOne({ merchantid: merchantData.data[0].merchantid }).exec((err, result) => {
                         if (err) {
                             let response = api.apiresponse(true, 'error while deleting the merchant token', 504, null)
