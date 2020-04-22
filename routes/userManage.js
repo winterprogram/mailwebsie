@@ -17,8 +17,9 @@ let routes = (app) => {
     app.post('/merchantlogin', merchantlogin.merchantlogin)
 
     // merchant coupon code gen
-
     app.post('/code', coupongen.coupongen)
+    // merchnat coupon edit
+    app.put('/couponedit', coupongen.editcoupon)
 
 }
 

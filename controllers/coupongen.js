@@ -21,6 +21,7 @@ const event = require('events')
 const eventemiter = new event.EventEmitter();
 // importing jwt token lib
 const jwt = require('./../libs/jswt')
+const logger = require('./../libs/logger')
 
 
 let coupongen = (req, res) => {
@@ -153,6 +154,114 @@ let coupongen = (req, res) => {
 }
 
 
+
+// edit coupon
+
+let editcoupon = (req, res) => {
+    let couponexist = () => {
+        return new Promise((resolve, reject) => {
+            coupon.find({ merchantid: req.headers.merchantid }).exec((err, result) => {
+                if (err) {
+                    logger.error('something went wrong during couponexist', 'couponexist:editcupon()', 10)
+                    let response = api.apiresponse(true, 'something went wrong during couponexist', 500, null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(result)) {
+                    logger.error('coupon exist didn\'t exist for this merchant', 'couponexist:editcupon()', 10)
+                    let response = api.apiresponse(true, 'coupon exist didn\'t exist for this merchant', 404, null)
+                    reject(response)
+                } else if (result.valid == 0) {
+                    logger.error('coupon is expired for this merchant', 'couponexist:editcupon()', 10)
+                    let response = api.apiresponse(true, 'coupon is expired for this merchant', 400, null)
+                    reject(response)
+                } else if (result.couponcode) {
+                    // let couponcode = randomize('Aa0', 6)
+                    let valid = 1
+                    let coupondata = new coupon({
+                        // merchantid: req.headers.merchantid,
+                        // couponcode: couponcode,
+                        startdate: req.body.startdate,
+                        enddate: req.body.enddate,
+                        discount: req.body.discount,
+                        faltdiscountupto: req.body.faltdiscountupto,
+                        valid: valid
+                    })
+
+                    coupondata.save((error, data) => {
+                        if (error) {
+                            logger.error('error while saving coupon data', 'couponsave()', 10)
+                            let response = api.apiresponse(true, 'error while saving coupon data', 400, null)
+                            reject(response)
+                        } else if (emptyCheck.emptyCheck(data)) {
+                            logger.error('error edit coupon data can\'t be blank', 'couponsave()', 10)
+                            let response = api.apiresponse(true, 'error edit coupon data can\'t be blank', 500, null)
+                            reject(response)
+                        } else {
+                            logger.info('coupon edit saved successfully', 'couponsave()')
+                            resolve(data)
+                        }
+                    })
+                }
+            })
+        })
+    }
+    couponexist(req, res).then((resolve) => {
+        logger.info('coupon edit saved successfully - 2', 'final promis')
+        let response = api.apiresponse(false, ' data is stored', 200, resolve)
+        res.send(response)
+    }).catch((err) => {
+        console.log(err)
+        res.send(err)
+    })
+}
+
+
+// delete coupon
+
+let deletecoupon = (req, res) => {
+    let deletes = () => {
+        return new Promise((resolve, reject) => {
+            coupon.find({ merchantid: req.headers.merchantid }).exec((err, result) => {
+                if (err) {
+                    logger.error('something went wrong during deletecoupon', 'deletecoupon:deletes()', 10)
+                    let response = api.apiresponse(true, 'something went wrong during deletecoupon', 500, null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(result)) {
+                    logger.error('coupon exist didn\'t exist for this merchant', 'deletecoupon:deletes()', 10)
+                    let response = api.apiresponse(true, 'coupon exist didn\'t exist for this merchant', 404, null)
+                    reject(response)
+                } else if (result.valid == 1) {
+                    coupon.update({ valid: 1 },{ $set:{ valid: 0 }}).exec((error,data)=>{
+                        if(error){
+                            logger.error('something went wrong during updating valid 1 to 0', 'deletecoupon:update()', 10)
+                            let response = api.apiresponse(true, 'something went wrong during updating valid 1 to 0', 500, null)
+                            reject(response)
+                        }else if(emptyCheck.emptyCheck(data)){
+                            logger.error('something went wrong received blank data', 'deletecoupon:update()', 5)
+                            let response = api.apiresponse(true, 'something went wrong blank data', 500, null)
+                            reject(response)
+                        }else{
+                            logger.info('updated 1 to 0','update success')
+                            resolve(data)
+                        }
+                    })
+                }
+            })
+        })
+    }
+    deletes(req, res).then((resolve) => {
+        logger.info('coupon delete successfully - 2', 'final promis')
+        let response = api.apiresponse(false, ' coupon delete', 200, resolve)
+        res.send(response)
+    }).catch((err) => {
+        logger.error('something went wrong coupon update failed -2', 'deletecoupon:update()', 1) 
+        console.log(err)
+        res.send(err)
+    })
+
+}
+
 module.exports = {
-    coupongen: coupongen
+    coupongen: coupongen,
+    editcoupon: editcoupon,
+    deletecoupon:deletecoupon
 }
