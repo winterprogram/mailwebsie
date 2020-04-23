@@ -20,7 +20,8 @@ let routes = (app) => {
     app.post('/code', coupongen.coupongen)
     // merchnat coupon edit
     app.put('/couponedit', coupongen.editcoupon)
-
+    // get coupon details for transaction
+    app.get('/getcouponformerchant', coupongen.getcoupon)
 }
 
 

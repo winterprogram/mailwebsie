@@ -35,9 +35,27 @@ function onError(err) {
         console.log(err)
         console.log('server closed')
     }
+    switch (error.code) {
+        case 'EACCES':
+          logger.error(error.code + ':elavated privileges required', 'serverOnErrorHandler', 10);
+          process.exit(1);
+          break;
+        case 'EADDRINUSE':
+          logger.error(error.code + ':port is already in use.', 'serverOnErrorHandler', 10);
+          process.exit(1);
+          break;
+        default:
+          logger.error(error.code + ':some unknown error occured', 'serverOnErrorHandler', 10);
+          throw error;
+      }
 }
 
 function onlisten() {
+    var addr = server.address();
+    var bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    ('Listening on ' + bind);
     console.log(`server is running on port ${appconfigs.port}`)
 
     let db = mongoose.connect(appconfigs.db.uri, { useNewUrlParser: true, useUnifiedTopology: true })

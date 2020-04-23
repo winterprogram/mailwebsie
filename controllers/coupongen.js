@@ -230,17 +230,17 @@ let deletecoupon = (req, res) => {
                     let response = api.apiresponse(true, 'coupon exist didn\'t exist for this merchant', 404, null)
                     reject(response)
                 } else if (result.valid == 1) {
-                    coupon.update({ valid: 1 },{ $set:{ valid: 0 }}).exec((error,data)=>{
-                        if(error){
+                    coupon.update({ valid: 1 }, { $set: { valid: 0 } }).exec((error, data) => {
+                        if (error) {
                             logger.error('something went wrong during updating valid 1 to 0', 'deletecoupon:update()', 10)
                             let response = api.apiresponse(true, 'something went wrong during updating valid 1 to 0', 500, null)
                             reject(response)
-                        }else if(emptyCheck.emptyCheck(data)){
+                        } else if (emptyCheck.emptyCheck(data)) {
                             logger.error('something went wrong received blank data', 'deletecoupon:update()', 5)
                             let response = api.apiresponse(true, 'something went wrong blank data', 500, null)
                             reject(response)
-                        }else{
-                            logger.info('updated 1 to 0','update success')
+                        } else {
+                            logger.info('updated 1 to 0', 'update success')
                             resolve(data)
                         }
                     })
@@ -253,9 +253,38 @@ let deletecoupon = (req, res) => {
         let response = api.apiresponse(false, ' coupon delete', 200, resolve)
         res.send(response)
     }).catch((err) => {
-        logger.error('something went wrong coupon update failed -2', 'deletecoupon:update()', 1) 
+        logger.error('something went wrong coupon update failed -2', 'deletecoupon:update()', 1)
         console.log(err)
         res.send(err)
+    })
+
+}
+
+
+let getcoupon = (req, res) => {
+    coupon.find({ merchantid: req.headers.merchantid }).exec((err, result) => {
+        console.log(result)
+        if (err) {
+            logger.error('error while fetching merchant coupon details', 'findmerchant : getcoupon()', 10)
+            let response = api.apiresponse(true, 'error while fetching merchant coupon details', 500, null)
+            res.send(response)
+        } else if (emptyCheck.emptyCheck(result)) {
+            logger.error('error while fetching merchant coupon details', 'findmerchant : getcoupon()', 10)
+            let response = api.apiresponse(true, 'error while fetching merchant coupon details', 500, null)
+            res.send(response)
+        
+        }
+        // else if(result[0].valid == 1){
+        //     logger.info('Coupon is active','Remark it as green')
+        //     let response = api.apiresponse(false,'active coupon is fetched',200,result)
+        //     res.send(response)
+        // }
+        
+        else{
+            logger.info('Coupon is fetched','Remark it as red/green depending on valid')
+            let response = api.apiresponse(false,'coupon is fetched',200,result)
+            res.send(response)
+        }
     })
 
 }
@@ -263,5 +292,6 @@ let deletecoupon = (req, res) => {
 module.exports = {
     coupongen: coupongen,
     editcoupon: editcoupon,
-    deletecoupon:deletecoupon
+    deletecoupon: deletecoupon,
+    getcoupon:getcoupon
 }
