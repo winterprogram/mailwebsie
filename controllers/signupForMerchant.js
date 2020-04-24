@@ -11,6 +11,7 @@ const emptyCheck = require('./../libs/emptyCheck')
 //adding api response structure 
 const api = require('./../libs/apiresponse')
 // adding password encry lib
+const logger = require('../libs/logger')
 const passencry = require('./../libs/passEncry')
 // events
 const event = require('events')
@@ -68,6 +69,7 @@ let merchantData = (req, res) => {
             let regex = /^[a-zA-z]+\W?\w+\W+[a-z]+\W+\w+/
             // console.log(req.body.email)
             if ((req.body.email).match(regex)) {
+                logger.info('','')
                 let response = api.apiresponse(false, 200, "Email passed the check", null)
                 // console.log(req.body.fullname)
                 resolve(response)
@@ -134,6 +136,7 @@ let merchantData = (req, res) => {
             merchant.find({ email: req.body.email }).exec((err, data) => {
                 // console.log(data)
                 if (err) {
+                    logger.error('omething went wrong while creating user during inital stage','savedata() for merchant',10)
                     let response = api.apiresponse(true, 500, 'something went wrong while creating user during inital stage', null)
                     reject(response)
                 } else if (emptyCheck.emptyCheck(data)) {
@@ -158,9 +161,11 @@ let merchantData = (req, res) => {
                     userinfo.save((err, result) => {
                         // console.log(result)
                         if (err) {
+                            logger.error('failed to create a new user','savedata() for merchant',10)
                             let response = api.apiresponse(true, 500, 'failed to create a new user', err)
                             reject(response)
                         } else if (emptyCheck.emptyCheck(result)) {
+                            logger.error('blank data received','savedata() for merchant',10)
                             let response = api.apiresponse(true, 404, 'blank data received', null)
                             reject(response)
                         } else {
@@ -180,6 +185,7 @@ let merchantData = (req, res) => {
         console.log(resolve)
         // let email = resolve.email
         // addtimeout as per the email api call limit 
+        logger.info('user registered','user registered')
         setTimeout(() => {
             eventemiter.emit('welcomemail', ((resolve.email).toString()))
         }, 1000)
