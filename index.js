@@ -11,7 +11,7 @@ const middlewareOnRoute = require('./middleware/errorOnRoutes')
 const cookieparser = require('cookie-parser')
 const bodyparser = require('body-parser')
 var cors = require('cors');
-app.use(cors({origin: 'http://localhost:4200'}));
+// app.use(cors({origin: 'http://localhost:4200'}));
 
 app.use(cookieparser())
 app.use(bodyparser.urlencoded({ extended: false }))
