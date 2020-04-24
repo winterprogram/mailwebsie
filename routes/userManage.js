@@ -15,6 +15,8 @@ let routes = (app) => {
 
     app.post('/merchantSignup', merchantData.merchantData)
     app.post('/merchantlogin', merchantlogin.merchantlogin)
+    // reset password
+    app.put('/resetpassmerchant',merchantlogin.merchantresetpass)
 
     // merchant coupon code gen
     app.post('/code', coupongen.coupongen)

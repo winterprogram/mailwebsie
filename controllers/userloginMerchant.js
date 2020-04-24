@@ -8,6 +8,7 @@ const mongoose = require('mongoose')
 const merchant = mongoose.model('signupforusermerchant')
 const token = require('./../models/Merchantauthtoken')
 const mertoken = mongoose.model('merchantinfo')
+const logger = require('../libs/logger')
 // adding empty check 
 const emptyCheck = require('./../libs/emptyCheck')
 //adding api response structure 
@@ -72,10 +73,10 @@ let merchantlogin = (req, res) => {
                             let apis = api.apiresponse(true, 'Merchant doesn\'t have right\'s to access', 503, null)
                             reject(apis)
                         }
-                        else if(result == true) {
+                        else if (result == true) {
                             let apis = api.apiresponse(false, 'password  match', 200, data)
                             resolve(apis)
-                        }else{
+                        } else {
                             let apis = api.apiresponse(true, 'password didn\'t match / wrong password', 404, null)
                             reject(apis)
                         }
@@ -98,7 +99,7 @@ let merchantlogin = (req, res) => {
                 }
 
                 else {
-                     console.log(merchantData.data[0].merchantid)
+                    console.log(merchantData.data[0].merchantid)
                     mertoken.deleteOne({ merchantid: merchantData.data[0].merchantid }).exec((err, result) => {
                         if (err) {
                             let response = api.apiresponse(true, 'error while deleting the merchant token', 504, null)
@@ -163,6 +164,59 @@ let merchantlogin = (req, res) => {
 
 }
 
+let merchantresetpass = (req, res) => {
+    let findmerchant = () => {
+        return new Promise((resolve, reject) => {
+            merchant.findOne({ merchantid: req.headers.merchantid }).exec((err, result) => {
+                console.log(result)
+                if (err) {
+                    logger.error('error while fetching merchant details', 'findmerchant : merchantresetpass()', 10)
+                    let response = api.apiresponse(true, 'error while fetching merchant details', 500, null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(result)) {
+                    logger.error('error merchnat not found in db', 'findmerchant : merchantresetpass()', 10)
+                    let response = api.apiresponse(true, 'error merchnat not found in db', 404, null)
+                    reject(response)
+                } else {
+                    logger.info('merchant info exist', 'findmerchant()')
+                    resolve(result)
+                }
+            })
+        })
+    }
+
+    let updatepass = (result) => {
+        return new Promise((resolve, reject) => {
+            let password = passencry.passhash(req.body.password)
+            merchant.updateOne({ merchantid: result.merchantid},{$set:{password:password}}).exec((error,data)=>{
+                if (error) {
+                    logger.error('error while updating password', 'updatepass : merchantresetpass()', 10)
+                    let response = api.apiresponse(true, 'error while fetching merchant details', 500, null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(data)) {
+                    logger.error('error password can\'t be blank', 'updatepass : merchantresetpass()', 10)
+                    let response = api.apiresponse(true, 'error merchnat not found in db', 404, null)
+                    reject(response)
+                } else {
+                    logger.info('password updated', 'updatepass()')
+                    resolve(data)
+                }
+            })
+        })
+    }
+    findmerchant(req,res).then(updatepass).then((resolve)=>{
+
+        logger.info('password updated', 'merchantresetpass()')
+        let response = api.apiresponse(false,'password updated successfully',200,resolve)
+        res.send(response)
+    }).catch((err)=>{
+        logger.error('password update failed', 'merchantresetpass()')
+        let response = api.apiresponse(false,'password update failed',404,err)
+        res.send(response)
+    })
+}
+
 module.exports = {
-    merchantlogin: merchantlogin
+    merchantlogin: merchantlogin,
+    merchantresetpass: merchantresetpass
 }

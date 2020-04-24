@@ -271,15 +271,8 @@ let getcoupon = (req, res) => {
         } else if (emptyCheck.emptyCheck(result)) {
             logger.error('error while fetching merchant coupon details', 'findmerchant : getcoupon()', 10)
             let response = api.apiresponse(true, 'error while fetching merchant coupon details', 500, null)
-            res.send(response)
-        
-        }
-        // else if(result[0].valid == 1){
-        //     logger.info('Coupon is active','Remark it as green')
-        //     let response = api.apiresponse(false,'active coupon is fetched',200,result)
-        //     res.send(response)
-        // }
-        
+            res.send(response)   
+        }        
         else{
             logger.info('Coupon is fetched','Remark it as red/green depending on valid')
             let response = api.apiresponse(false,'coupon is fetched',200,result)
