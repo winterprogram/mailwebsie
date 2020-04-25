@@ -24,7 +24,9 @@ let routes = (app) => {
     // merchnat coupon edit
     app.put('/couponedit', coupongen.editcoupon)
     // get coupon details for transaction
-    app.get('/getcouponformerchant', coupongen.getcoupon)
+    app.get('/couponsfortrans', coupongen.getcoupon)
+    //get all coupon details
+    app.get('/couponsformanage', coupongen.getcouponfortrans)
 
     // admin
     app.get('/getmerchantinfo', admin.userregisterData)

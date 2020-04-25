@@ -10,9 +10,9 @@ const token = require('./../models/Merchantauthtoken')
 const mertoken = mongoose.model('merchantinfo')
 const c = require('./../models/Coupongen')
 const coupon = mongoose.model('coupons')
+const logger = require('../libs/logger')
 // adding empty check 
 const emptyCheck = require('./../libs/emptyCheck')
-const logger = require('../libs/logger')
 //adding api response structure 
 const api = require('./../libs/apiresponse')
 // adding password encry lib
@@ -22,7 +22,6 @@ const event = require('events')
 const eventemiter = new event.EventEmitter();
 // importing jwt token lib
 const jwt = require('./../libs/jswt')
-const logger = require('./../libs/logger')
 
 
 let coupongen = (req, res) => {
@@ -244,7 +243,7 @@ let editcoupon = (req, res) => {
             })
         })
     }
-    verifyclaim(req,res).then(couponexist).then((resolve) => {
+    verifyclaim(req, res).then(couponexist).then((resolve) => {
         logger.info('coupon edit saved successfully - 2', 'final promis')
         let response = api.apiresponse(false, ' data is stored', 200, resolve)
         res.send(response)
@@ -326,7 +325,7 @@ let deletecoupon = (req, res) => {
             })
         })
     }
-    verifyclaim(req,res).then(deletes).then((resolve) => {
+    verifyclaim(req, res).then(deletes).then((resolve) => {
         logger.info('coupon delete successfully - 2', 'final promis')
         let response = api.apiresponse(false, ' coupon delete', 200, resolve)
         res.send(response)
@@ -339,22 +338,71 @@ let deletecoupon = (req, res) => {
 }
 
 
+let getcouponfortrans = (req, res) => {
+    let getc = () => {
+        return new Promise((resolve, reject) => {
+            coupon.find({ merchantid: req.headers.merchantid, valid: "1" }).exec((err, result) => {
+                if (err) {
+                    logger.error('error while fetching merchant coupon details', 'findmerchant : getcoupon()', 10)
+                    let response = api.apiresponse(true, 'error while fetching merchant coupon details', 500, null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(result)) {
+                    logger.error('error while fetching merchant coupon details', 'findmerchant : getcoupon()', 10)
+                    let response = api.apiresponse(true, 'error while fetching merchant coupon details', 403, null)
+                    reject(response)
+                }
+                else {
+                    // // for (let i = 0; i < result.length; i++) {
+                    // //     if (result[i].valid == 1) {
+                    // //         logger.info('Coupon is fetched', 'valid coupon exist')
+                    // //         //  let response = api.apiresponse(false, 'coupon is fetched', 200, null)
+                    // //         resolve(result[i])
+                    // //         break;
+                    // //     } else if (result[i].valid == 0) {
+                    // //         console.log(result[i].valid)
+                    // //         logger.error('coupon is not valid', 'valid coupon doesn\'t exist', 10)
+                    // //         reject(result[i])
+                    // //         break;
+                    // //     }
+
+                    // }
+                    resolve(result)
+
+
+                }
+            })
+
+        })
+    }
+    getc(req, res).then((resolve) => {
+        logger.info('coupon fetched', 'final promise')
+        let response = api.apiresponse(false, ' coupon fetched', 200, resolve)
+        res.send(response)
+    }).catch((err) => {
+        logger.error('something went wrong coupon is not valid', 'getcoupon()', 10)
+        let response = api.apiresponse(true, ' coupon is not valid', 500, null)
+        console.log(err)
+        res.send(response)
+    })
+
+}
+
 let getcoupon = (req, res) => {
     coupon.find({ merchantid: req.headers.merchantid }).exec((err, result) => {
-        console.log(result)
         if (err) {
             logger.error('error while fetching merchant coupon details', 'findmerchant : getcoupon()', 10)
             let response = api.apiresponse(true, 'error while fetching merchant coupon details', 500, null)
             res.send(response)
         } else if (emptyCheck.emptyCheck(result)) {
             logger.error('error while fetching merchant coupon details', 'findmerchant : getcoupon()', 10)
-            let response = api.apiresponse(true, 'error while fetching merchant coupon details', 500, null)
-            res.send(response)   
-        }        
-        else{
-            logger.info('Coupon is fetched','Remark it as red/green depending on valid')
-            let response = api.apiresponse(false,'coupon is fetched',200,result)
+            let response = api.apiresponse(true, 'error while fetching merchant coupon details', 403, null)
             res.send(response)
+        }
+        else {
+            logger.info('Coupon is fetched', 'Remark it as red/green depending on valid')
+            let response = api.apiresponse(false, 'coupon is fetched', 200, result)
+            res.send(response)
+
         }
     })
 
@@ -364,5 +412,6 @@ module.exports = {
     coupongen: coupongen,
     editcoupon: editcoupon,
     deletecoupon: deletecoupon,
-    getcoupon:getcoupon
+    getcoupon: getcoupon,
+    getcouponfortrans: getcouponfortrans
 }
