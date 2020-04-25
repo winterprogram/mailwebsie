@@ -12,6 +12,7 @@ const c = require('./../models/Coupongen')
 const coupon = mongoose.model('coupons')
 // adding empty check 
 const emptyCheck = require('./../libs/emptyCheck')
+const logger = require('../libs/logger')
 //adding api response structure 
 const api = require('./../libs/apiresponse')
 // adding password encry lib
@@ -158,6 +159,45 @@ let coupongen = (req, res) => {
 // edit coupon
 
 let editcoupon = (req, res) => {
+
+    let verifyclaim = () => {
+
+        return new Promise((resolve, reject) => {
+            // data = mertoken.find().select('-_v-_ID').lean()
+            // console.log(data)
+
+            mertoken.find({ merchantid: req.headers.merchantid }).exec((err, result) => {
+                // console.log(result[0].authtoken)
+                jwt.verifyToken(result[0].authtoken, ((error, userdata) => {
+                    // console.log(error)
+                    if (error) {
+                        let response = api.apiresponse(true, 'token expired please logout user', 503, error)
+                        // console.log(error)
+                        reject(response)
+                    } else if (emptyCheck.emptyCheck(userdata)) {
+                        let response = api.apiresponse(true, ' token can\'t be blank logout user', 500, null)
+                        reject(response)
+                    } else {
+                        let response = api.apiresponse(false, 'token stisfies the claim', 200, userdata)
+                        resolve(response)
+                    }
+                }
+                ))
+
+                if (err) {
+                    let response = api.apiresponse(true, ' some error at stage 1.1 verifyclaim', 503, null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(result)) {
+                    let response = api.apiresponse(true, ' user not found', 400, null)
+                    reject(response)
+                } else {
+                    let response = api.apiresponse(false, 'userfound', 200, result)
+                    resolve(response)
+                }
+            })
+        })
+    }
+
     let couponexist = () => {
         return new Promise((resolve, reject) => {
             coupon.find({ merchantid: req.headers.merchantid }).exec((err, result) => {
@@ -204,7 +244,7 @@ let editcoupon = (req, res) => {
             })
         })
     }
-    couponexist(req, res).then((resolve) => {
+    verifyclaim(req,res).then(couponexist).then((resolve) => {
         logger.info('coupon edit saved successfully - 2', 'final promis')
         let response = api.apiresponse(false, ' data is stored', 200, resolve)
         res.send(response)
@@ -218,6 +258,44 @@ let editcoupon = (req, res) => {
 // delete coupon
 
 let deletecoupon = (req, res) => {
+
+    let verifyclaim = () => {
+
+        return new Promise((resolve, reject) => {
+
+            mertoken.find({ merchantid: req.headers.merchantid }).exec((err, result) => {
+
+                jwt.verifyToken(result[0].authtoken, ((error, userdata) => {
+
+                    if (error) {
+                        logger.error('token expired please logout user', 'merchantresetpass:verifyclaim()', 10)
+                        let response = api.apiresponse(true, 'token expired please logout user', 503, error)
+                        reject(response)
+                    } else if (emptyCheck.emptyCheck(userdata)) {
+                        logger.error(' token can\'t be blank logout user', 'merchantresetpass:verifyclaim()', 10)
+                        let response = api.apiresponse(true, ' token can\'t be blank logout user', 500, null)
+                        reject(response)
+                    } else {
+                        let response = api.apiresponse(false, 'token stisfies the claim', 200, userdata)
+                        resolve(response)
+                    }
+                }
+                ))
+
+                if (err) {
+                    let response = api.apiresponse(true, ' some error at stage 1.1 verifyclaim', 503, null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(result)) {
+                    let response = api.apiresponse(true, ' user not found', 400, null)
+                    reject(response)
+                } else {
+                    let response = api.apiresponse(false, 'userfound', 200, result)
+                    resolve(response)
+                }
+            })
+        })
+    }
+
     let deletes = () => {
         return new Promise((resolve, reject) => {
             coupon.find({ merchantid: req.headers.merchantid }).exec((err, result) => {
@@ -248,7 +326,7 @@ let deletecoupon = (req, res) => {
             })
         })
     }
-    deletes(req, res).then((resolve) => {
+    verifyclaim(req,res).then(deletes).then((resolve) => {
         logger.info('coupon delete successfully - 2', 'final promis')
         let response = api.apiresponse(false, ' coupon delete', 200, resolve)
         res.send(response)
