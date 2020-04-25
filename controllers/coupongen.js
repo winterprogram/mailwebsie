@@ -275,7 +275,7 @@ let deletecoupon = (req, res) => {
                         let response = api.apiresponse(true, ' token can\'t be blank logout user', 500, null)
                         reject(response)
                     } else {
-                        let response = api.apiresponse(false, 'token stisfies the claim', 200, userdata)
+                        let response = api.apiresponse(false, 'token satisfies the claim', 200, userdata)
                         resolve(response)
                     }
                 }
