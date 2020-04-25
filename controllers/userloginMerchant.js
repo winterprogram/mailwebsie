@@ -165,6 +165,43 @@ let merchantlogin = (req, res) => {
 }
 
 let merchantresetpass = (req, res) => {
+
+    let verifyclaim = () => {
+
+        return new Promise((resolve, reject) => {
+
+            mertoken.find({ merchantid: req.headers.merchantid }).exec((err, result) => {
+
+                jwt.verifyToken(result[0].authtoken, ((error, userdata) => {
+
+                    if (error) {
+                        logger.error('token expired please logout user', 'merchantresetpass:verifyclaim()', 10)
+                        let response = api.apiresponse(true, 'token expired please logout user', 503, error)
+                        reject(response)
+                    } else if (emptyCheck.emptyCheck(userdata)) {
+                        logger.error(' token can\'t be blank logout user', 'merchantresetpass:verifyclaim()', 10)
+                        let response = api.apiresponse(true, ' token can\'t be blank logout user', 500, null)
+                        reject(response)
+                    } else {
+                        let response = api.apiresponse(false, 'token stisfies the claim', 200, userdata)
+                        resolve(response)
+                    }
+                }
+                ))
+
+                if (err) {
+                    let response = api.apiresponse(true, ' some error at stage 1.1 verifyclaim', 503, null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(result)) {
+                    let response = api.apiresponse(true, ' user not found', 400, null)
+                    reject(response)
+                } else {
+                    let response = api.apiresponse(false, 'userfound', 200, result)
+                    resolve(response)
+                }
+            })
+        })
+    }
     let findmerchant = () => {
         return new Promise((resolve, reject) => {
             merchant.findOne({ merchantid: req.headers.merchantid }).exec((err, result) => {
@@ -188,7 +225,7 @@ let merchantresetpass = (req, res) => {
     let updatepass = (result) => {
         return new Promise((resolve, reject) => {
             let password = passencry.passhash(req.body.password)
-            merchant.updateOne({ merchantid: result.merchantid},{$set:{password:password}}).exec((error,data)=>{
+            merchant.updateOne({ merchantid: result.merchantid }, { $set: { password: password } }).exec((error, data) => {
                 if (error) {
                     logger.error('error while updating password', 'updatepass : merchantresetpass()', 10)
                     let response = api.apiresponse(true, 'error while fetching merchant details', 500, null)
@@ -204,14 +241,14 @@ let merchantresetpass = (req, res) => {
             })
         })
     }
-    findmerchant(req,res).then(updatepass).then((resolve)=>{
+    verifyclaim(req, res).then(findmerchant).then(updatepass).then((resolve) => {
 
         logger.info('password updated', 'merchantresetpass()')
-        let response = api.apiresponse(false,'password updated successfully',200,resolve)
+        let response = api.apiresponse(false, 'password updated successfully', 200, resolve)
         res.send(response)
-    }).catch((err)=>{
+    }).catch((err) => {
         logger.error('password update failed', 'merchantresetpass()')
-        let response = api.apiresponse(false,'password update failed',404,err)
+        let response = api.apiresponse(false, 'password update failed', 404, err)
         res.send(response)
     })
 }

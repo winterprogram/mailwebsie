@@ -5,6 +5,7 @@ const login = require('./../controllers/userlogin')
 const merchantData = require('./../controllers/signupForMerchant')
 const coupongen = require('./../controllers/coupongen')
 const merchantlogin = require('./../controllers/userloginMerchant')
+const admin = require('../controllers/admin')
 
 let routes = (app) => {
     // user signup and login
@@ -16,7 +17,7 @@ let routes = (app) => {
     app.post('/merchantSignup', merchantData.merchantData)
     app.post('/merchantlogin', merchantlogin.merchantlogin)
     // reset password
-    app.put('/resetpassmerchant',merchantlogin.merchantresetpass)
+    app.put('/resetpassmerchant', merchantlogin.merchantresetpass)
 
     // merchant coupon code gen
     app.post('/code', coupongen.coupongen)
@@ -24,6 +25,9 @@ let routes = (app) => {
     app.put('/couponedit', coupongen.editcoupon)
     // get coupon details for transaction
     app.get('/getcouponformerchant', coupongen.getcoupon)
+
+    // admin
+    app.get('/getmerchantinfo', admin.userregisterData)
 }
 
 

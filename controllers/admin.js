@@ -27,7 +27,7 @@ const jwt = require('./../libs/jswt')
 // get list of registered users 
 
 let userregisterData = (req, res) => {
-    signup.find().lean().exec((err, result) => {
+    merchant.find().lean().exec((err, result) => {
         if (err) {
             let response = api.apiresponse(true, 504, "Something went wrong in get user data", null)
             res.send(response)
