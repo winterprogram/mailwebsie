@@ -21,8 +21,9 @@ let routes = (app) => {
 
     // merchant coupon code gen
     app.post('/code', coupongen.coupongen)
-    // merchnat coupon edit
+    // merchant coupon edit
     app.put('/couponedit', coupongen.editcoupon)
+    //merchant delete coupon
     app.put('/deletecoupon',coupongen.deletecoupon)
     // get coupon details for transaction section
     app.get('/couponsformanage', coupongen.getcoupon)
