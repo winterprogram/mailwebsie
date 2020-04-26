@@ -23,6 +23,7 @@ let routes = (app) => {
     app.post('/code', coupongen.coupongen)
     // merchnat coupon edit
     app.put('/couponedit', coupongen.editcoupon)
+    app.put('/deletecoupon',coupongen.deletecoupon)
     // get coupon details for transaction section
     app.get('/couponsformanage', coupongen.getcoupon)
     //get all coupon details for manage coupon section

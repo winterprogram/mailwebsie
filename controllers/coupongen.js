@@ -297,7 +297,7 @@ let deletecoupon = (req, res) => {
 
     let deletes = () => {
         return new Promise((resolve, reject) => {
-            coupon.find({ merchantid: req.headers.merchantid }).exec((err, result) => {
+            coupon.find({ merchantid: req.headers.merchantid , valid : "1"}).exec((err, result) => {
                 if (err) {
                     logger.error('something went wrong during deletecoupon', 'deletecoupon:deletes()', 10)
                     let response = api.apiresponse(true, 'something went wrong during deletecoupon', 500, null)
@@ -306,8 +306,8 @@ let deletecoupon = (req, res) => {
                     logger.error('coupon exist didn\'t exist for this merchant', 'deletecoupon:deletes()', 10)
                     let response = api.apiresponse(true, 'coupon exist didn\'t exist for this merchant', 404, null)
                     reject(response)
-                } else if (result.valid == 1) {
-                    coupon.update({ valid: 1 }, { $set: { valid: 0 } }).exec((error, data) => {
+                } else{
+                    coupon.update({ valid: "1" }, { $set: { valid: "0" } }).exec((error, data) => {
                         if (error) {
                             logger.error('something went wrong during updating valid 1 to 0', 'deletecoupon:update()', 10)
                             let response = api.apiresponse(true, 'something went wrong during updating valid 1 to 0', 500, null)
