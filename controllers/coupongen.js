@@ -34,7 +34,6 @@ let coupongen = (req, res) => {
         return new Promise((resolve, reject) => {
             // data = mertoken.find().select('-_v-_ID').lean()
             // console.log(data)
-
             mertoken.find({ merchantid: req.headers.merchantid }).exec((err, result) => {
                 if (emptyCheck.emptyCheck(result)) {
                     logger.error('auth token is empty', 'verifyclaim:coupongen()', 10)
@@ -174,6 +173,11 @@ let editcoupon = (req, res) => {
             // console.log(data)
 
             mertoken.find({ merchantid: req.headers.merchantid }).exec((err, result) => {
+                if (emptyCheck.emptyCheck(result)) {
+                    logger.error('auth token is empty', 'verifyclaim:coupongen()', 10)
+                    let response = api.apiresponse(true, 'auth token is empty', 404, null)
+                    reject(response)
+                } else {
                 // console.log(result[0].authtoken)
                 jwt.verifyToken(result[0].authtoken, ((error, userdata) => {
                     // console.log(error)
@@ -201,6 +205,7 @@ let editcoupon = (req, res) => {
                     let response = api.apiresponse(false, 'userfound', 200, result)
                     resolve(response)
                 }
+            }
             })
         })
     }
@@ -271,6 +276,11 @@ let deletecoupon = (req, res) => {
         return new Promise((resolve, reject) => {
 
             mertoken.find({ merchantid: req.headers.merchantid }).exec((err, result) => {
+                if (emptyCheck.emptyCheck(result)) {
+                    logger.error('auth token is empty', 'verifyclaim:coupongen()', 10)
+                    let response = api.apiresponse(true, 'auth token is empty', 404, null)
+                    reject(response)
+                } else {
 
                 jwt.verifyToken(result[0].authtoken, ((error, userdata) => {
 
@@ -299,6 +309,7 @@ let deletecoupon = (req, res) => {
                     let response = api.apiresponse(false, 'userfound', 200, result)
                     resolve(response)
                 }
+            }
             })
         })
     }
