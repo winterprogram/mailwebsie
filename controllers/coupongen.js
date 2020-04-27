@@ -432,9 +432,10 @@ let purgecoupon = (req, res) => {
 
     let deletecouponforpurge = () => {
         return new Promise((resolve, reject) => {
-            let datetoday = moment().format('L')
+            let datetoday = moment().format('DD-MM-YYYY')
+            console.log(datetoday)
             coupon.find({ valid: "1" }).exec((err, result) => {
-                console.log(result)
+                // console.log(result)
                 if (err) {
                     logger.error('cron service error at purge for merchant', 'deletecouponforpurge :purgecoupon()', 5)
                     let response = api.apiresponse('cron service error at purge for merchant', 'deletecouponforpurge :purgecoupon()', 500, null)
