@@ -415,8 +415,12 @@ let purgecoupon = (req, res) => {
 
     let deletecouponforpurge = () => {
         return new Promise((resolve, reject) => {
+            // let day = (Number(moment().format('DD'))+1).toString();
+            // let month = moment().format('MM')
+            // let year = moment().format('YYYY')
+            // let datetoday = `${day}-${month}-${year}`
             let datetoday = moment().format('DD-MM-YYYY')
-            console.log(datetoday)
+            // console.log(datetoday)
             coupon.find({ valid: "1" }).exec((err, result) => {
                 // console.log(result)
                 if (err) {
@@ -429,9 +433,14 @@ let purgecoupon = (req, res) => {
                     reject(response)
                 } else {
                     for (let i = 0; i < result.length; i++) {
-                        if (result[i].enddate == datetoday) {
+                        let a = result[i].enddate
+                        let b = a.split("-")
+                        let c = (Number(b[0]) + 1).toString()
+                        let enddate = `${c}-${b[1]}-${b[2]}`
+                        console.log(enddate)
+                        if (enddate == datetoday) {
                             logger.info('cron servise updated for merchant', 'deletecouponforpurge()')
-                            coupon.updateMany({ valid: "1" }, { $set: { valid: "0" } }).exec((error, data) => {
+                            coupon.updateMany({ valid: "1", enddate: result[i].enddate }, { $set: { valid: "0" } }).exec((error, data) => {
                                 if (error) {
                                     logger.error('cron service error at purge for merchant', 'deletecouponforpurge :purgecoupon()', 5)
                                     let response = api.apiresponse(true, 'cron service error at purge for merchant', 'deletecouponforpurge :purgecoupon()', 500, null)
@@ -460,7 +469,7 @@ let purgecoupon = (req, res) => {
     }).catch((err) => {
         logger.error('error at corn purge for merchant', 'deletecouponforpurge', 5)
         let response = api.apiresponse(true, 'error at corn purge for merchant', 500, null)
-        console.log(err)
+        // console.log(err)
         res.send(response)
     })
 }
