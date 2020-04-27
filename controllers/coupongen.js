@@ -84,7 +84,6 @@ let coupongen = (req, res) => {
                 } else {
                     // console.log(result[0].merchantid)
                     coupon.find({ merchantid: result[0].merchantid }).exec((err, data) => {
-                        console.log(data)
                         if (err) {
                             let response = api.apiresponse(true, 'error while finding data', 500, null)
                             reject(response)
@@ -111,6 +110,7 @@ let coupongen = (req, res) => {
                                     reject(response)
                                 } else {
                                     // let response = api.apiresponse(false, ' data is stored', 404, datainfo)
+                                    console.log(datainfo)
                                     resolve(datainfo)
                                 }
                             })
@@ -228,8 +228,6 @@ let editcoupon = (req, res) => {
                     let response = api.apiresponse(true, 'coupon is expired for this merchant', 400, null)
                     reject(response)
                 } else {
-                    // let couponcode = randomize('Aa0', 6)
-                    // let valid = 1
                     coupon.updateOne({ merchantid: req.headers.merchantid, valid: "1", couponcode: result[0].couponcode }, {
                         $set: {
                             startdate: req.body.startdate, enddate: req.body.enddate,
@@ -371,23 +369,7 @@ let getcouponfortrans = (req, res) => {
                     reject(response)
                 }
                 else {
-                    // // for (let i = 0; i < result.length; i++) {
-                    // //     if (result[i].valid == 1) {
-                    // //         logger.info('Coupon is fetched', 'valid coupon exist')
-                    // //         //  let response = api.apiresponse(false, 'coupon is fetched', 200, null)
-                    // //         resolve(result[i])
-                    // //         break;
-                    // //     } else if (result[i].valid == 0) {
-                    // //         console.log(result[i].valid)
-                    // //         logger.error('coupon is not valid', 'valid coupon doesn\'t exist', 10)
-                    // //         reject(result[i])
-                    // //         break;
-                    // //     }
-
-                    // }
                     resolve(result)
-
-
                 }
             })
 
