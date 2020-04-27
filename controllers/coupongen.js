@@ -5,12 +5,13 @@ const randomize = require('randomatic')
 // adding schema
 const model = require('./../models/Signup')
 const mongoose = require('mongoose')
+const logger = require('../libs/logger')
+const m = require('./../models/Merchantsignup')
 const merchant = mongoose.model('signupforusermerchant')
 const token = require('./../models/Merchantauthtoken')
 const mertoken = mongoose.model('merchantinfo')
 const c = require('./../models/Coupongen')
 const coupon = mongoose.model('coupons')
-const logger = require('../libs/logger')
 // adding empty check 
 const emptyCheck = require('./../libs/emptyCheck')
 //adding api response structure 
@@ -22,6 +23,7 @@ const event = require('events')
 const eventemiter = new event.EventEmitter();
 // importing jwt token lib
 const jwt = require('./../libs/jswt')
+const moment = require('moment')
 
 
 let coupongen = (req, res) => {
@@ -297,7 +299,7 @@ let deletecoupon = (req, res) => {
 
     let deletes = () => {
         return new Promise((resolve, reject) => {
-            coupon.find({ merchantid: req.headers.merchantid , valid : "1"}).exec((err, result) => {
+            coupon.find({ merchantid: req.headers.merchantid, valid: "1" }).exec((err, result) => {
                 if (err) {
                     logger.error('something went wrong during deletecoupon', 'deletecoupon:deletes()', 10)
                     let response = api.apiresponse(true, 'something went wrong during deletecoupon', 500, null)
@@ -306,7 +308,7 @@ let deletecoupon = (req, res) => {
                     logger.error('coupon exist didn\'t exist for this merchant', 'deletecoupon:deletes()', 10)
                     let response = api.apiresponse(true, 'coupon exist didn\'t exist for this merchant', 404, null)
                     reject(response)
-                } else{
+                } else {
                     coupon.update({ valid: "1" }, { $set: { valid: "0" } }).exec((error, data) => {
                         if (error) {
                             logger.error('something went wrong during updating valid 1 to 0', 'deletecoupon:update()', 10)
@@ -408,10 +410,65 @@ let getcoupon = (req, res) => {
 
 }
 
+// to purge merchant coupon on expire
+let purgecoupon = (req, res) => {
+
+    let deletecouponforpurge = () => {
+        return new Promise((resolve, reject) => {
+            let datetoday = moment().format('L')
+            coupon.find({ valid: "1" }).exec((err, result) => {
+                console.log(result)
+                if (err) {
+                    logger.error('cron service error at purge for merchant', 'deletecouponforpurge :purgecoupon()', 5)
+                    let response = api.apiresponse('cron service error at purge for merchant', 'deletecouponforpurge :purgecoupon()', 500, null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(result)) {
+                    logger.error('cron service error at purge for merchant received blank data', 'deletecouponforpurge :purgecoupon()', 5)
+                    let response = api.apiresponse('cron service error at purge for merchant received blank data', 'deletecouponforpurge :purgecoupon()', 500, null)
+                    reject(response)
+                } else {
+                    for (let i = 0; i < result.length; i++) {
+                        if (result[i].enddate == datetoday) {
+                            logger.info('cron servise updated for merchant', 'deletecouponforpurge()')
+                            coupon.updateMany({ valid: "1" }, { $set: { valid: "0" } }).exec((error, data) => {
+                                if (error) {
+                                    logger.error('cron service error at purge for merchant', 'deletecouponforpurge :purgecoupon()', 5)
+                                    let response = api.apiresponse(true, 'cron service error at purge for merchant', 'deletecouponforpurge :purgecoupon()', 500, null)
+                                    reject(response)
+                                } else if (emptyCheck.emptyCheck(data)) {
+                                    logger.error('cron service error at purge for merchant received blank data', 'deletecouponforpurge :purgecoupon()', 5)
+                                    let response = api.apiresponse(true, 'cron service error at purge for merchant received blank data', 'deletecouponforpurge :purgecoupon()', 404, null)
+                                    reject(response)
+                                } else {
+                                    logger.info('Cron service purge done for merchant ', 'deletecouponforpurge :purgecoupon() ')
+                                    resolve(data)
+                                }
+                            })
+                        }
+                    }
+
+                }
+            })
+        })
+    }
+
+    deletecouponforpurge(req, res).then((resolve) => {
+        logger.info('corn purge done for merchant', 'deletecouponforpurge')
+        let response = api.apiresponse(false, 'corn purge done for merchant', 200, null)
+        res.send(response)
+    }).catch((err)=>{
+        logger.error('error at corn purge for merchant','deletecouponforpurge',5)
+        let response = api.apiresponse(true,'error at corn purge for merchant',500,null)
+        console.log(err)
+        res.send(response)
+    })
+}
+
 module.exports = {
     coupongen: coupongen,
     editcoupon: editcoupon,
     deletecoupon: deletecoupon,
     getcoupon: getcoupon,
-    getcouponfortrans: getcouponfortrans
+    getcouponfortrans: getcouponfortrans,
+    purgecoupon:purgecoupon
 }

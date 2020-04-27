@@ -10,7 +10,16 @@ const middlewareOnStart = require('./middleware/errorOnInitial')
 const middlewareOnRoute = require('./middleware/errorOnRoutes')
 const cookieparser = require('cookie-parser')
 const bodyparser = require('body-parser')
+const empty = require('./libs/emptyCheck')
+const api = require('./libs/apiresponse')
 var cors = require('cors');
+const c = require('./models/Coupongen')
+const coupon = mongoose.model('coupons')
+const logger = require('./libs/logger')
+const crons = require('node-cron')
+const moment = require('moment')
+const timeZone = 'Asia/Calcutta'
+const purge = require('./controllers/coupongen')
 // app.use(cors({origin: 'http://localhost:4200'}));
 
 app.use(cookieparser())
@@ -23,12 +32,20 @@ app.use(bodyparser.json())
 app.use(middlewareOnStart.appOnstart)
 // adding listerner
 const server = http.createServer(app)
- server.listen(appconfigs.port)
+server.listen(appconfigs.port)
 // server.listen(process.env.PORT || 3000, function(){
 //     console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
 //   });
 server.on('error', onError)
 server.on('listening', onlisten)
+
+crons.schedule('0 1 * * *', () => {
+    console.log('running a task every minute')
+    purge.purgecoupon()
+    console.log('coupon purge done for merchant')
+
+})
+
 
 function onError(err) {
     if (err) {
@@ -37,17 +54,17 @@ function onError(err) {
     }
     switch (error.code) {
         case 'EACCES':
-          logger.error(error.code + ':elavated privileges required', 'serverOnErrorHandler', 10);
-          process.exit(1);
-          break;
+            logger.error(error.code + ':elavated privileges required', 'serverOnErrorHandler', 10);
+            process.exit(1);
+            break;
         case 'EADDRINUSE':
-          logger.error(error.code + ':port is already in use.', 'serverOnErrorHandler', 10);
-          process.exit(1);
-          break;
+            logger.error(error.code + ':port is already in use.', 'serverOnErrorHandler', 10);
+            process.exit(1);
+            break;
         default:
-          logger.error(error.code + ':some unknown error occured', 'serverOnErrorHandler', 10);
-          throw error;
-      }
+            logger.error(error.code + ':some unknown error occured', 'serverOnErrorHandler', 10);
+            throw error;
+    }
 }
 
 function onlisten() {
