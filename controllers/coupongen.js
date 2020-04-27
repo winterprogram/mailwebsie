@@ -36,32 +36,38 @@ let coupongen = (req, res) => {
             // console.log(data)
 
             mertoken.find({ merchantid: req.headers.merchantid }).exec((err, result) => {
-                // console.log(result[0].authtoken)
-                jwt.verifyToken(result[0].authtoken, ((error, userdata) => {
-                    // console.log(error)
-                    if (error) {
-                        let response = api.apiresponse(true, 'token expired please logout user', 503, error)
-                        // console.log(error)
-                        reject(response)
-                    } else if (emptyCheck.emptyCheck(userdata)) {
-                        let response = api.apiresponse(true, ' token can\'t be blank logout user', 500, null)
-                        reject(response)
-                    } else {
-                        let response = api.apiresponse(false, 'token stisfies the claim', 200, userdata)
-                        resolve(response)
-                    }
-                }
-                ))
-
-                if (err) {
-                    let response = api.apiresponse(true, ' some error at stage 1.1 verifyclaim', 503, null)
-                    reject(response)
-                } else if (emptyCheck.emptyCheck(result)) {
-                    let response = api.apiresponse(true, ' user not found', 400, null)
+                if (emptyCheck.emptyCheck(result)) {
+                    logger.error('auth token is empty', 'verifyclaim:coupongen()', 10)
+                    let response = api.apiresponse(true, 'auth token is empty', 404, null)
                     reject(response)
                 } else {
-                    let response = api.apiresponse(false, 'userfound', 200, result)
-                    resolve(response)
+                    // console.log(result[0].authtoken)
+                    jwt.verifyToken(result[0].authtoken, ((error, userdata) => {
+                        // console.log(error)
+                        if (error) {
+                            let response = api.apiresponse(true, 'token expired please logout user', 503, error)
+                            // console.log(error)
+                            reject(response)
+                        } else if (emptyCheck.emptyCheck(userdata)) {
+                            let response = api.apiresponse(true, ' token can\'t be blank logout user', 500, null)
+                            reject(response)
+                        } else {
+                            let response = api.apiresponse(false, 'token stisfies the claim', 200, userdata)
+                            resolve(response)
+                        }
+                    }
+                    ))
+
+                    if (err) {
+                        let response = api.apiresponse(true, ' some error at stage 1.1 verifyclaim', 503, null)
+                        reject(response)
+                    } else if (emptyCheck.emptyCheck(result)) {
+                        let response = api.apiresponse(true, ' user not found', 400, null)
+                        reject(response)
+                    } else {
+                        let response = api.apiresponse(false, 'userfound', 200, result)
+                        resolve(response)
+                    }
                 }
             })
         })
@@ -456,9 +462,9 @@ let purgecoupon = (req, res) => {
         logger.info('corn purge done for merchant', 'deletecouponforpurge')
         let response = api.apiresponse(false, 'corn purge done for merchant', 200, null)
         res.send(response)
-    }).catch((err)=>{
-        logger.error('error at corn purge for merchant','deletecouponforpurge',5)
-        let response = api.apiresponse(true,'error at corn purge for merchant',500,null)
+    }).catch((err) => {
+        logger.error('error at corn purge for merchant', 'deletecouponforpurge', 5)
+        let response = api.apiresponse(true, 'error at corn purge for merchant', 500, null)
         console.log(err)
         res.send(response)
     })
@@ -470,5 +476,5 @@ module.exports = {
     deletecoupon: deletecoupon,
     getcoupon: getcoupon,
     getcouponfortrans: getcouponfortrans,
-    purgecoupon:purgecoupon
+    purgecoupon: purgecoupon
 }
