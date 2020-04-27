@@ -141,6 +141,7 @@ let coupongen = (req, res) => {
                                     reject(response)
                                 } else {
                                     // let response = api.apiresponse(false, ' data is stored', 404, datainfo)
+                                    console.log(datainfo)
                                     resolve(datainfo)
                                 }
                             })
