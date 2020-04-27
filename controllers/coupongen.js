@@ -325,7 +325,7 @@ let deletecoupon = (req, res) => {
                     let response = api.apiresponse(true, 'coupon exist didn\'t exist for this merchant', 404, null)
                     reject(response)
                 } else {
-                    coupon.update({ valid: "1" }, { $set: { valid: "0" } }).exec((error, data) => {
+                    coupon.updateOne({ valid: "1", merchantid: req.headers.merchantid }, { $set: { valid: "0" } }).exec((error, data) => {
                         if (error) {
                             logger.error('something went wrong during updating valid 1 to 0', 'deletecoupon:update()', 10)
                             let response = api.apiresponse(true, 'something went wrong during updating valid 1 to 0', 500, null)
