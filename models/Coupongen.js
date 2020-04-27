@@ -31,6 +31,10 @@ let coupondata = new Schema({
     valid: {
         type: String,
         index: true
+    },
+    createdon:{
+        type:Date,
+        default:Date.now()
     }
 })
 

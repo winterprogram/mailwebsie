@@ -35,7 +35,7 @@ let verifyClaim = (token, cb) => {
         }
         else {
             console.log("user verified");
-             console.log(decoded);
+            //  console.log(decoded);
             cb(null, decoded);
         }
 

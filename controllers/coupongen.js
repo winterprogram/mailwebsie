@@ -88,7 +88,8 @@ let coupongen = (req, res) => {
                         if (err) {
                             let response = api.apiresponse(true, 'error while finding data', 500, null)
                             reject(response)
-                        } else if (emptyCheck.emptyCheck(data)) {
+                        }
+                        else if (emptyCheck.emptyCheck(data)) {
                             // let response = api.apiresponse(true, 'data is blank in 2 usergencoupon', 404, null)
                             let couponcode = randomize('Aa0', 6)
                             let valid = 1
@@ -178,41 +179,42 @@ let editcoupon = (req, res) => {
                     let response = api.apiresponse(true, 'auth token is empty', 404, null)
                     reject(response)
                 } else {
-                // console.log(result[0].authtoken)
-                jwt.verifyToken(result[0].authtoken, ((error, userdata) => {
-                    // console.log(error)
-                    if (error) {
-                        let response = api.apiresponse(true, 'token expired please logout user', 503, error)
+                    // console.log(result[0].authtoken)
+                    jwt.verifyToken(result[0].authtoken, ((error, userdata) => {
                         // console.log(error)
+                        if (error) {
+                            let response = api.apiresponse(true, 'token expired please logout user', 503, error)
+                            // console.log(error)
+                            reject(response)
+                        } else if (emptyCheck.emptyCheck(userdata)) {
+                            let response = api.apiresponse(true, ' token can\'t be blank logout user', 500, null)
+                            reject(response)
+                        } else {
+                            let response = api.apiresponse(false, 'token stisfies the claim', 200, userdata)
+                            resolve(response)
+                        }
+                    }
+                    ))
+
+                    if (err) {
+                        let response = api.apiresponse(true, ' some error at stage 1.1 verifyclaim', 503, null)
                         reject(response)
-                    } else if (emptyCheck.emptyCheck(userdata)) {
-                        let response = api.apiresponse(true, ' token can\'t be blank logout user', 500, null)
+                    } else if (emptyCheck.emptyCheck(result)) {
+                        let response = api.apiresponse(true, ' user not found', 400, null)
                         reject(response)
                     } else {
-                        let response = api.apiresponse(false, 'token stisfies the claim', 200, userdata)
+                        let response = api.apiresponse(false, 'userfound', 200, result)
                         resolve(response)
                     }
                 }
-                ))
-
-                if (err) {
-                    let response = api.apiresponse(true, ' some error at stage 1.1 verifyclaim', 503, null)
-                    reject(response)
-                } else if (emptyCheck.emptyCheck(result)) {
-                    let response = api.apiresponse(true, ' user not found', 400, null)
-                    reject(response)
-                } else {
-                    let response = api.apiresponse(false, 'userfound', 200, result)
-                    resolve(response)
-                }
-            }
             })
         })
     }
 
     let couponexist = () => {
         return new Promise((resolve, reject) => {
-            coupon.find({ merchantid: req.headers.merchantid }).exec((err, result) => {
+            coupon.find({ merchantid: req.headers.merchantid, valid: "1" }).exec((err, result) => {
+                console.log(result[0]._id)
                 if (err) {
                     logger.error('something went wrong during couponexist', 'couponexist:editcupon()', 10)
                     let response = api.apiresponse(true, 'something went wrong during couponexist', 500, null)
@@ -221,24 +223,21 @@ let editcoupon = (req, res) => {
                     logger.error('coupon exist didn\'t exist for this merchant', 'couponexist:editcupon()', 10)
                     let response = api.apiresponse(true, 'coupon exist didn\'t exist for this merchant', 404, null)
                     reject(response)
-                } else if (result.valid == 0) {
+                } else if (result[0].valid == 0) {
                     logger.error('coupon is expired for this merchant', 'couponexist:editcupon()', 10)
                     let response = api.apiresponse(true, 'coupon is expired for this merchant', 400, null)
                     reject(response)
-                } else if (result.couponcode) {
+                } else {
                     // let couponcode = randomize('Aa0', 6)
-                    let valid = 1
-                    let coupondata = new coupon({
-                        // merchantid: req.headers.merchantid,
-                        // couponcode: couponcode,
-                        startdate: req.body.startdate,
-                        enddate: req.body.enddate,
-                        discount: req.body.discount,
-                        faltdiscountupto: req.body.faltdiscountupto,
-                        valid: valid
-                    })
-
-                    coupondata.save((error, data) => {
+                    // let valid = 1
+                    coupon.updateOne({ merchantid: req.headers.merchantid, valid: "1", couponcode: result[0].couponcode }, {
+                        $set: {
+                            startdate: req.body.startdate, enddate: req.body.enddate,
+                            discount: req.body.discount,
+                            faltdiscountupto: req.body.faltdiscountupto,
+                        }
+                    }).exec((error, data) => {
+                        // console.log(error)
                         if (error) {
                             logger.error('error while saving coupon data', 'couponsave()', 10)
                             let response = api.apiresponse(true, 'error while saving coupon data', 400, null)
@@ -248,6 +247,7 @@ let editcoupon = (req, res) => {
                             let response = api.apiresponse(true, 'error edit coupon data can\'t be blank', 500, null)
                             reject(response)
                         } else {
+                            console.log(data)
                             logger.info('coupon edit saved successfully', 'couponsave()')
                             resolve(data)
                         }
@@ -282,34 +282,34 @@ let deletecoupon = (req, res) => {
                     reject(response)
                 } else {
 
-                jwt.verifyToken(result[0].authtoken, ((error, userdata) => {
+                    jwt.verifyToken(result[0].authtoken, ((error, userdata) => {
 
-                    if (error) {
-                        logger.error('token expired please logout user', 'merchantresetpass:verifyclaim()', 10)
-                        let response = api.apiresponse(true, 'token expired please logout user', 503, error)
+                        if (error) {
+                            logger.error('token expired please logout user', 'merchantresetpass:verifyclaim()', 10)
+                            let response = api.apiresponse(true, 'token expired please logout user', 503, error)
+                            reject(response)
+                        } else if (emptyCheck.emptyCheck(userdata)) {
+                            logger.error(' token can\'t be blank logout user', 'merchantresetpass:verifyclaim()', 10)
+                            let response = api.apiresponse(true, ' token can\'t be blank logout user', 500, null)
+                            reject(response)
+                        } else {
+                            let response = api.apiresponse(false, 'token satisfies the claim', 200, userdata)
+                            resolve(response)
+                        }
+                    }
+                    ))
+
+                    if (err) {
+                        let response = api.apiresponse(true, ' some error at stage 1.1 verifyclaim', 503, null)
                         reject(response)
-                    } else if (emptyCheck.emptyCheck(userdata)) {
-                        logger.error(' token can\'t be blank logout user', 'merchantresetpass:verifyclaim()', 10)
-                        let response = api.apiresponse(true, ' token can\'t be blank logout user', 500, null)
+                    } else if (emptyCheck.emptyCheck(result)) {
+                        let response = api.apiresponse(true, ' user not found', 400, null)
                         reject(response)
                     } else {
-                        let response = api.apiresponse(false, 'token satisfies the claim', 200, userdata)
+                        let response = api.apiresponse(false, 'userfound', 200, result)
                         resolve(response)
                     }
                 }
-                ))
-
-                if (err) {
-                    let response = api.apiresponse(true, ' some error at stage 1.1 verifyclaim', 503, null)
-                    reject(response)
-                } else if (emptyCheck.emptyCheck(result)) {
-                    let response = api.apiresponse(true, ' user not found', 400, null)
-                    reject(response)
-                } else {
-                    let response = api.apiresponse(false, 'userfound', 200, result)
-                    resolve(response)
-                }
-            }
             })
         })
     }
