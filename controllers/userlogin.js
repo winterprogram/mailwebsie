@@ -19,17 +19,18 @@ const event = require('events')
 const eventemiter = new event.EventEmitter();
 // importing jwt token lib
 const jwt = require('./../libs/jswt')
+const logger = require('./../libs/logger')
 
 let userlogin = (req, res) => {
 
     let mobileDigitCheck = () => {
         return new Promise((resolve, reject) => {
-            if (emptyCheck.emptyCheck(req.body.mobileNumber)) {
+            if (emptyCheck.emptyCheck(req.body.mobilenumber)) {
                 let apis = api.apiresponse(true, 'mobilenumber can\'t be empty', 400, null)
                 reject(apis)
             } else {
                 let regex = /^[0-9]{10}/
-                let mobile = req.body.mobileNumber
+                let mobile = req.body.mobilenumber
                 // console.log(mobile)
                 if (mobile.match(regex)) {
                     let response = api.apiresponse(false, 200, "mobileno passed the check", null)
@@ -48,7 +49,7 @@ let userlogin = (req, res) => {
 
     let userLoginFinal = () => {
         return new Promise((resolve, reject) => {
-            signup.find({ mobileNumber: req.body.mobileNumber }).exec((err, data) => {
+            signup.find({ mobilenumber: req.body.mobilenumber }).exec((err, data) => {
                 // console.log(data[0].password)
                 if (err) {
                     let apis = api.apiresponse(true, 'error at last stage ', 500, null)
@@ -71,8 +72,8 @@ let userlogin = (req, res) => {
                             reject(apis)
                         }
                         else {
-                            let apis = api.apiresponse(false, 'password  match', 200, data)
-                            resolve(apis)
+                            // let apis = api.apiresponse(false, 'password  match', 200, data)
+                            resolve(data)
                         }
                     }))
                 }
@@ -81,6 +82,52 @@ let userlogin = (req, res) => {
         }
         )
     }
+    let checkforboolen = (data) => {
+
+        return new Promise((resolve, reject) => {
+            if (data[0].submitedpriority == false) {
+                logger.error('ask user to submit category list', 'checkforboolen()', 5)
+                let response = api.apiresponse(true, 'ask user to submit category list', 500, null)
+                reject(response)
+            } else {
+                signup.find({ mobilenumber: req.body.mobilenumber }).exec((error, dataforcategory) => {
+                    if (error) {
+                        logger.error('something went wrong while finding user', 'checkforboolen()', 5)
+                        let response = api.apiresponse(true, 'something went wrong while finding user : checkforboolen()', 500, null)
+                        reject(response)
+                    } else if (emptyCheck.emptyCheck(dataforcategory)) {
+                        logger.error('something went wrong user is blank', 'checkforboolen()', 5)
+                        let response = api.apiresponse(true, 'something went wrong user is blank', 404, null)
+                        reject(response)
+                    } else {
+                        logger.info('data is not blank', 'checkforboolen()')
+                        signup.updateOne({ mobilenumber: req.body.mobilenumber },
+                            {
+                                $set:
+                                {
+                                    submitedpriority: req.body.submitedpriority, categoryselected: req.body.categoryselected
+                                }
+                            }).exec((error, result) => {
+                                if (error) {
+                                    logger.error('something went wrong while finding user', 'checkforboolen()', 5)
+                                    let response = api.apiresponse(true, 'something went wrong while finding user : checkforboolen()', 500, null)
+                                    reject(response)
+                                } else if (emptyCheck.emptyCheck(result)) {
+                                    logger.error('something went wrong user is blank', 'checkforboolen()', 5)
+                                    let response = api.apiresponse(true, 'something went wrong user is blank', 404, null)
+                                    reject(response)
+                                }else{
+
+                                    resolve(result)
+                                }
+                            })
+                    }
+                })
+            }
+        })
+
+    }
+
     let jwtTokengen = (userData) => {
         return new Promise((resolve, reject) => {
             jwt.generateToken(userData, ((err, result) => {
@@ -115,9 +162,9 @@ let userlogin = (req, res) => {
                             resolve(a)
                         }
                     })
-                   
+
                     resolve(result)
-                    
+
                 }
             }))
         })
@@ -126,15 +173,15 @@ let userlogin = (req, res) => {
 
 
 
-    mobileDigitCheck(req, res).then(userLoginFinal).then(jwtTokengen).then((resolve) => {
-         console.log(resolve.userData)
+    mobileDigitCheck(req, res).then(userLoginFinal).then(checkforboolen).then(jwtTokengen).then((resolve) => {
+        console.log(resolve.userData)
         // resolve.userData
         resolve.userData._id = undefined
         resolve.userData.password = undefined
         resolve.userData.createdon = undefined
         resolve.userData.__v = undefined
         resolve.userData.dob = undefined
-        // resolve.mobileNumber = undefined
+        // resolve.mobilenumber = undefined
         // resolve.email = undefined
         resolve.userData.city = undefined
 

@@ -8,11 +8,11 @@ const userSignup = new Schema({
         default: 'default001',
         index: true
     },
-    fullName: {
+    fullname: {
         type: String,
         default: ''
     },
-    mobileNumber: {
+    mobilenumber: {
         type: String,
         default: ''
     },
@@ -31,6 +31,13 @@ const userSignup = new Schema({
     gender: {
         type: String
     },
+    submitedpriority: {
+        type: Boolean,
+        default: false
+    },
+    categoryselected: {
+        type: Array
+    },
     valid: {
         type: String,
         index: true
@@ -38,8 +45,8 @@ const userSignup = new Schema({
     dob: {
         type: String,
     },
-    createdon:{
-        type:Date
+    createdon: {
+        type: Date
     }
 })
 

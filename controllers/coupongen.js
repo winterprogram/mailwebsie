@@ -437,7 +437,7 @@ let purgecoupon = (req, res) => {
                         let b = a.split("-")
                         let c = (Number(b[0]) + 1).toString()
                         let enddate = `${c}-${b[1]}-${b[2]}`
-                        console.log(enddate)
+                        // console.log(result)
                         if (enddate == datetoday) {
                             logger.info('cron servise updated for merchant', 'deletecouponforpurge()')
                             coupon.updateMany({ valid: "1", enddate: result[i].enddate }, { $set: { valid: "0" } }).exec((error, data) => {
