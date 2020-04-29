@@ -22,7 +22,6 @@ const jwt = require('./../libs/jswt')
 const logger = require('./../libs/logger')
 
 let userlogin = (req, res) => {
-
     let mobileDigitCheck = () => {
         return new Promise((resolve, reject) => {
             if (emptyCheck.emptyCheck(req.body.mobilenumber)) {
@@ -45,7 +44,6 @@ let userlogin = (req, res) => {
 
         })
     }
-
 
     let userLoginFinal = () => {
         return new Promise((resolve, reject) => {
@@ -71,9 +69,12 @@ let userlogin = (req, res) => {
                             let apis = api.apiresponse(true, 'User doesn\'t have rights to access', 503, null)
                             reject(apis)
                         }
-                        else {
-                            // let apis = api.apiresponse(false, 'password  match', 200, data)
-                            resolve(data)
+                        else if (result == true) {
+                            let apis = api.apiresponse(false, 'password  match', 200, data)
+                            resolve(apis)
+                        } else {
+                            let apis = api.apiresponse(true, 'password didn\'t match / wrong password', 404, null)
+                            reject(apis)
                         }
                     }))
                 }
