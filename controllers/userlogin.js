@@ -87,7 +87,7 @@ let userlogin = (req, res) => {
         return new Promise((resolve, reject) => {
             if (data[0].submitedpriority == false) {
                 logger.error('ask user to submit category list', 'checkforboolen()', 5)
-                let response = api.apiresponse(true, 'ask user to submit category list', 500, null)
+                let response = api.apiresponse(true, 'ask user to submit category list', 500, data)
                 reject(response)
             } else {
                 signup.find({ mobilenumber: req.body.mobilenumber }).exec((error, dataforcategory) => {
