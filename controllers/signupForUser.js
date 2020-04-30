@@ -145,6 +145,7 @@ let userData = (req, res) => {
                         zipcode: req.body.zipcode,
                         gender: req.body.gender,
                         valid: valid,
+                        categoryselected: req.body.categoryselected,
                         dob: req.body.dob,
                         createdon: Date.now()
                     })

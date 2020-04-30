@@ -31,10 +31,10 @@ const userSignup = new Schema({
     gender: {
         type: String
     },
-    submitedpriority: {
-        type: Boolean,
-        default: false
-    },
+    // submitedpriority: {
+    //     type: Boolean,
+    //     default: false
+    // },
     categoryselected: {
         type: Array
     },
