@@ -65,11 +65,11 @@ let merchantData = (req, res) => {
     // basic check
     let firstCheckEmail = () => {
         return new Promise((resolve, reject) => {
-            
+
             let regex = /^[a-zA-z]+\W?\w+\W+[a-z]+\W+\w+/
             // console.log(req.body.email)
             if ((req.body.email).match(regex)) {
-                logger.info('','')
+                logger.info('', '')
                 let response = api.apiresponse(false, 200, "Email passed the check", null)
                 // console.log(req.body.fullname)
                 resolve(response)
@@ -102,7 +102,7 @@ let merchantData = (req, res) => {
     let mobilenoCheck = () => {
         return new Promise((resolve, reject) => {
             merchant.find({ mobilenumber: req.body.mobilenumber }).exec((err, result) => {
-                console.log(req.body.Category)
+                // console.log(req.body.Category)
                 if (err) {
                     let response = api.apiresponse(true, 500, 'something went wrong while checking mobile number', null)
                     reject(response)
@@ -119,7 +119,7 @@ let merchantData = (req, res) => {
                         let response = api.apiresponse(true, 500, 'mobileno doesn\'t pass', null)
                         reject(response)
                     }
-                } 
+                }
                 else {
                     let response = api.apiresponse(true, 500, 'user already exist', err)
                     reject(response)
@@ -136,7 +136,7 @@ let merchantData = (req, res) => {
             merchant.find({ email: req.body.email }).exec((err, data) => {
                 // console.log(data)
                 if (err) {
-                    logger.error('omething went wrong while creating user during inital stage','savedata() for merchant',10)
+                    logger.error('omething went wrong while creating user during inital stage', 'savedata() for merchant', 10)
                     let response = api.apiresponse(true, 500, 'something went wrong while creating user during inital stage', null)
                     reject(response)
                 } else if (emptyCheck.emptyCheck(data)) {
@@ -151,6 +151,8 @@ let merchantData = (req, res) => {
                         email: (req.body.email),
                         city: req.body.city,
                         zipcode: req.body.zipcode,
+                        latitude:req.body.latitude,
+                        longitude:req.body.longitude,
                         shopname: req.body.shopname,
                         address: req.body.address,
                         geolocation: req.body.geolocation,
@@ -161,16 +163,17 @@ let merchantData = (req, res) => {
                     userinfo.save((err, result) => {
                         // console.log(result)
                         if (err) {
-                            logger.error('failed to create a new user','savedata() for merchant',10)
+                            logger.error('failed to create a new user', 'savedata() for merchant', 10)
                             let response = api.apiresponse(true, 500, 'failed to create a new user', err)
                             reject(response)
                         } else if (emptyCheck.emptyCheck(result)) {
-                            logger.error('blank data received','savedata() for merchant',10)
+                            logger.error('blank data received', 'savedata() for merchant', 10)
                             let response = api.apiresponse(true, 404, 'blank data received', null)
                             reject(response)
                         } else {
-                            resolve(result)
-                            console.log(result)
+
+                         resolve(result)
+                           
                         }
                     })
                 } else {
@@ -182,10 +185,10 @@ let merchantData = (req, res) => {
     }
 
     firstCheckEmail(req, res).then(mobilenoCheck).then(savedata).then((resolve) => {
-        console.log(resolve)
+        // console.log(resolve)
         // let email = resolve.email
         // addtimeout as per the email api call limit 
-        logger.info('user registered','user registered')
+        logger.info('user registered', 'user registered')
         setTimeout(() => {
             eventemiter.emit('welcomemail', ((resolve.email).toString()))
         }, 1000)

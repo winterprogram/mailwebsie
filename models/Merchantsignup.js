@@ -29,9 +29,11 @@ const merchant = new Schema({
     address: {
         type: String
     },
-    geolocation: {
-        type: Array,
-        index: true
+    latitude: {
+        type: String
+    },
+    longitude: {
+        type: String
     },
     zipcode: {
         type: String,
