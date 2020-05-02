@@ -50,7 +50,9 @@ let userMerchantDisplay = (req, res) => {
     let calculateDistance = (resultobject) => {
         return new Promise((resolve, reject) => {
             let userlatitude = req.headers.userlatitude;
-            let userlongitude = req.headers.userlongitude;
+             let userlongitude = req.headers.userlongitude;
+            // let userlongitude = 
+            // let userlatitude =
             // let origins = ['40.7421', '-73.9914']
             let destinations = [];
             let listofmerchant = [];
@@ -85,7 +87,7 @@ let userMerchantDisplay = (req, res) => {
         res.send(response)
     }).catch((err) => {
         logger.error('no user found', 'getallmerchants:userMerchantDisplay()', 10)
-        let response = api.apiresponse(true, 500, 'no user found', err)
+        let response = api.apiresponse(true, 500, 'no merchant found near your', err)
         res.send(response)
 
     })
