@@ -19,11 +19,11 @@ let routes = (app) => {
     /**
      * @apiGroup user dashboard
      * @apiVersion 0.0.1
-     * @api {post} /formaps api to calculate distance between user and merchant
+     * @api {get} /formaps api to calculate distance between user and merchant
      * 
-     * @apiParam {string} userlatitude Current latitude of the user. (body params)(required)
-     * @apiParam {string} userlongitude Current longitude of the user. (body params)(required)
-     * @apiParam {string} email Email of user. (body params)(required)
+     * @apiParam {string} userlatitude Current latitude of the user. (header params)(required)
+     * @apiParam {string} userlongitude Current longitude of the user. (header params)(required)
+     * @apiParam {string} city City of the merchant. (header params)(required)
      *  
      * @apiSuccess {object}  API Response shows error status, message, http status code and result.
      * 

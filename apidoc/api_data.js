@@ -2,7 +2,7 @@ define({ "api": [
   {
     "group": "user_dashboard",
     "version": "0.0.1",
-    "type": "post",
+    "type": "get",
     "url": "/formaps",
     "title": "api to calculate distance between user and merchant",
     "parameter": {
@@ -13,21 +13,21 @@ define({ "api": [
             "type": "string",
             "optional": false,
             "field": "userlatitude",
-            "description": "<p>Current latitude of the user. (body params)(required)</p>"
+            "description": "<p>Current latitude of the user. (header params)(required)</p>"
           },
           {
             "group": "Parameter",
             "type": "string",
             "optional": false,
             "field": "userlongitude",
-            "description": "<p>Current longitude of the user. (body params)(required)</p>"
+            "description": "<p>Current longitude of the user. (header params)(required)</p>"
           },
           {
             "group": "Parameter",
             "type": "string",
             "optional": false,
-            "field": "email",
-            "description": "<p>Email of user. (body params)(required)</p>"
+            "field": "city",
+            "description": "<p>City of the merchant. (header params)(required)</p>"
           }
         ]
       }
@@ -63,6 +63,6 @@ define({ "api": [
     },
     "filename": "routes/userManage.js",
     "groupTitle": "user_dashboard",
-    "name": "PostFormaps"
+    "name": "GetFormaps"
   }
 ] });

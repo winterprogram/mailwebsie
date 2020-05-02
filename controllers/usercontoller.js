@@ -27,14 +27,14 @@ let userMerchantDisplay = (req, res) => {
 
     let getallmerchants = () => {
         return new Promise((resolve, reject) => {
-            merchant.find({}).lean().exec((err, result) => {
+            merchant.find({city:req.headers.city}).lean().exec((err, result) => {
                 if (err) {
                     logger.error('error while fetching merchant data', 'getallmerchants:userMerchantDisplay()', 10)
                     let response = api.apiresponse(true, 500, 'error while fetching merchant data', null)
                     reject(response)
                 } else if (emptyCheck.emptyCheck(result)) {
-                    logger.error('no user found', 'getallmerchants:userMerchantDisplay()', 10)
-                    let response = api.apiresponse(true, 500, 'no user found', null)
+                    logger.error(`no user found ${req.headers.city}`, 'getallmerchants:userMerchantDisplay()', 10)
+                    let response = api.apiresponse(true, 500, `no user found ${req.headers.city}`, null)
                     reject(response)
                 } else {
                     logger.info('user fetched', 'getallmerchants:userMerchantDisplay()')
