@@ -87,7 +87,7 @@ let userMerchantDisplay = (req, res) => {
         res.send(response)
     }).catch((err) => {
         logger.error('no user found', 'getallmerchants:userMerchantDisplay()', 10)
-        let response = api.apiresponse(true, 500, 'no merchant found near your', err)
+        let response = api.apiresponse(true, 500, 'no merchant found near your location', err)
         res.send(response)
 
     })
