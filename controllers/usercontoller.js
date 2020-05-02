@@ -20,7 +20,7 @@ const event = require('events')
 const eventemiter = new event.EventEmitter();
 // importing jwt token lib
 const jwt = require('./../libs/jswt')
-const geolib = require('geolib');
+const distance = require('google-distance-matrix');
 
 let userMerchantDisplay = (req, res) => {
 
@@ -38,7 +38,7 @@ let userMerchantDisplay = (req, res) => {
                 } else {
                     logger.info('user fetched', 'getallmerchants:userMerchantDisplay()')
                     let resultobject = Object(result)
-                    // console.log(resultobject)
+                    //  console.log(resultobject)
                     resolve(resultobject)
                 }
 
@@ -48,16 +48,48 @@ let userMerchantDisplay = (req, res) => {
 
     let calculateDistance = (resultobject) => {
         return new Promise((resolve, reject) => {
-            let userdistance = req.headers.useruserdistance
-            for (let i = 0; i < resultobject.length; i++) {    
-                geolib.getDistance(userdistance, {
-                    latitude: resultobject[i].latitude,
-                    longitude: resultobject[i].longitude,
-                })
-            } 
-            resolve()
+            // let origins = req.headers.userlocation;
+            let origins = ['40.7421,-73.9914']
+            let destinations = [];
+            for (let i = 0; i < resultobject.length; i++) {
+                destinations.push(resultobject[i].latitude, resultobject[i].longitude)
+            }
+            console.log(destinations)
+            distance.key('AIzaSyD4hyiaqk7NwtO04lEliHoMvS1Y2uNpskE');
+            distance.units('imperial');
+            distance.matrix(origins, destinations, function (err, distance) {
+                 console.log(distance.status)
+                if (err) {
+                    console.log(err)
+                    logger.error('error while calculating distance', 'calculateDistance:userMerchantDisplay()', 10)
+                    let response = api.apiresponse(true, 500, 'error while calculating distance', null)
+                    reject(response)
+                } else if (!distance) {
+                    console.log(distance)
+                    console.log('no distances');
+                    logger.error('error no distances', 'calculateDistance:userMerchantDisplay()', 10)
+                    let response = api.apiresponse(true, 404, 'no distances', null)
+                    reject(response)
+                } else if (distance.status == 'OK') {
+                    console.log(distance.status)
+                    for (var i = 0; i < origins.length; i++) {
+                        for (var j = 0; j < destinations.length; j++) {
+                            var origin = distances.origin_addresses[i];
+                            var destination = distances.destination_addresses[j];
+                            if (distances.rows[0].elements[j].status == 'OK') {
+                                var distance = distances.rows[i].elements[j].distance.text;
+                                (console.log('Distance from ' + origin + ' to ' + destination + ' is ' + distance));
+                                resolve(distance)
+                            } else {
+                                (console.log(destination + ' is not reachable by land from ' + origin));
+                                reject(origin)
+                            }
+                        }
+                    }
+                }
+            })
         })
-       
+
     }
     getallmerchants(req, res).then(calculateDistance).then((resolve) => {
         logger.info('user fetched', 'getallmerchants:userMerchantDisplay()')
