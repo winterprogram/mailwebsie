@@ -61,7 +61,7 @@ let userMerchantDisplay = (req, res) => {
                 logger.info('pusing done for destination stage -1', 'calculateDistance:userMerchantDisplay()')
                 let userdistance = (geolib.getDistance(
                     { latitude: Number(userlatitude), longitude: Number(userlongitude) },
-                    { latitude: Number(destinations[0]), longitude: Number(destinations[0]) }
+                    { latitude: Number(destinations[0]), longitude: Number(destinations[1]) }
                 )) * 0.001
                 console.log(userdistance)
                 if (userdistance <= 15) {
