@@ -19,41 +19,43 @@ let routes = (app) => {
     /**
      * @apiGroup user dashboard
      * @apiVersion 0.0.1
-     * @api {post} /formaps api to calculate distance  formaps
+     * @api {post} /formaps api to calculate distance between user and merchant
      * 
-     * @apiParam {string} firstName First Name of user. (body params)(required)
-     * @apiParam {string} lastName Last Name of user. (body params)(required)
+     * @apiParam {string} userlatitude Current latitude of the user. (body params)(required)
+     * @apiParam {string} userlongitude Current longitude of the user. (body params)(required)
      * @apiParam {string} email Email of user. (body params)(required)
-     * @apiParam {number} mobileNumber Mobile Number of user. (body params)(required)
-     * @apiParam {string} countryName Country Name of user. (body params)(required)
-     * @apiParam {boolean} isAdmin boolean value either true/false. (body params)(required)
-     * @apiParam {string} password Password of user. (body params)(required)
-     * 
-     * @apiSuccess {object}  API Response shows error status, message, http status code, result.
+     *  
+     * @apiSuccess {object}  API Response shows error status, message, http status code and result.
      * 
      * @apiSuccessExample {object} Success-Response:
      * {
-      "error": false,
-      "message": "User created",
-      "status": 200,
-      "data": {
-          "countryCode": 91
-          "countryName": "IN"
-          "createdOn": "2020-04-22T20:55:36.000Z"
-          "email": "chakladar.sandeep@gmail.com"
-          "firstName": "Sandy"
-          "isAdmin": false
-          "lastName": "c"
-          "mobileNumber": 9922559922    
-          "userId": "Xk1Ll0"
-          "__v": 0
-          "_id": "5ea0af48a3754b0770171c78"
-      }
-  }
+    "error": false,
+    "message": 200,
+    "status": "user fetched",
+    "data": [
+        {
+            "_id": "5ead99102588643510ebba03",
+            "merchantid": "rKGFlO",
+            "fullname": "orion mall",
+            "mobilenumber": "9167162010",
+            "password": "$2b$10$z8IhiuCs3p3j87YMpLbcruOCj6lOWZEmPtaa0FwegIlm8E8SdKpGa",
+            "email": "chakladar.sandeep@gmail.com",
+            "city": "mumbai",
+            "zipcode": "410206",
+            "latitude": "18.993292",
+            "longitude": "73.115773",
+            "address": "yudeguye",
+            "category": "test",
+            "valid": "1",
+            "createdon": "2020-05-02T16:00:16.348Z",
+            "__v": 0
+        }
+    ]
+}
      * @apiErrorExample Error-Response:
       { 
        "error": true,
-       "message": "error while saving data",
+       "message": "no merchant found near your location",
        "status": 500,
        "data": null
         }

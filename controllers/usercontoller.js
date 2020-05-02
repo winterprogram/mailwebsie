@@ -50,27 +50,25 @@ let userMerchantDisplay = (req, res) => {
     let calculateDistance = (resultobject) => {
         return new Promise((resolve, reject) => {
             let userlatitude = req.headers.userlatitude;
-             let userlongitude = req.headers.userlongitude;
-            // let userlongitude = 
-            // let userlatitude =
-            // let origins = ['40.7421', '-73.9914']
-            let destinations = [];
+            let userlongitude = req.headers.userlongitude;
             let listofmerchant = [];
             for (let i = 0; i < resultobject.length; i++) {
-                destinations.push(resultobject[i].latitude, resultobject[i].longitude)
+                // destinations.push(resultobject[i].latitude, resultobject[i].longitude)
                 logger.info('pusing done for destination stage -1', 'calculateDistance:userMerchantDisplay()')
                 let userdistance = (geolib.getDistance(
-                    { latitude: Number(userlatitude), longitude: Number(userlongitude) },
-                    { latitude: Number(destinations[0]), longitude: Number(destinations[1]) }
+                    { latitude: Number(userlatitude), longitude: Number(userlongitude)},
+                    { latitude: Number(resultobject[i].latitude), longitude: Number(resultobject[i].longitude) }
                 )) * 0.001
                 console.log(userdistance)
                 if (userdistance <= 15) {
+                    console.log(resultobject[i])
                     logger.info('merchant destination is less than 15 Km', 'calculateDistance:userMerchantDisplay()')
-                    listofmerchant.push(resultobject)
+                    listofmerchant.push(resultobject[i])
                 } else {
                     logger.error('merchant is far >15 Km', 'calculateDistance:userMerchantDisplay()', 10)
                 }
-            } console.log(listofmerchant)
+            }
+            // console.log(listofmerchant)
             if (emptyCheck.emptyCheck(listofmerchant)) {
                 logger.error('merchant is far >15 Km', 'calculateDistance:userMerchantDisplay()', 10)
                 reject(listofmerchant)
@@ -87,7 +85,7 @@ let userMerchantDisplay = (req, res) => {
         res.send(response)
     }).catch((err) => {
         logger.error('no user found', 'getallmerchants:userMerchantDisplay()', 10)
-        let response = api.apiresponse(true, 500, 'no merchant found near your location', err)
+        let response = api.apiresponse(true, 500, 'no merchant found near your location', null)
         res.send(response)
 
     })
