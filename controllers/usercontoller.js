@@ -21,6 +21,7 @@ const eventemiter = new event.EventEmitter();
 // importing jwt token lib
 const jwt = require('./../libs/jswt')
 const distance = require('google-distance-matrix');
+const geolib = require('geolib');
 
 let userMerchantDisplay = (req, res) => {
 
@@ -48,52 +49,38 @@ let userMerchantDisplay = (req, res) => {
 
     let calculateDistance = (resultobject) => {
         return new Promise((resolve, reject) => {
-            // let origins = req.headers.userlocation;
-            let origins = ['40.7421,-73.9914']
+            let origins = req.headers.userlocation;
+            // let origins = ['40.7421', '-73.9914']
             let destinations = [];
+            let listofmerchant = [];
             for (let i = 0; i < resultobject.length; i++) {
                 destinations.push(resultobject[i].latitude, resultobject[i].longitude)
-            }
-            console.log(destinations)
-            distance.key('AIzaSyD4hyiaqk7NwtO04lEliHoMvS1Y2uNpskE');
-            distance.units('imperial');
-            distance.matrix(origins, destinations, function (err, distance) {
-                 console.log(distance.status)
-                if (err) {
-                    console.log(err)
-                    logger.error('error while calculating distance', 'calculateDistance:userMerchantDisplay()', 10)
-                    let response = api.apiresponse(true, 500, 'error while calculating distance', null)
-                    reject(response)
-                } else if (!distance) {
-                    console.log(distance)
-                    console.log('no distances');
-                    logger.error('error no distances', 'calculateDistance:userMerchantDisplay()', 10)
-                    let response = api.apiresponse(true, 404, 'no distances', null)
-                    reject(response)
-                } else if (distance.status == 'OK') {
-                    console.log(distance.status)
-                    for (var i = 0; i < origins.length; i++) {
-                        for (var j = 0; j < destinations.length; j++) {
-                            var origin = distances.origin_addresses[i];
-                            var destination = distances.destination_addresses[j];
-                            if (distances.rows[0].elements[j].status == 'OK') {
-                                var distance = distances.rows[i].elements[j].distance.text;
-                                (console.log('Distance from ' + origin + ' to ' + destination + ' is ' + distance));
-                                resolve(distance)
-                            } else {
-                                (console.log(destination + ' is not reachable by land from ' + origin));
-                                reject(origin)
-                            }
-                        }
-                    }
+                logger.info('pusing done for destination stage -1', 'calculateDistance:userMerchantDisplay()')
+                let userdistance = (geolib.getDistance(
+                    { latitude: Number(origins[0]), longitude: Number(origins[0]) },
+                    { latitude: Number(destinations[0]), longitude: Number(destinations[0]) }
+                )) * 0.001
+                console.log(userdistance)
+                if (userdistance <= 15) {
+                    logger.info('merchant destination is less than 15 Km', 'calculateDistance:userMerchantDisplay()')
+                    listofmerchant.push(resultobject)
+                } else {
+                    logger.error('merchant is far >15 Km', 'calculateDistance:userMerchantDisplay()', 10)
                 }
-            })
+            } console.log(listofmerchant)
+            if (emptyCheck.emptyCheck(listofmerchant)) {
+                logger.error('merchant is far >15 Km', 'calculateDistance:userMerchantDisplay()', 10)
+                reject(listofmerchant)
+
+            } else {
+                resolve(listofmerchant)
+            }
         })
 
     }
     getallmerchants(req, res).then(calculateDistance).then((resolve) => {
         logger.info('user fetched', 'getallmerchants:userMerchantDisplay()')
-        let response = api.apiresponse(false, 200, 'no user found', resolve)
+        let response = api.apiresponse(false, 200, 'user fetched', resolve)
         res.send(response)
     }).catch((err) => {
         logger.error('no user found', 'getallmerchants:userMerchantDisplay()', 10)
