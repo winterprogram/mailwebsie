@@ -49,7 +49,8 @@ let userMerchantDisplay = (req, res) => {
 
     let calculateDistance = (resultobject) => {
         return new Promise((resolve, reject) => {
-            let origins = req.headers.userlocation;
+            let userlatitude = req.headers.userlatitude;
+            let userlongitude = req.headers.userlongitude;
             // let origins = ['40.7421', '-73.9914']
             let destinations = [];
             let listofmerchant = [];
@@ -57,7 +58,7 @@ let userMerchantDisplay = (req, res) => {
                 destinations.push(resultobject[i].latitude, resultobject[i].longitude)
                 logger.info('pusing done for destination stage -1', 'calculateDistance:userMerchantDisplay()')
                 let userdistance = (geolib.getDistance(
-                    { latitude: Number(origins[0]), longitude: Number(origins[0]) },
+                    { latitude: Number(userlatitude), longitude: Number(userlongitude) },
                     { latitude: Number(destinations[0]), longitude: Number(destinations[0]) }
                 )) * 0.001
                 console.log(userdistance)
