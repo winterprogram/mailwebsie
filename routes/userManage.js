@@ -67,14 +67,14 @@ let routes = (app) => {
     app.post('/merchantSignup', merchantData.merchantData)
     app.post('/merchantlogin', merchantlogin.merchantlogin)
     //image upload 
-    app.post('/imageupload', merchantImageUpload.uploadFile)
+     app.post('/imageupload', merchantImageUpload.getPresignedUrl)
     // reset password
     app.put('/resetpassmerchant', merchantlogin.merchantresetpass)
 
     // merchant coupon code gen
     app.post('/code', coupongen.coupongen)
     // merchant coupon edit
-    app.put('/couponedit/:merchantid', coupongen.editcoupon)
+    app.put('/couponedit', coupongen.editcoupon)
     //merchant delete coupon
     app.put('/deletecoupon', coupongen.deletecoupon)
     // get coupon details for transaction section
