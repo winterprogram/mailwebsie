@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
-const ID = 'AKIAIPE3U6XL533OF4GQ';
-const SECRET = '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';
+const ID = '';
+const SECRET = '';
 const BUCKET_NAME = 'merchantimagesfortimeline';
 // const fs = require('fs');
 // const merchant = mongoose.model('signupforusermerchant')
@@ -13,7 +13,7 @@ const s3 = new AWS.S3({
 
 let uploadFile= (req, res)=> {
     // let folder = (req.user.username + "/");
-    let folder = req.headers.key
+    let folder = req.headers.key;
     const file = (req.body.imageUpload);
     const params = {
       Bucket: BUCKET_NAME,
