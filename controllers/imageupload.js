@@ -1,3 +1,4 @@
+
 const AWS = require('aws-sdk');
 const ID = '';
 const SECRET = '';
@@ -8,7 +9,9 @@ const BUCKET_NAME = 'merchantimagesfortimeline';
 
 const s3 = new AWS.S3({
     accessKeyId: ID,
-    secretAccessKey: SECRET
+    secretAccessKey: SECRET,
+    region: "ap-south-1",
+    signatureVersion: "v4",
 });
 
 
@@ -18,7 +21,8 @@ const getPresignedUrl = (req, res) => {
     let s3Params = {
         Bucket: BUCKET_NAME,
         Key: req.headers.key,
-        ContentType: "image",
+        ContentType: "image/jpeg",
+        Expires: 60 * 60,
         ACL: "public-read",
       };
       s3.getSignedUrl("putObject", s3Params, (err, data) => {
