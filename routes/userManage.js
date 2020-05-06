@@ -7,6 +7,7 @@ const coupongen = require('./../controllers/coupongen')
 const merchantlogin = require('./../controllers/userloginMerchant')
 const admin = require('../controllers/admin')
 const usercontroller = require('./../controllers/usercontoller')
+const merchantImageUpload = require('./../controllers/imageupload')
 
 let routes = (app) => {
     // user signup and login
@@ -65,6 +66,8 @@ let routes = (app) => {
 
     app.post('/merchantSignup', merchantData.merchantData)
     app.post('/merchantlogin', merchantlogin.merchantlogin)
+    //image upload 
+    app.post('/imageupload', merchantImageUpload.uploadFile)
     // reset password
     app.put('/resetpassmerchant', merchantlogin.merchantresetpass)
 
