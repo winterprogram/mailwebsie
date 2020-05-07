@@ -26,6 +26,13 @@ const merchant = new Schema({
     city: {
         type: String
     },
+    imageuploaded: {
+        type: Boolean,
+        default: false
+    },
+    imagecount: {
+        type: String
+    },
     address: {
         type: String
     },

@@ -69,7 +69,8 @@ let merchantlogin = (req, res) => {
                         if (error) {
                             let apis = api.apiresponse(true, 'Something went wrong', 500, null)
                             reject(apis)
-                        } else if ((data[0].valid == 0)) {
+                        }
+                        else if ((data[0].valid == 0)) {
                             let apis = api.apiresponse(true, 'Merchant doesn\'t have right\'s to access', 503, null)
                             reject(apis)
                         }
@@ -86,6 +87,58 @@ let merchantlogin = (req, res) => {
 
         }
         )
+    }
+
+    let imageUploadCheck = () => {
+        return new Promise((resolve, reject) => {
+            merchant.find({ mobilenumber: req.body.mobilenumber }).exec((err, data) => {
+                // console.log(data[0].password)
+                if (err) {
+                    let apis = api.apiresponse(true, 'error at last stage ', 500, null)
+                    // send user to signup 
+                    reject(apis)
+                } else if (emptyCheck.emptyCheck(data)) {
+                    let apis = api.apiresponse(true, 'mobienumber doesn\'t exist please login ', 500, null)
+                    // send user to signup 
+                    reject(apis)
+                }
+                else if (data[0].imageuploaded == false) {
+                    logger.error('images are not uploaded by this merchant', 'imageUploadCheck()', 5)
+                    let apis = api.apiresponse(true, 'images are not uploaded by this merchant', 503, null)
+                    reject(apis)
+
+                } else {
+
+                    merchant.updateOne({ merchantid: req.headers.merchantid },
+                        {
+                            $set:
+                            {
+                                imageuploaded: req.headers.imageuploaded,
+                                imagecount: req.headers.imagecount
+                            }
+                        }).exec((error,result)=>{
+                            if (error) {
+                                logger.error('error at update image', 'imageUploadCheck()', 5)
+                                let apis = api.apiresponse(true, 'error at update image ', 500, null)
+                                // send user to signup 
+                                reject(apis)
+                            } else if (emptyCheck.emptyCheck(data)) {
+                                logger.error('error headers params are empty', 'imageUploadCheck()', 5)
+                                let apis = api.apiresponse(true, 'error headers params are empty', 500, null)
+                                // send user to signup 
+                                reject(apis)
+                            }
+                            else {
+                                logger.info('headers:- parmas updated', 'imageUploadCheck()')
+                                resolve(result)
+                               
+            
+                            } 
+                        })
+                }
+            })
+        })
+
     }
     let jwtTokengen = (merchantData) => {
         return new Promise((resolve, reject) => {
@@ -145,7 +198,7 @@ let merchantlogin = (req, res) => {
     }
 
 
-    mobileDigitCheck(req, res).then(userLoginFinal).then(jwtTokengen).then((resolve) => {
+    mobileDigitCheck(req, res).then(userLoginFinal).then(imageUploadCheck).then(jwtTokengen).then((resolve) => {
         // console.log(resolve.data[0])
         // resolve = resolve.data[0]
         resolve.merchantData._id = undefined
