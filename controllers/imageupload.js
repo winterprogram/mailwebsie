@@ -17,12 +17,10 @@ const s3 = new AWS.S3({
 
 const getPresignedUrl = (req, res) => {
    let fileType = req.headers.fileType
-   let fileName = req.headers.filename
     let s3Params = {
         Bucket: BUCKET_NAME,
         Key: req.headers.key,
-        ContentType: "image/jpeg",
-        Expires: 60 * 60,
+        ContentType: "image/"+fileType,
         ACL: "public-read",
       };
       s3.getSignedUrl("putObject", s3Params, (err, data) => {
@@ -35,7 +33,7 @@ const getPresignedUrl = (req, res) => {
           message: "Url generated",
           uploadUrl: data,
           downloadUrl:
-            `https://${s3Params.Bucket}.s3.amazonaws.com/${fileName}` + "." + fileType,
+          `https://${s3Params.Bucket}.s3.ap-south-1.amazonaws.com/${key}`,
         };
         return res.status(201).json(returnData);
       });
