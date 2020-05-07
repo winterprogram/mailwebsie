@@ -30,8 +30,8 @@ const merchant = new Schema({
         type: Boolean,
         default: false
     },
-    imagecount: {
-        type: String
+    imageurl: {
+        type: Array
     },
     address: {
         type: String
