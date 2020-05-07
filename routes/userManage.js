@@ -67,7 +67,9 @@ let routes = (app) => {
     app.post('/merchantSignup', merchantData.merchantData)
     app.post('/merchantlogin', merchantlogin.merchantlogin)
     //image upload 
-     app.post('/imageupload', merchantImageUpload.getPresignedUrl)
+    app.post('/imageupload', merchantImageUpload.getPresignedUrl)
+    //image upload check
+    app.put('/imageuploadcheck', merchantlogin.imageuploadcheck)
     // reset password
     app.put('/resetpassmerchant', merchantlogin.merchantresetpass)
 

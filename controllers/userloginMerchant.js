@@ -103,66 +103,14 @@ let merchantlogin = (req, res) => {
                     reject(apis)
                 }
                 else if (data[0].imageuploaded == false) {
-                 logger.error('images are not uploaded by this merchant', 'imageUploadCheck()', 5)
-                    // let apis = api.apiresponse(true, 'images are not uploaded by this merchant', 503, null)
-                    // reject(apis)
-                    merchant.updateOne({ mobilenumber: req.body.mobilenumber },
-                        {
-                            $set:
-                            {
-                                imageuploaded: req.headers.imageuploaded,
-                                imageurl: req.body.imageurl
-                            }
-                        }).exec((error,result)=>{
-                            if (error) {
-                                logger.error('error at update image', 'imageUploadCheck()', 5)
-                                let apis = api.apiresponse(true, 'error at update image ', 500, null)
-                                // send user to signup 
-                                reject(apis)
-                            } else if (emptyCheck.emptyCheck(data)) {
-                                logger.error('error headers params are empty', 'imageUploadCheck()', 5)
-                                let apis = api.apiresponse(true, 'error headers params are empty', 500, null)
-                                // send user to signup 
-                                reject(apis)
-                            }
-                            else {
-                                logger.info('headers:- parmas updated', 'imageUploadCheck()')
-                                resolve(result)
-                               
-            
-                            } 
-                        })
+                    logger.error('images are not uploaded by this merchant', 'imageUploadCheck()', 5)
+                    let apis = api.apiresponse(true, 'images are not uploaded by this merchant', 503, null)
+                    reject(apis)
+                } else {
+                    let apis = api.apiresponse(true, 'images are uploaded by this merchant', 200, null)
+                    resolve(apis)
+                }
 
-                } 
-                // else {
-
-                    // merchant.updateOne({ mobilenumber: req.body.mobilenumber },
-                    //     {
-                    //         $set:
-                    //         {
-                    //             imageuploaded: req.headers.imageuploaded,
-                    //             imageurl: req.body.imageurl
-                    //         }
-                    //     }).exec((error,result)=>{
-                    //         if (error) {
-                    //             logger.error('error at update image', 'imageUploadCheck()', 5)
-                    //             let apis = api.apiresponse(true, 'error at update image ', 500, null)
-                    //             // send user to signup 
-                    //             reject(apis)
-                    //         } else if (emptyCheck.emptyCheck(data)) {
-                    //             logger.error('error headers params are empty', 'imageUploadCheck()', 5)
-                    //             let apis = api.apiresponse(true, 'error headers params are empty', 500, null)
-                    //             // send user to signup 
-                    //             reject(apis)
-                    //         }
-                    //         else {
-                    //             logger.info('headers:- parmas updated', 'imageUploadCheck()')
-                    //             resolve(result)
-                               
-            
-                    //         } 
-                    //     })
-                // }
             })
         })
 
@@ -333,7 +281,38 @@ let merchantresetpass = (req, res) => {
     })
 }
 
+let imageuploadcheck = (req, res) => {
+    merchant.updateOne({ mobilenumber: req.body.mobilenumber },
+        {
+            $set:
+            {
+                imageuploaded: req.headers.imageuploaded,
+                imageurl: req.body.imageurl
+            }
+        }).exec((error, result) => {
+            if (error) {
+                logger.error('error at update image', 'imageUploadCheck()', 5)
+                let apis = api.apiresponse(true, 'error at update image ', 500, null)
+                // send user to signup 
+                res.send(apis)
+            } else if (emptyCheck.emptyCheck(data)) {
+                logger.error('error headers params are empty', 'imageUploadCheck()', 5)
+                let apis = api.apiresponse(true, 'error headers params are empty', 500, null)
+                // send user to signup 
+                res.send(apis)
+            }
+            else {
+                logger.info('headers:- parmas updated', 'imageUploadCheck()')
+                let apis = api.apiresponse(true, 'resolvec ', 200, null)
+                res.send(result)
+
+
+            }
+        })
+}
+
 module.exports = {
     merchantlogin: merchantlogin,
-    merchantresetpass: merchantresetpass
+    merchantresetpass: merchantresetpass,
+    imageuploadcheck:imageuploadcheck
 }
