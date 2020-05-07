@@ -109,7 +109,7 @@ let merchantlogin = (req, res) => {
 
                 } else {
 
-                    merchant.updateOne({ merchantid: req.headers.merchantid },
+                    merchant.updateOne({ mobilenumber: req.body.mobilenumber },
                         {
                             $set:
                             {
