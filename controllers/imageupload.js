@@ -33,7 +33,7 @@ const getPresignedUrl = (req, res) => {
           message: "Url generated",
           uploadUrl: data,
           downloadUrl:
-          `https://${s3Params.Bucket}.s3.ap-south-1.amazonaws.com/${key}`,
+          `https://${s3Params.Bucket}.s3.ap-south-1.amazonaws.com/${s3Params.Key}`,
         };
         return res.status(201).json(returnData);
       });

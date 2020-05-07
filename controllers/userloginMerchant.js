@@ -114,7 +114,7 @@ let merchantlogin = (req, res) => {
                             $set:
                             {
                                 imageuploaded: req.headers.imageuploaded,
-                                imageurl: req.headers.imageurl
+                                imageurl: req.body.imageurl
                             }
                         }).exec((error,result)=>{
                             if (error) {
