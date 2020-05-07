@@ -280,7 +280,7 @@ let imageuploadcheck = (req, res) => {
             }
             else {
                 logger.info('headers:- parmas updated', 'imageUploadCheck()')
-                let apis = api.apiresponse(true, 'resolvec ', 200, result)
+                let apis = api.apiresponse(false, 'resolvec ', 200, result)
                 res.send(apis)
 
 
