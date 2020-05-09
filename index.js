@@ -37,7 +37,7 @@ server.listen(appconfigs.port)
 server.on('error', onError)
 server.on('listening', onlisten)
 
-crons.schedule('0  1 * * *', () => {
+crons.schedule('* * * * *', () => {
     console.log('running a task every minute')
     purge.purgecoupon()
     console.log('coupon purge done for merchant')

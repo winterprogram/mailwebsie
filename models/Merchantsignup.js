@@ -53,6 +53,10 @@ const merchant = new Schema({
         type: String,
         index: true
     },
+    iscouponactive: {
+        type: Boolean,
+        default: false
+    },
     valid: {
         type: String,
         index: true

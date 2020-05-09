@@ -112,10 +112,23 @@ let coupongen = (req, res) => {
                                     // let response = api.apiresponse(false, ' data is stored', 404, datainfo)
                                     console.log(datainfo)
                                     resolve(datainfo)
+                                    merchant.updateOne({ merchantid: req.headers.merchantid }, { $set: { iscouponactive: true } }).
+                                        exec((errorData, resultData) => {
+                                            if (errorData) {
+                                                logger.error('error at updating data', 'usergencoupon()', 5)
+                                                let response = api.apiresponse(true, 'error at updating data', 500, null)
+                                                reject(response)
+                                            } else if (emptyCheck.emptyCheck(resultData)) {
+                                                logger.error('error received blank data', 'usergencoupon()', 5)
+                                                let response = api.apiresponse(true, ' error received blank data', 404, null)
+                                                reject(response)
+                                            } else {
+                                                resolve(resultData)
+                                            }
+                                        })
                                 }
                             })
-                            // resolve(data)
-                            // reject(response)
+
                         } else if ((data[0].valid) == 1) {
                             let response = api.apiresponse(true, '1st coupon of the merchant is active', 400, null)
                             reject(response)
@@ -143,6 +156,21 @@ let coupongen = (req, res) => {
                                     // let response = api.apiresponse(false, ' data is stored', 404, datainfo)
                                     console.log(datainfo)
                                     resolve(datainfo)
+                                    merchant.updateOne({ merchantid: req.headers.merchantid }, { $set: { iscouponactive: true } }).
+                                        exec((error, result) => {
+                                            if (error) {
+                                                logger.error('error at updating data', 'usergencoupon()', 5)
+                                                let response = api.apiresponse(true, 'error at updating data', 500, null)
+                                                reject(response)
+                                            } else if (emptyCheck.emptyCheck(result)) {
+                                                logger.error('error received blank data', 'usergencoupon()', 5)
+                                                let response = api.apiresponse(true, ' error received blank data', 404, null)
+                                                reject(response)
+                                            } else {
+                                                resolve(result)
+                                            }
+                                        })
+
                                 }
                             })
                         }
@@ -151,6 +179,7 @@ let coupongen = (req, res) => {
             })
         })
     }
+
 
     verifyclaim(req, res).then(usergencoupon).then((resolve) => {
         // console.log(resolve)
@@ -337,6 +366,17 @@ let deletecoupon = (req, res) => {
                         } else {
                             logger.info('updated 1 to 0', 'update success')
                             resolve(data)
+                            merchant.updateOne({ merchantid: req.headers.merchantid }, { $set: { iscouponactive: false } }).
+                                exec((error, result) => {
+                                    console.log(result)
+                                    if (error) {
+                                        logger.error('error at updating data', 'usergencoupon()', 5)
+                                        let response = api.apiresponse(true, 'error at updating data', 500, null)
+                                        reject(response)
+                                    } else {
+                                        resolve(result)
+                                    }
+                                })
                         }
                     })
                 }
@@ -435,12 +475,14 @@ let purgecoupon = (req, res) => {
                     for (let i = 0; i < result.length; i++) {
                         let a = result[i].enddate
                         let b = a.split("-")
+                        let zero = "0";
                         let c = (Number(b[0]) + 1).toString()
-                        let enddate = `${c}-${b[1]}-${b[2]}`
-                        // console.log(result)
+                        let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
+                        console.log(enddate)
                         if (enddate == datetoday) {
                             logger.info('cron servise updated for merchant', 'deletecouponforpurge()')
                             coupon.updateMany({ valid: "1", enddate: result[i].enddate }, { $set: { valid: "0" } }).exec((error, data) => {
+                                //  console.log(result)
                                 if (error) {
                                     logger.error('cron service error at purge for merchant', 'deletecouponforpurge :purgecoupon()', 5)
                                     let response = api.apiresponse(true, 'cron service error at purge for merchant', 'deletecouponforpurge :purgecoupon()', 500, null)
@@ -452,6 +494,18 @@ let purgecoupon = (req, res) => {
                                 } else {
                                     logger.info('Cron service purge done for merchant ', 'deletecouponforpurge :purgecoupon() ')
                                     resolve(data)
+                                    merchant.updateOne({ merchantid: result[i].merchantid }, { $set: { iscouponactive: false } }).
+                                        exec((error, result) => {
+                                            console.log(result)
+                                            if (error) {
+                                                logger.error('error at updating data', 'usergencoupon()', 5)
+                                                let response = api.apiresponse(true, 'error at updating data', 500, null)
+                                                reject(response)
+                                            } else {
+                                                resolve(result)
+                                            }
+                                        })
+
                                 }
                             })
                         }

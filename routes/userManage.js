@@ -13,6 +13,7 @@ let routes = (app) => {
     // user signup and login
     app.post('/userSignup', controller.userData)
     app.post('/loginforUser', login.userlogin)
+    
 
     // user dashboard
     // params: Origin for user, destination for merchants

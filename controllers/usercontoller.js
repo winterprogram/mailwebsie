@@ -27,7 +27,7 @@ let userMerchantDisplay = (req, res) => {
 
     let getallmerchants = () => {
         return new Promise((resolve, reject) => {
-            merchant.find({city:req.headers.city}).lean().exec((err, result) => {
+            merchant.find({ city: req.headers.city }).lean().exec((err, result) => {
                 if (err) {
                     logger.error('error while fetching merchant data', 'getallmerchants:userMerchantDisplay()', 10)
                     let response = api.apiresponse(true, 500, 'error while fetching merchant data', null)
@@ -56,7 +56,7 @@ let userMerchantDisplay = (req, res) => {
                 // destinations.push(resultobject[i].latitude, resultobject[i].longitude)
                 logger.info('pusing done for destination stage -1', 'calculateDistance:userMerchantDisplay()')
                 let userdistance = (geolib.getDistance(
-                    { latitude: Number(userlatitude), longitude: Number(userlongitude)},
+                    { latitude: Number(userlatitude), longitude: Number(userlongitude) },
                     { latitude: Number(resultobject[i].latitude), longitude: Number(resultobject[i].longitude) }
                 )) * 0.001
                 console.log(userdistance)
@@ -91,6 +91,7 @@ let userMerchantDisplay = (req, res) => {
     })
 
 }
+
 
 module.exports = {
     userMerchantDisplay: userMerchantDisplay
