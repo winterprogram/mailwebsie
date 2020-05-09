@@ -61,15 +61,12 @@ let merchantlogin = (req, res) => {
                     reject(apis)
                 }
                 else {
-                    // console.log(data)
-
-                    //   console.log(req.body.password)
                     passencry.passcheck(req.body.password, data[0].password, ((error, result) => {
-                        // console.log(result)
                         if (error) {
                             let apis = api.apiresponse(true, 'Something went wrong', 500, null)
                             reject(apis)
-                        } else if ((data[0].valid == 0)) {
+                        }
+                        else if ((data[0].valid == 0)) {
                             let apis = api.apiresponse(true, 'Merchant doesn\'t have right\'s to access', 503, null)
                             reject(apis)
                         }
@@ -87,59 +84,67 @@ let merchantlogin = (req, res) => {
         }
         )
     }
+
     let jwtTokengen = (merchantData) => {
+        console.log(merchantData)
         return new Promise((resolve, reject) => {
-            jwt.generateToken(merchantData, ((err, result) => {
-                if (err) {
-                    let response = api.apiresponse(true, 'Error while generating Jwt token stage', 500, null)
-                    reject(response)
-                } else if (emptyCheck.emptyCheck(result)) {
-                    let response = api.apiresponse(true, 'data while generating jwt is vacant', 404, null)
-                    reject(response)
-                }
+            if (merchantData.data[0].imageuploaded == false) {
+                logger.error('images are not uploaded by this merchant', 'imageUploadCheck()', 5)
+                let apis = api.apiresponse(true, 'images are not uploaded by this merchant', 503, null)
+                reject(apis)
+            } else {
+                jwt.generateToken(merchantData, ((err, result) => {
+                    if (err) {
+                        let response = api.apiresponse(true, 'Error while generating Jwt token stage', 500, null)
+                        reject(response)
+                    } else if (emptyCheck.emptyCheck(result)) {
+                        let response = api.apiresponse(true, 'data while generating jwt is vacant', 404, null)
+                        reject(response)
+                    }
 
-                else {
-                    console.log(merchantData.data[0].merchantid)
-                    mertoken.deleteOne({ merchantid: merchantData.data[0].merchantid }).exec((err, result) => {
-                        if (err) {
-                            let response = api.apiresponse(true, 'error while deleting the merchant token', 504, null)
-                            reject(response)
-                        } else if (emptyCheck.emptyCheck(result)) {
-                            let response = api.apiresponse(true, 'error while deleting the merchant token', 400, null)
-                            reject(response)
-                        } else {
-                            let response = api.apiresponse(true, 'data successfully deleted adding new one', 200, result)
-                            resolve(response)
-                        }
-                    })
-                    result.merchantid = merchantData.data[0].merchantid
-                    result.merchantData = merchantData.data[0]
-                    let tok = new mertoken({
-                        merchantid: result.merchantid,
-                        authtoken: result.token,
-                        secreatekey: result.tokensecreate,
-                        // userinfo: (result.userData),
-                        createdon: Date.now()
-                    })
-                    tok.save((error, authtokendetails) => {
-                        if (error) {
-                            let response = api.apiresponse(true, 'Error while storing Jwt token stage -2', 500, error)
-                            reject(response)
-                        } else if ((emptyCheck.emptyCheck(authtokendetails))) {
+                    else {
+                        console.log(merchantData.data[0])
+                        mertoken.deleteOne({ merchantid: merchantData.data[0].merchantid }).exec((err, result) => {
+                            if (err) {
+                                let response = api.apiresponse(true, 'error while deleting the merchant token', 504, null)
+                                reject(response)
+                            } else if (emptyCheck.emptyCheck(result)) {
+                                let response = api.apiresponse(true, 'error while deleting the merchant token', 400, null)
+                                reject(response)
+                            } else {
+                                let response = api.apiresponse(true, 'data successfully deleted adding new one', 200, result)
+                                resolve(response)
+                            }
+                        })
+                        result.merchantid = merchantData.data[0].merchantid
+                        result.merchantData = merchantData.data[0]
+                        let tok = new mertoken({
+                            merchantid: result.merchantid,
+                            authtoken: result.token,
+                            secreatekey: result.tokensecreate,
+                            // userinfo: (result.userData),
+                            createdon: Date.now()
+                        })
+                        tok.save((error, authtokendetails) => {
+                            if (error) {
+                                let response = api.apiresponse(true, 'Error while storing Jwt token stage -2', 500, error)
+                                reject(response)
+                            } else if ((emptyCheck.emptyCheck(authtokendetails))) {
 
-                            let response = api.apiresponse(true, 'Error while storing Jwt token empty data', 404, null)
-                            reject(response)
-                        } else {
-                            // let auth = authtokendetails.toObject()
-                            //  console.log(authtokendetails)
-                            let a = api.apiresponse(true, 'user token stored successfully(1st login)', 403, authtokendetails)
-                            resolve(a)
-                        }
-                    })
-                    // console.log(result)
-                    resolve(result)
-                }
-            }))
+                                let response = api.apiresponse(true, 'Error while storing Jwt token empty data', 404, null)
+                                reject(response)
+                            } else {
+                                // let auth = authtokendetails.toObject()
+                                //  console.log(authtokendetails)
+                                let a = api.apiresponse(true, 'user token stored successfully(1st login)', 403, authtokendetails)
+                                resolve(a)
+                            }
+                        })
+                        // console.log(result)
+                        resolve(result)
+                    }
+                }))
+            }
         })
 
     }
@@ -253,7 +258,38 @@ let merchantresetpass = (req, res) => {
     })
 }
 
+let imageuploadcheck = (req, res) => {
+    merchant.updateOne({ mobilenumber: req.body.mobilenumber },
+        {
+            $set:
+            {
+                imageuploaded: req.headers.imageuploaded,
+                imageurl: req.body.imageurl
+            }
+        }).exec((error, result) => {
+            if (error) {
+                logger.error('error at update image', 'imageUploadCheck()', 5)
+                let apis = api.apiresponse(true, 'error at update image ', 500, null)
+                // send user to signup 
+                res.send(apis)
+            } else if (emptyCheck.emptyCheck(result)) {
+                logger.error('error headers params are empty', 'imageUploadCheck()', 5)
+                let apis = api.apiresponse(true, 'error headers params are empty', 500, null)
+                // send user to signup 
+                res.send(apis)
+            }
+            else {
+                logger.info('headers:- parmas updated', 'imageUploadCheck()')
+                let apis = api.apiresponse(false, 'resolvec ', 200, result)
+                res.send(apis)
+
+
+            }
+        })
+}
+
 module.exports = {
     merchantlogin: merchantlogin,
-    merchantresetpass: merchantresetpass
+    merchantresetpass: merchantresetpass,
+    imageuploadcheck: imageuploadcheck
 }

@@ -22,12 +22,14 @@ const eventemiter = new event.EventEmitter();
 const jwt = require('./../libs/jswt')
 const distance = require('google-distance-matrix');
 const geolib = require('geolib');
+const c = require('./../models/Coupongen')
+const coupon = mongoose.model('coupons')
 
 let userMerchantDisplay = (req, res) => {
 
     let getallmerchants = () => {
         return new Promise((resolve, reject) => {
-            merchant.find({city:req.headers.city}).lean().exec((err, result) => {
+            merchant.find({ city: req.headers.city }).lean().exec((err, result) => {
                 if (err) {
                     logger.error('error while fetching merchant data', 'getallmerchants:userMerchantDisplay()', 10)
                     let response = api.apiresponse(true, 500, 'error while fetching merchant data', null)
@@ -56,7 +58,7 @@ let userMerchantDisplay = (req, res) => {
                 // destinations.push(resultobject[i].latitude, resultobject[i].longitude)
                 logger.info('pusing done for destination stage -1', 'calculateDistance:userMerchantDisplay()')
                 let userdistance = (geolib.getDistance(
-                    { latitude: Number(userlatitude), longitude: Number(userlongitude)},
+                    { latitude: Number(userlatitude), longitude: Number(userlongitude) },
                     { latitude: Number(resultobject[i].latitude), longitude: Number(resultobject[i].longitude) }
                 )) * 0.001
                 console.log(userdistance)
@@ -92,6 +94,105 @@ let userMerchantDisplay = (req, res) => {
 
 }
 
+let userCouponDisribution = (req, res) => {
+    let addGeoCode = () => {
+        return new Promise((resolve, reject) => {
+            coupon.aggregate([
+                {
+                    $lookup:
+                    {
+                        from: "signupforusermerchants",
+                        localField: "merchantid",
+                        foreignField: "merchantid",
+                        as: "geocode"
+                    }
+                },
+                {
+                    $unwind: "$geocode"
+                },
+                {
+                    $project: {
+                        "_id": 0,
+                        "createdon": 1,
+                        "merchantid": 1,
+                        "couponcode": 1,
+                        "startdate": 1,
+                        "enddate": 1,
+                        "discount": 1,
+                        "faltdiscountupto": 1,
+                        "valid": 1,
+                        "latitude": "$geocode.latitude",
+                        "longitude": "$geocode.longitude"
+                    }
+                }
+            ]).exec((err, result) => {
+                // console.log(result)
+                if (err) {
+                    logger.error('error while fetching merchants with active coupon', 'findAllActiveCoupon:userCouponDisribution()', 5)
+                    let response = api.apiresponse(true, 403, 'error while fetching merchants with active coupon', null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(result)) {
+                    logger.error('No Merchant found with coupon', 'findAllActiveCoupon:userCouponDisribution()', 1)
+                    let response = api.apiresponse(true, 404, 'No Merchant found with coupon', null)
+                    reject(response)
+                } else {
+                    logger.info('coupon fetched', 'getallmerchants:userMerchantDisplay()')
+                    // console.log(result)
+                    resolve(result)
+                }
+            })
+        })
+    }
+
+    let findValidCoupon = (result) => {
+        return new Promise((resolve, reject) => {
+            let validCoupon = [];
+            let nonValidcoupon = [];
+            for (let i in result) {
+                if (result[i].valid == "1") {
+                    validCoupon.push(result[i])
+                }
+                else {
+                    nonValidcoupon.push(result[i])
+                }
+            }
+            if (validCoupon.length != 0) {
+                logger.info('merchant >0 available with valid coupon', 'findAllActiveCoupon:userCouponDisribution()')
+                console.log(validCoupon)
+                resolve(validCoupon)
+            } else {
+                console.log(nonValidcoupon)
+                logger.error('all merchant\'s coupon are valid =0', 'findValidCoupon:userCouponDisribution()', 1)
+                let response = api.apiresponse(true, 404, 'all merchant\'s coupon are valid =0', nonValidcoupon)
+                reject(response)
+            }
+        })
+    }
+
+
+    addGeoCode(req, res).then(findValidCoupon).then((resolve) => {
+        logger.info('merchant available with valid coupon', 'findAllActiveCoupon:userCouponDisribution()')
+        let response = api.apiresponse(false, 200, 'merchant available with valid coupon', resolve)
+        res.send(response)
+    }).catch((err) => {
+        logger.error('no merchant available with valid coupon', 'findAllActiveCoupon:userCouponDisribution()', 10)
+        let response = api.apiresponse(true, 500, 'no merchant available with valid coupon', null)
+        res.send(response)
+    })
+
+
+}
+
+
+
+
+
+
+
+
+
+
 module.exports = {
-    userMerchantDisplay: userMerchantDisplay
+    userMerchantDisplay: userMerchantDisplay,
+    userCouponDisribution: userCouponDisribution
 }

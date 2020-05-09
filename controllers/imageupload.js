@@ -1,42 +1,46 @@
+
 const AWS = require('aws-sdk');
-const ID = 'AKIAIPE3U6XL533OF4GQ';
-const SECRET = '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';
+const ID = '';
+const SECRET = '';
 const BUCKET_NAME = 'merchantimagesfortimeline';
-// const fs = require('fs');
+ const fs = require('fs');
+ const uuid = require("uuid");
 // const merchant = mongoose.model('signupforusermerchant')
 
 const s3 = new AWS.S3({
     accessKeyId: ID,
-    secretAccessKey: SECRET
+    secretAccessKey: SECRET,
+    region: "ap-south-1",
+    signatureVersion: "v4",
 });
 
 
-let uploadFile= (req, res)=> {
-    // let folder = (req.user.username + "/");
-    let folder = req.headers.key
-    const file = (req.body.imageUpload);
-    const params = {
-      Bucket: BUCKET_NAME,
-      Key: (folder),
-      ACL: 'public-read',
-      Body: file
-    };
-    console.log("Folder name: " + folder);
-    console.log("File: " + file);
-    
-    s3.putObject(params, function (err, data) {
-      if (err) {
-        res.send("Error: ", err);
-      } else {
-        res.send(data);
-      }
-    });
-    // res.redirect("/feed");
-  };
-
+const getPresignedUrl = (req, res) => {
+   let fileType = req.headers.fileType
+    let s3Params = {
+        Bucket: BUCKET_NAME,
+        Key: req.headers.key,
+        ContentType: "image/"+fileType,
+        ACL: "public-read",
+      };
+      s3.getSignedUrl("putObject", s3Params, (err, data) => {
+        if (err) {
+          console.log(err);
+          return res.send(err);
+        }
+        let returnData = {
+          success: true,
+          message: "Url generated",
+          uploadUrl: data,
+          downloadUrl:
+          `https://${s3Params.Bucket}.s3.ap-south-1.amazonaws.com/${s3Params.Key}`,
+        };
+        return res.status(201).json(returnData);
+      });
+ };
 
 
 
 module.exports = {
-    uploadFile: uploadFile
+    getPresignedUrl: getPresignedUrl
 }

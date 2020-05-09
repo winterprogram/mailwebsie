@@ -26,6 +26,13 @@ const merchant = new Schema({
     city: {
         type: String
     },
+    imageuploaded: {
+        type: Boolean,
+        default: false
+    },
+    imageurl: {
+        type: Array
+    },
     address: {
         type: String
     },
@@ -45,6 +52,10 @@ const merchant = new Schema({
     category: {
         type: String,
         index: true
+    },
+    iscouponactive: {
+        type: Boolean,
+        default: false
     },
     valid: {
         type: String,

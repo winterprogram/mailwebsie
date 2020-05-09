@@ -14,6 +14,7 @@ let routes = (app) => {
     app.post('/userSignup', controller.userData)
     app.post('/loginforUser', login.userlogin)
 
+
     // user dashboard
     // params: Origin for user, destination for merchants
     app.get('/formaps', usercontroller.userMerchantDisplay)
@@ -62,12 +63,47 @@ let routes = (app) => {
         }
     */
 
+    // user coupon distribution
+    app.post('/coupontouser', usercontroller.userCouponDisribution)
     // merchant signup and login
 
     app.post('/merchantSignup', merchantData.merchantData)
     app.post('/merchantlogin', merchantlogin.merchantlogin)
     //image upload 
-    app.post('/imageupload', merchantImageUpload.uploadFile)
+    app.post('/imageupload', merchantImageUpload.getPresignedUrl)
+    //image upload check
+    app.put('/imageuploadcheck', merchantlogin.imageuploadcheck)
+    /**
+     * @apiGroup Merchant images
+     * @apiVersion 0.0.1
+     * @api {put} /imageuploadcheck api to update boolean that if images is uploaded by merchants
+     * 
+     * @apiParam {string} mobilenumber Mobile number of the merchants. (header params)(required)
+     * @apiParam {boolean} imageuploaded True if the images are successfully uploaded by merchant. (header params)(required)
+     * @apiParam {array} imageurl download url of amazon s3. (body params)(required)
+     *  
+     * @apiSuccess {object}  API Response shows error status, message, http status code and result.
+     * 
+     * @apiSuccessExample {object} Success-Response:
+     * {
+    "error": false,
+    "message": "resolved ",
+    "status": 200,
+    "data": {
+        "n": 1,
+        "nModified": 1,
+        "ok": 1
+    }
+}
+     * @apiErrorExample Error-Response:
+      { 
+       "error": true,
+       "message": "error headers params are empty",
+       "status": 500,
+       "data": null
+        }
+    */
+
     // reset password
     app.put('/resetpassmerchant', merchantlogin.merchantresetpass)
 
