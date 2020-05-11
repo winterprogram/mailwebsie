@@ -258,30 +258,33 @@ let userCouponDisribution = (req, res) => {
                 let couponDist = couponSortList.find(o => o.category == userCategory[i]);
                 if (couponDist != undefined) {
                     firstuserCoupon.push(couponDist)
-                    console.log(firstuserCoupon)
+                    // console.log(firstuserCoupon)
                 }
             }
 
             // console.log(couponSortList)
             // for (let i in userCategory) {
             userCoupon.find({ userid: "TidWCS" }).lean().exec((err, data) => {
-                console.log(data)
+                // console.log(data)
                 if (err) {
                     logger.error('error while fetching user with userid and category', 'couponToUser:userCouponDisribution()', 5)
                     let response = api.apiresponse(true, 403, 'error while fetching user with userid and category', null)
                     reject(response)
                 } else if (emptyCheck.emptyCheck(data)) {
                     // console.log(data)
-                    console.log(emptyCheck.emptyCheck(data))
+                    // console.log(emptyCheck.emptyCheck(data))
                     // add header params here
-                    let purchasedAmount = 1200;
+                    let purchasedAmount = 2600;
                     if (( purchasedAmount < 500 && purchasedAmount >= 100)) {
                         console.log("I am here -1")
-                        for (let x = firstuserCoupon.length; x > 2; x++) {
+                        
+                        for (let x = firstuserCoupon.length; x > 2; x--) {
+                            console.log(firstuserCoupon.length)
                             firstuserCoupon.pop()
                         }
+                       
                         for (let x = 0; x < firstuserCoupon.length; x++) {
-                            // console.log("I am here")
+                             console.log("I am here - 1")
                             let datetoday = moment().format('DD-MM-YYYY')
                             let b = datetoday.split("-")
                             let zero = "0";
@@ -316,7 +319,7 @@ let userCouponDisribution = (req, res) => {
                     }
                     if ( (purchasedAmount < 1000 && purchasedAmount >= 500)) {
                         console.log("I am here - 2")
-                        for (let x = firstuserCoupon.length; x > 3; x++) {
+                        for (let x = firstuserCoupon.length; x > 3; x--) {
                             firstuserCoupon.pop()
                         }
                         for (let x = 0; x < firstuserCoupon.length; x++) {
@@ -355,7 +358,7 @@ let userCouponDisribution = (req, res) => {
                     }
                     if (( purchasedAmount < 2000 && purchasedAmount >= 1000)) {
                         console.log("I am here - 3")
-                        for (let x = firstuserCoupon.length; x > 4; x++) {
+                        for (let x = firstuserCoupon.length; x > 4; x--) {
                             firstuserCoupon.pop()
                         }
                         for (let x = 0; x < firstuserCoupon.length; x++) {
@@ -394,7 +397,7 @@ let userCouponDisribution = (req, res) => {
                     }
                     if (purchasedAmount >= 2000) {
                         console.log("I am here - 4")
-                        for (let x = firstuserCoupon.length; x > 5; x++) {
+                        for (let x = firstuserCoupon.length; x > 5; x--) {
                             firstuserCoupon.pop()
                         }
                         for (let x = 0; x < firstuserCoupon.length; x++) {
