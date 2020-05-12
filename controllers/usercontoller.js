@@ -230,20 +230,26 @@ let userCouponDisribution = (req, res) => {
                 } else {
                     let category = resultData[0].categoryselected;
                     //sorting the array of merchant coupon depending on user category list priority
-                    let sortcategorylist = listOfAllCouponWithInRangeTwo.filter(i => category.includes(i.category))
-                    sortcategorylist.sort()
-                    resolve([category, sortcategorylist])
+                    // let sortcategorylist = listOfAllCouponWithInRangeTwo.filter(i => category.includes(i.category))
+                    // sortcategorylist.sort()
+                    let sortcategorylist = []
+                    for (let x in category) {
+                        listOfAllCouponWithInRangeTwo.filter(i => i.category.indexOf(category[x]) !== -1);
+                    }
+                    console.log(listOfAllCouponWithInRangeTwo)
+                    // listOfAllCouponWithInRangeTwo.filter(i => i.category.indexOf() !== -1);
+                    resolve([category, listOfAllCouponWithInRangeTwo])
                 }
             })
 
         })
     }
-    let couponToUser = ([category, sortcategorylist]) => {
+    let couponToUser = ([category, listOfAllCouponWithInRangeTwo]) => {
         return new Promise((resolve, reject) => {
             // console.log(sortcategorylist)
             let firstuserCoupon = [];
             let userCategory = category;
-            let couponSortList = sortcategorylist;
+            let couponSortList = listOfAllCouponWithInRangeTwo;
             // sort by priority
             couponSortList.sort(function (c = couponSortList, d = userCategory) {
                 for (let i in d) {
@@ -271,20 +277,28 @@ let userCouponDisribution = (req, res) => {
                     let response = api.apiresponse(true, 403, 'error while fetching user with userid and category', null)
                     reject(response)
                 } else if (emptyCheck.emptyCheck(data)) {
-                    // console.log(data)
-                    // console.log(emptyCheck.emptyCheck(data))
+                    
+                    // pick random element from array of objects of coupon
+                    // var item = items[Math.floor(Math.random() * items.length)];
+
                     // add header params here
-                    let purchasedAmount = 2600;
-                    if (( purchasedAmount < 500 && purchasedAmount >= 100)) {
+                    let purchasedAmount = 2;
+                    if (purchasedAmount < 100) {
+                        console.log('I\'am not here')
+                        logger.error('user is not eligible for coupon', 'couponToUser:userCouponDisribution()', 5)
+                        let response = api.apiresponse(true, 503, 'user is not eligible for coupon', null)
+                        reject(response)
+                    }
+                    if ((purchasedAmount < 500 && purchasedAmount >= 100)) {
                         console.log("I am here -1")
-                        
+
                         for (let x = firstuserCoupon.length; x > 2; x--) {
                             console.log(firstuserCoupon.length)
                             firstuserCoupon.pop()
                         }
-                       
+
                         for (let x = 0; x < firstuserCoupon.length; x++) {
-                             console.log("I am here - 1")
+                            console.log("I am here - 1")
                             let datetoday = moment().format('DD-MM-YYYY')
                             let b = datetoday.split("-")
                             let zero = "0";
@@ -317,7 +331,7 @@ let userCouponDisribution = (req, res) => {
 
                         // resolve(firstuserCoupon)
                     }
-                    if ( (purchasedAmount < 1000 && purchasedAmount >= 500)) {
+                    if ((purchasedAmount < 1000 && purchasedAmount >= 500)) {
                         console.log("I am here - 2")
                         for (let x = firstuserCoupon.length; x > 3; x--) {
                             firstuserCoupon.pop()
@@ -356,7 +370,7 @@ let userCouponDisribution = (req, res) => {
 
                         // resolve(firstuserCoupon)
                     }
-                    if (( purchasedAmount < 2000 && purchasedAmount >= 1000)) {
+                    if ((purchasedAmount < 2000 && purchasedAmount >= 1000)) {
                         console.log("I am here - 3")
                         for (let x = firstuserCoupon.length; x > 4; x--) {
                             firstuserCoupon.pop()
