@@ -201,7 +201,7 @@ let userCouponDisribution = (req, res) => {
                 //     listOfAllCouponWithInRangeFive.push(validCoupon[i])
                 // }
             }
-            if (listOfAllCouponWithInRangeTwo.length != 0) {
+            if (listOfAllCouponWithInRangeTwo.length >= 0) {
                 logger.info('coupon found with in 2KM radius -2', 'merchantToUser:userCouponDisribution()')
                 // console.log(listOfAllCouponWithInRangeTwo)
                 resolve(listOfAllCouponWithInRangeTwo)
@@ -217,7 +217,7 @@ let userCouponDisribution = (req, res) => {
 
     let sortCouponToUsercategory = (listOfAllCouponWithInRangeTwo) => {
         return new Promise((resolve, reject) => {
-            signup.find({ userid: "TidWCS" }).lean().exec((err, resultData) => {
+            signup.find({ userid: "FmTD3G" }).lean().exec((err, resultData) => {
                 // console.log(resultData[0].categoryselected:) 
                 if (err) {
                     logger.error('error while fetching user with userid', 'finduser:userCouponDisribution()', 5)
@@ -233,12 +233,26 @@ let userCouponDisribution = (req, res) => {
                     // let sortcategorylist = listOfAllCouponWithInRangeTwo.filter(i => category.includes(i.category))
                     // sortcategorylist.sort()
                     let sortcategorylist = []
+                    console.log(category)
                     for (let x in category) {
-                        listOfAllCouponWithInRangeTwo.filter(i => i.category.indexOf(category[x]) !== -1);
+                        // listOfAllCouponWithInRangeTwo.filter(i => i.category.indexOf(category[x]) == -1);
+                        search(category[x], listOfAllCouponWithInRangeTwo)
+                        // console.log(listOfAllCouponWithInRangeTwo)
                     }
-                    console.log(listOfAllCouponWithInRangeTwo)
+
+                    function search(nameKey, myArray) {
+                        for (var i = 0; i < myArray.length; i++) {
+                            if (myArray[i].category === nameKey) {
+                                sortcategorylist.push(myArray[i])
+                                // return myArray[i];
+                            }
+                        }
+                    }
+                    console.log(sortcategorylist)
                     // listOfAllCouponWithInRangeTwo.filter(i => i.category.indexOf() !== -1);
                     resolve([category, listOfAllCouponWithInRangeTwo])
+
+
                 }
             })
 
@@ -246,7 +260,7 @@ let userCouponDisribution = (req, res) => {
     }
     let couponToUser = ([category, listOfAllCouponWithInRangeTwo]) => {
         return new Promise((resolve, reject) => {
-            // console.log(sortcategorylist)
+            //  console.log(category)
             let firstuserCoupon = [];
             let userCategory = category;
             let couponSortList = listOfAllCouponWithInRangeTwo;
@@ -267,22 +281,23 @@ let userCouponDisribution = (req, res) => {
                     // console.log(firstuserCoupon)
                 }
             }
-
-            // console.log(couponSortList)
+            // console.log(firstuserCoupon)
+            //  console.log(couponSortList)
             // for (let i in userCategory) {
-            userCoupon.find({ userid: "TidWCS" }).lean().exec((err, data) => {
+            userCoupon.find({ userid: "FmTD3G" }).lean().exec((err, data) => {
                 // console.log(data)
                 if (err) {
                     logger.error('error while fetching user with userid and category', 'couponToUser:userCouponDisribution()', 5)
                     let response = api.apiresponse(true, 403, 'error while fetching user with userid and category', null)
                     reject(response)
                 } else if (emptyCheck.emptyCheck(data)) {
-                    
+
                     // pick random element from array of objects of coupon
                     // var item = items[Math.floor(Math.random() * items.length)];
 
                     // add header params here
-                    let purchasedAmount = 2;
+                    let purchasedAmount = 2001;
+
                     if (purchasedAmount < 100) {
                         console.log('I\'am not here')
                         logger.error('user is not eligible for coupon', 'couponToUser:userCouponDisribution()', 5)
@@ -306,7 +321,7 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: "TidWCS",
+                                userid: "FmTD3G",
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 enddate: enddate,
@@ -345,7 +360,7 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: "TidWCS",
+                                userid: "FmTD3G",
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 enddate: enddate,
@@ -384,7 +399,7 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: "TidWCS",
+                                userid: "FmTD3G",
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 enddate: enddate,
@@ -411,6 +426,8 @@ let userCouponDisribution = (req, res) => {
                     }
                     if (purchasedAmount >= 2000) {
                         console.log("I am here - 4")
+                        console.log(firstuserCoupon)
+                        console.log(firstuserCoupon.length)
                         for (let x = firstuserCoupon.length; x > 5; x--) {
                             firstuserCoupon.pop()
                         }
@@ -423,7 +440,7 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: "TidWCS",
+                                userid: "FmTD3G",
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 enddate: enddate,
@@ -467,8 +484,8 @@ let userCouponDisribution = (req, res) => {
         res.send(response)
     }).catch((err) => {
         logger.error('no merchant available with valid coupon', 'findAllActiveCoupon:userCouponDisribution()', 10)
-        let response = api.apiresponse(true, 500, 'no merchant available with valid coupon', null)
-        res.send(response)
+        // let response = api.apiresponse(true, 500, 'no merchant available with valid coupon', null)
+        res.send(err)
     })
 }
 
