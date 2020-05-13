@@ -232,25 +232,42 @@ let userCouponDisribution = (req, res) => {
                     //sorting the array of merchant coupon depending on user category list priority
                     // let sortcategorylist = listOfAllCouponWithInRangeTwo.filter(i => category.includes(i.category))
                     // sortcategorylist.sort()
-                    let sortcategorylist = []
+                    let iceCreamList = []
+                    let cafeFastFood = [];
+                    let beautySalonSpa = [];
+                    let restaurantBar = [];
+                    let boutiques = [];
                     console.log(category)
-                    for (let x in category) {
-                        // listOfAllCouponWithInRangeTwo.filter(i => i.category.indexOf(category[x]) == -1);
-                        search(category[x], listOfAllCouponWithInRangeTwo)
-                        // console.log(listOfAllCouponWithInRangeTwo)
-                    }
-
-                    function search(nameKey, myArray) {
+                    // for (let x in category) {
+                    // listOfAllCouponWithInRangeTwo.filter(i => i.category.indexOf(category[x]) == -1);
+                    search(listOfAllCouponWithInRangeTwo)
+                    // console.log(listOfAllCouponWithInRangeTwo)
+                    // }
+                    // search category selected by user and seperate
+                    function search(myArray) {
                         for (var i = 0; i < myArray.length; i++) {
-                            if (myArray[i].category === nameKey) {
-                                sortcategorylist.push(myArray[i])
+                            if (myArray[i].category == "Ice-Cream Parlour") {
+                                iceCreamList.push(myArray[i])
                                 // return myArray[i];
+                            } else if (myArray[i].category == "Cafe/Fast Food") {
+                                cafeFastFood.push(myArray[i])
+                            } else if (myArray[i].category == "Beauty Salon/Spa") {
+                                beautySalonSpa.push(myArray[i])
+                            } else if (myArray[i].category == "Restaurant/Bar") {
+                                restaurantBar.push(myArray[i])
+                            } else if (myArray[i].category == "Boutiques") {
+                                boutiques.push(myArray[i])
                             }
                         }
                     }
-                    console.log(sortcategorylist)
+                    // console.log(iceCreamList)
+                    //  console.log(cafeFastFood)
+                    // console.log(beautySalonSpa)
+                    // console.log(restaurantBar)
+                    // console.log(boutiques)
+
                     // listOfAllCouponWithInRangeTwo.filter(i => i.category.indexOf() !== -1);
-                    resolve([category, listOfAllCouponWithInRangeTwo])
+                    resolve([category, iceCreamList, cafeFastFood, beautySalonSpa, restaurantBar, boutiques])
 
 
                 }
@@ -258,29 +275,91 @@ let userCouponDisribution = (req, res) => {
 
         })
     }
-    let couponToUser = ([category, listOfAllCouponWithInRangeTwo]) => {
+    let couponToUser = ([category, iceCreamList, cafeFastFood, beautySalonSpa, restaurantBar, boutiques]) => {
         return new Promise((resolve, reject) => {
-            //  console.log(category)
-            let firstuserCoupon = [];
+            //   console.log(cafeFastFood)
+            // let firstuserCoupon = sortcategorylist;
             let userCategory = category;
-            let couponSortList = listOfAllCouponWithInRangeTwo;
+            let couponSortList = [];
+           
+            // beautySpa(beautySalonSpa);
+            // restaurant(restaurantBar);
+            // boutik(boutiques);
+
+            // let iceCream = (ar) => {
+                if (iceCreamList.length > 1) {
+                    couponSortList.push(iceCreamList[Math.floor(Math.random() * iceCreamList.length)])
+                } else {
+                    couponSortList.push(iceCreamList[0])
+                }
+            // }
+            // let cafeFast = (ar=cafeFastFood) => {
+                // console.log(cafeFastFood.length)
+                if (cafeFastFood.length > 1) {
+                    couponSortList.push(cafeFastFood[Math.floor(Math.random() * cafeFastFood.length)])
+                } else {
+                    couponSortList.push(cafeFastFood[0])
+                }
+
+                // console.log(couponSortList)
+            // }
+
+            // let beautySpa = (ar) => {
+                if (beautySalonSpa.length > 1) {
+                    couponSortList.push(beautySalonSpa[Math.floor(Math.random() * beautySalonSpa.length)])
+                } else {
+                    couponSortList.push(beautySalonSpa[0])
+                }
+            // }
+
+            // let restaurant = (ar) => {
+                if (restaurantBar.length > 1) {
+                    couponSortList.push(restaurantBar[Math.floor(Math.random() * restaurantBar.length)])
+                } else {
+                    couponSortList.push(restaurantBar[0])
+                }
+            // }
+
+            // let boutik = (ar) => {
+                if (boutiques.length > 1) {
+                    couponSortList.push(boutiques[Math.floor(Math.random() * boutiques.length)])
+                } else {
+                    couponSortList.push(boutiques[0])
+                }
+            // }
+
+            // calling functions
+          
+
+            // console.log(couponSortList)
+
+
             // sort by priority
-            couponSortList.sort(function (c = couponSortList, d = userCategory) {
-                for (let i in d) {
-                    let Ac = c.category;
-                    let Bc = d[i];
-                    if (Ac < Bc) {
-                        return -1;
-                    }
-                }
-            })
-            for (let i in userCategory) {
-                let couponDist = couponSortList.find(o => o.category == userCategory[i]);
-                if (couponDist != undefined) {
-                    firstuserCoupon.push(couponDist)
-                    // console.log(firstuserCoupon)
-                }
-            }
+            console.log(userCategory)
+
+            let sortcategorylist = couponSortList.filter(i => category.includes(i.category))
+            let firstuserCoupon = sortcategorylist
+
+            console.log("After sorting")
+
+            console.log(firstuserCoupon)
+
+
+            // function search(nameKey, myArray) {
+            //     for (var i = 0; i < myArray.length; i++) {
+            //         if (myArray[i].category === nameKey) {
+            //             sortcategorylist.push(myArray[i])
+            //             // return myArray[i];
+            //         }
+            //     }
+            // }
+            // for (let i in userCategory) {
+            //     let couponDist = couponSortList.find(o => o.category == userCategory[i]);
+            //     if (couponDist != undefined) {
+            //         firstuserCoupon.push(couponDist)
+            //         // console.log(firstuserCoupon)
+            //     }
+            // }
             // console.log(firstuserCoupon)
             //  console.log(couponSortList)
             // for (let i in userCategory) {
@@ -426,9 +505,29 @@ let userCouponDisribution = (req, res) => {
                     }
                     if (purchasedAmount >= 2000) {
                         console.log("I am here - 4")
+                        let teampCoupon = [];
+                        let finalCoupon = [];
                         console.log(firstuserCoupon)
-                        console.log(firstuserCoupon.length)
+
+
+                        let counter = []
+
+                        // firstuserCoupon.forEach(function() {
+                        //     var key = JSON
+                        //     counter[key] = (counter[key] || 0) + 1
+                        // })
+                        // console.log(counter)
+
+                        // function search(nameKey, myArray) {
+                        //     for (var i = 0; i < myArray.length; i++) {
+                        //         if (myArray[i].category === nameKey) {
+                        //             teampCoupon.push(myArray[i])
+                        //             // return myArray[i];
+                        //         }
+                        //     }
+                        // }
                         for (let x = firstuserCoupon.length; x > 5; x--) {
+                            // let item = firstuserCoupon[Math.floor(Math.random() * firstuserCoupon.length)];
                             firstuserCoupon.pop()
                         }
                         for (let x = 0; x < firstuserCoupon.length; x++) {
