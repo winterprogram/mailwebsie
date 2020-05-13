@@ -277,92 +277,50 @@ let userCouponDisribution = (req, res) => {
     }
     let couponToUser = ([category, iceCreamList, cafeFastFood, beautySalonSpa, restaurantBar, boutiques]) => {
         return new Promise((resolve, reject) => {
-            //   console.log(cafeFastFood)
-            // let firstuserCoupon = sortcategorylist;
+
             let userCategory = category;
             let couponSortList = [];
 
-            // beautySpa(beautySalonSpa);
-            // restaurant(restaurantBar);
-            // boutik(boutiques);
+            // pick random element from array of objects of coupon
 
-            // let iceCream = (ar) => {
             if (iceCreamList.length > 1) {
                 couponSortList.push(iceCreamList[Math.floor(Math.random() * iceCreamList.length)])
             } else {
                 couponSortList.push(iceCreamList[0])
             }
-            // }
-            // let cafeFast = (ar=cafeFastFood) => {
-            // console.log(cafeFastFood.length)
+
             if (cafeFastFood.length > 1) {
                 couponSortList.push(cafeFastFood[Math.floor(Math.random() * cafeFastFood.length)])
             } else {
                 couponSortList.push(cafeFastFood[0])
             }
 
-            // console.log(couponSortList)
-            // }
-
-            // let beautySpa = (ar) => {
             if (beautySalonSpa.length > 1) {
                 couponSortList.push(beautySalonSpa[Math.floor(Math.random() * beautySalonSpa.length)])
             } else {
                 couponSortList.push(beautySalonSpa[0])
             }
-            // }
 
-            // let restaurant = (ar) => {
             if (restaurantBar.length > 1) {
                 couponSortList.push(restaurantBar[Math.floor(Math.random() * restaurantBar.length)])
             } else {
                 couponSortList.push(restaurantBar[0])
             }
-            // }
 
-            // let boutik = (ar) => {
             if (boutiques.length > 1) {
                 couponSortList.push(boutiques[Math.floor(Math.random() * boutiques.length)])
             } else {
                 couponSortList.push(boutiques[0])
             }
-            // }
-
-            // calling functions
-
-
-            // console.log(couponSortList)
 
 
             // sort by priority
-            console.log(userCategory)
+            // console.log(userCategory)
 
             let sortcategorylist = couponSortList.filter(i => category.includes(i.category))
             let firstuserCoupon = sortcategorylist
 
             console.log("After sorting")
-
-            console.log(firstuserCoupon)
-
-
-            // function search(nameKey, myArray) {
-            //     for (var i = 0; i < myArray.length; i++) {
-            //         if (myArray[i].category === nameKey) {
-            //             sortcategorylist.push(myArray[i])
-            //             // return myArray[i];
-            //         }
-            //     }
-            // }
-            // for (let i in userCategory) {
-            //     let couponDist = couponSortList.find(o => o.category == userCategory[i]);
-            //     if (couponDist != undefined) {
-            //         firstuserCoupon.push(couponDist)
-            //         // console.log(firstuserCoupon)
-            //     }
-            // }
-            // console.log(firstuserCoupon)
-            //  console.log(couponSortList)
-            // for (let i in userCategory) {
             userCoupon.find({ userid: "FmTD3G" }).lean().exec((err, data) => {
                 // console.log(data)
                 if (err) {
@@ -371,8 +329,7 @@ let userCouponDisribution = (req, res) => {
                     reject(response)
                 } else if (emptyCheck.emptyCheck(data)) {
 
-                    // pick random element from array of objects of coupon
-                    // var item = items[Math.floor(Math.random() * items.length)];
+
 
                     // add header params here
                     let purchasedAmount = 2001;
@@ -421,9 +378,6 @@ let userCouponDisribution = (req, res) => {
                                 }
                             })
                         }
-
-
-                        // resolve(firstuserCoupon)
                     }
                     if ((purchasedAmount < 1000 && purchasedAmount >= 500)) {
                         console.log("I am here - 2")
@@ -460,9 +414,6 @@ let userCouponDisribution = (req, res) => {
                                 }
                             })
                         }
-
-
-                        // resolve(firstuserCoupon)
                     }
                     if ((purchasedAmount < 2000 && purchasedAmount >= 1000)) {
                         console.log("I am here - 3")
@@ -499,33 +450,9 @@ let userCouponDisribution = (req, res) => {
                                 }
                             })
                         }
-
-
-                        // resolve(firstuserCoupon)
                     }
                     if (purchasedAmount >= 2000) {
                         console.log("I am here - 4")
-                        let teampCoupon = [];
-                        let finalCoupon = [];
-                        console.log(firstuserCoupon)
-
-
-                        let counter = []
-
-                        // firstuserCoupon.forEach(function() {
-                        //     var key = JSON
-                        //     counter[key] = (counter[key] || 0) + 1
-                        // })
-                        // console.log(counter)
-
-                        // function search(nameKey, myArray) {
-                        //     for (var i = 0; i < myArray.length; i++) {
-                        //         if (myArray[i].category === nameKey) {
-                        //             teampCoupon.push(myArray[i])
-                        //             // return myArray[i];
-                        //         }
-                        //     }
-                        // }
                         for (let x = firstuserCoupon.length; x > 5; x--) {
                             // let item = firstuserCoupon[Math.floor(Math.random() * firstuserCoupon.length)];
                             firstuserCoupon.pop()
@@ -560,10 +487,6 @@ let userCouponDisribution = (req, res) => {
                                 }
                             })
                         }
-
-
-
-                        // resolve(firstuserCoupon)
                     }
                 } else {
                     let purchasedAmount = 2001;
@@ -612,9 +535,6 @@ let userCouponDisribution = (req, res) => {
                                 }
                             })
                         }
-
-
-                        // resolve(firstuserCoupon)
                     }
                     if ((purchasedAmount < 1000 && purchasedAmount >= 500)) {
                         console.log("I am here - 2")
@@ -622,7 +542,6 @@ let userCouponDisribution = (req, res) => {
                             firstuserCoupon.pop()
                         }
                         for (let x = 0; x < firstuserCoupon.length; x++) {
-                            // console.log("I am here")
                             let datetoday = moment().format('DD-MM-YYYY')
                             let b = datetoday.split("-")
                             let zero = "0";
@@ -696,23 +615,7 @@ let userCouponDisribution = (req, res) => {
                     }
                     if (purchasedAmount >= 2000) {
                         console.log("I am here - 4")
-
-                        // firstuserCoupon.forEach(function() {
-                        //     var key = JSON
-                        //     counter[key] = (counter[key] || 0) + 1
-                        // })
-                        // console.log(counter)
-
-                        // function search(nameKey, myArray) {
-                        //     for (var i = 0; i < myArray.length; i++) {
-                        //         if (myArray[i].category === nameKey) {
-                        //             teampCoupon.push(myArray[i])
-                        //             // return myArray[i];
-                        //         }
-                        //     }
-                        // }
                         for (let x = firstuserCoupon.length; x > 5; x--) {
-                            // let item = firstuserCoupon[Math.floor(Math.random() * firstuserCoupon.length)];
                             firstuserCoupon.pop()
                         }
                         for (let x = 0; x < firstuserCoupon.length; x++) {
@@ -745,7 +648,6 @@ let userCouponDisribution = (req, res) => {
                                 }
                             })
                         }
-                        // resolve(firstuserCoupon)
                     }
                 }
             })
@@ -763,7 +665,6 @@ let userCouponDisribution = (req, res) => {
         res.send(response)
     }).catch((err) => {
         logger.error('no merchant available with valid coupon', 'findAllActiveCoupon:userCouponDisribution()', 10)
-        // let response = api.apiresponse(true, 500, 'no merchant available with valid coupon', null)
         res.send(err)
     })
 }
