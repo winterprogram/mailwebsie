@@ -281,55 +281,55 @@ let userCouponDisribution = (req, res) => {
             // let firstuserCoupon = sortcategorylist;
             let userCategory = category;
             let couponSortList = [];
-           
+
             // beautySpa(beautySalonSpa);
             // restaurant(restaurantBar);
             // boutik(boutiques);
 
             // let iceCream = (ar) => {
-                if (iceCreamList.length > 1) {
-                    couponSortList.push(iceCreamList[Math.floor(Math.random() * iceCreamList.length)])
-                } else {
-                    couponSortList.push(iceCreamList[0])
-                }
+            if (iceCreamList.length > 1) {
+                couponSortList.push(iceCreamList[Math.floor(Math.random() * iceCreamList.length)])
+            } else {
+                couponSortList.push(iceCreamList[0])
+            }
             // }
             // let cafeFast = (ar=cafeFastFood) => {
-                // console.log(cafeFastFood.length)
-                if (cafeFastFood.length > 1) {
-                    couponSortList.push(cafeFastFood[Math.floor(Math.random() * cafeFastFood.length)])
-                } else {
-                    couponSortList.push(cafeFastFood[0])
-                }
+            // console.log(cafeFastFood.length)
+            if (cafeFastFood.length > 1) {
+                couponSortList.push(cafeFastFood[Math.floor(Math.random() * cafeFastFood.length)])
+            } else {
+                couponSortList.push(cafeFastFood[0])
+            }
 
-                // console.log(couponSortList)
+            // console.log(couponSortList)
             // }
 
             // let beautySpa = (ar) => {
-                if (beautySalonSpa.length > 1) {
-                    couponSortList.push(beautySalonSpa[Math.floor(Math.random() * beautySalonSpa.length)])
-                } else {
-                    couponSortList.push(beautySalonSpa[0])
-                }
+            if (beautySalonSpa.length > 1) {
+                couponSortList.push(beautySalonSpa[Math.floor(Math.random() * beautySalonSpa.length)])
+            } else {
+                couponSortList.push(beautySalonSpa[0])
+            }
             // }
 
             // let restaurant = (ar) => {
-                if (restaurantBar.length > 1) {
-                    couponSortList.push(restaurantBar[Math.floor(Math.random() * restaurantBar.length)])
-                } else {
-                    couponSortList.push(restaurantBar[0])
-                }
+            if (restaurantBar.length > 1) {
+                couponSortList.push(restaurantBar[Math.floor(Math.random() * restaurantBar.length)])
+            } else {
+                couponSortList.push(restaurantBar[0])
+            }
             // }
 
             // let boutik = (ar) => {
-                if (boutiques.length > 1) {
-                    couponSortList.push(boutiques[Math.floor(Math.random() * boutiques.length)])
-                } else {
-                    couponSortList.push(boutiques[0])
-                }
+            if (boutiques.length > 1) {
+                couponSortList.push(boutiques[Math.floor(Math.random() * boutiques.length)])
+            } else {
+                couponSortList.push(boutiques[0])
+            }
             // }
 
             // calling functions
-          
+
 
             // console.log(couponSortList)
 
@@ -562,13 +562,193 @@ let userCouponDisribution = (req, res) => {
                         }
 
 
+
+                        // resolve(firstuserCoupon)
+                    }
+                } else {
+                    let purchasedAmount = 2001;
+
+                    if (purchasedAmount < 100) {
+                        console.log('I\'am not here')
+                        logger.error('user is not eligible for coupon', 'couponToUser:userCouponDisribution()', 5)
+                        let response = api.apiresponse(true, 503, 'user is not eligible for coupon', null)
+                        reject(response)
+                    }
+                    if ((purchasedAmount < 500 && purchasedAmount >= 100)) {
+                        console.log("I am here -1")
+
+                        for (let x = firstuserCoupon.length; x > 2; x--) {
+                            console.log(firstuserCoupon.length)
+                            firstuserCoupon.pop()
+                        }
+
+                        for (let x = 0; x < firstuserCoupon.length; x++) {
+                            console.log("I am here - 1")
+                            let datetoday = moment().format('DD-MM-YYYY')
+                            let b = datetoday.split("-")
+                            let zero = "0";
+                            let c = (Number(b[0]) + 7).toString()
+                            let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
+                            let valid = "1";
+                            let firstLot = new userCoupon({
+                                userid: "FmTD3G",
+                                couponcode: firstuserCoupon[x].couponcode,
+                                category: firstuserCoupon[x].category,
+                                enddate: enddate,
+                                valid: valid
+                            })
+                            firstLot.save((error, couponData) => {
+                                if (error) {
+                                    logger.error('error while saving coupon data for user', 'couponToUser:userCouponDisribution()', 1)
+                                    let response = api.apiresponse(true, 403, 'error while saving coupon data for user', null)
+                                    reject(response)
+                                } else if (emptyCheck.emptyCheck(couponData)) {
+                                    logger.error('error blank data while saving coupon data for user', 'couponToUser:userCouponDisribution()', 1)
+                                    let response = api.apiresponse(true, 404, 'error blank data while saving coupon data for user', null)
+                                    reject(response)
+                                } else {
+                                    logger.info('data saved for coupon data', 'couponToUser:userCouponDisribution()')
+                                    resolve(couponData)
+                                }
+                            })
+                        }
+
+
+                        // resolve(firstuserCoupon)
+                    }
+                    if ((purchasedAmount < 1000 && purchasedAmount >= 500)) {
+                        console.log("I am here - 2")
+                        for (let x = firstuserCoupon.length; x > 3; x--) {
+                            firstuserCoupon.pop()
+                        }
+                        for (let x = 0; x < firstuserCoupon.length; x++) {
+                            // console.log("I am here")
+                            let datetoday = moment().format('DD-MM-YYYY')
+                            let b = datetoday.split("-")
+                            let zero = "0";
+                            let c = (Number(b[0]) + 7).toString()
+                            let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
+                            let valid = "1";
+                            let firstLot = new userCoupon({
+                                userid: "FmTD3G",
+                                couponcode: firstuserCoupon[x].couponcode,
+                                category: firstuserCoupon[x].category,
+                                enddate: enddate,
+                                valid: valid
+                            })
+                            firstLot.save((error, couponData) => {
+                                if (error) {
+                                    logger.error('error while saving coupon data for user', 'couponToUser:userCouponDisribution()', 1)
+                                    let response = api.apiresponse(true, 403, 'error while saving coupon data for user', null)
+                                    reject(response)
+                                } else if (emptyCheck.emptyCheck(couponData)) {
+                                    logger.error('error blank data while saving coupon data for user', 'couponToUser:userCouponDisribution()', 1)
+                                    let response = api.apiresponse(true, 404, 'error blank data while saving coupon data for user', null)
+                                    reject(response)
+                                } else {
+                                    logger.info('data saved for coupon data', 'couponToUser:userCouponDisribution()')
+                                    resolve(couponData)
+                                }
+                            })
+                        }
+
+
+                        // resolve(firstuserCoupon)
+                    }
+                    if ((purchasedAmount < 2000 && purchasedAmount >= 1000)) {
+                        console.log("I am here - 3")
+                        for (let x = firstuserCoupon.length; x > 4; x--) {
+                            firstuserCoupon.pop()
+                        }
+                        for (let x = 0; x < firstuserCoupon.length; x++) {
+                            // console.log("I am here")
+                            let datetoday = moment().format('DD-MM-YYYY')
+                            let b = datetoday.split("-")
+                            let zero = "0";
+                            let c = (Number(b[0]) + 7).toString()
+                            let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
+                            let valid = "1";
+                            let firstLot = new userCoupon({
+                                userid: "FmTD3G",
+                                couponcode: firstuserCoupon[x].couponcode,
+                                category: firstuserCoupon[x].category,
+                                enddate: enddate,
+                                valid: valid
+                            })
+                            firstLot.save((error, couponData) => {
+                                if (error) {
+                                    logger.error('error while saving coupon data for user', 'couponToUser:userCouponDisribution()', 1)
+                                    let response = api.apiresponse(true, 403, 'error while saving coupon data for user', null)
+                                    reject(response)
+                                } else if (emptyCheck.emptyCheck(couponData)) {
+                                    logger.error('error blank data while saving coupon data for user', 'couponToUser:userCouponDisribution()', 1)
+                                    let response = api.apiresponse(true, 404, 'error blank data while saving coupon data for user', null)
+                                    reject(response)
+                                } else {
+                                    logger.info('data saved for coupon data', 'couponToUser:userCouponDisribution()')
+                                    resolve(couponData)
+                                }
+                            })
+                        }
+
+
+                        // resolve(firstuserCoupon)
+                    }
+                    if (purchasedAmount >= 2000) {
+                        console.log("I am here - 4")
+
+                        // firstuserCoupon.forEach(function() {
+                        //     var key = JSON
+                        //     counter[key] = (counter[key] || 0) + 1
+                        // })
+                        // console.log(counter)
+
+                        // function search(nameKey, myArray) {
+                        //     for (var i = 0; i < myArray.length; i++) {
+                        //         if (myArray[i].category === nameKey) {
+                        //             teampCoupon.push(myArray[i])
+                        //             // return myArray[i];
+                        //         }
+                        //     }
+                        // }
+                        for (let x = firstuserCoupon.length; x > 5; x--) {
+                            // let item = firstuserCoupon[Math.floor(Math.random() * firstuserCoupon.length)];
+                            firstuserCoupon.pop()
+                        }
+                        for (let x = 0; x < firstuserCoupon.length; x++) {
+                            // console.log("I am here")
+                            let datetoday = moment().format('DD-MM-YYYY')
+                            let b = datetoday.split("-")
+                            let zero = "0";
+                            let c = (Number(b[0]) + 7).toString()
+                            let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
+                            let valid = "1";
+                            let firstLot = new userCoupon({
+                                userid: "FmTD3G",
+                                couponcode: firstuserCoupon[x].couponcode,
+                                category: firstuserCoupon[x].category,
+                                enddate: enddate,
+                                valid: valid
+                            })
+                            firstLot.save((error, couponData) => {
+                                if (error) {
+                                    logger.error('error while saving coupon data for user', 'couponToUser:userCouponDisribution()', 1)
+                                    let response = api.apiresponse(true, 403, 'error while saving coupon data for user', null)
+                                    reject(response)
+                                } else if (emptyCheck.emptyCheck(couponData)) {
+                                    logger.error('error blank data while saving coupon data for user', 'couponToUser:userCouponDisribution()', 1)
+                                    let response = api.apiresponse(true, 404, 'error blank data while saving coupon data for user', null)
+                                    reject(response)
+                                } else {
+                                    logger.info('data saved for coupon data', 'couponToUser:userCouponDisribution()')
+                                    resolve(couponData)
+                                }
+                            })
+                        }
                         // resolve(firstuserCoupon)
                     }
                 }
-                // start from here else
             })
-            // }
-
         })
     }
 
