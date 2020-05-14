@@ -69,6 +69,65 @@
     "group": "user_dashboard",
     "version": "0.0.1",
     "type": "get",
+    "url": "/couponforCheckOut",
+    "title": "api to fetch coupon as per user and merchant matching key",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "userid",
+            "description": "<p>userid of the user. (header params)(required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "merchantid",
+            "description": "<p>merchantid of the merchant. (header params)(required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "API",
+            "description": "<p>Response shows error status, message, http status code and result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n                \"error\": false,\n                \"message\": 200,\n                \"status\": \"coupon for user fetched\",\n                \"data\": [\n               {\n              \"_id\": \"5ebd91c798fb0b295805a2b0\",\n              \"status\": \"Active\",\n              \"userid\": \"FmTD3G\",\n              \"couponcode\": \"NvEW3Z\",\n              \"category\": \"Cafe/Fast Food\",\n              \"merchantid\": \"h8SghQ\",\n              \"enddate\": \"22-05-2020\",\n              \"valid\": \"1\",\n              \"__v\": 0\n              },\n             {\n              \"_id\": \"5ebd91d998fb0b295805a2b2\",\n              \"status\": \"Active\",\n              \"userid\": \"FmTD3G\",\n              \"couponcode\": \"NvEW3Z\",\n              \"category\": \"Cafe/Fast Food\",\n              \"merchantid\": \"h8SghQ\",\n              \"enddate\": \"22-05-2020\",\n              \"valid\": \"1\",\n               \"__v\": 0\n              }\n                ]\n            }",
+          "type": "object"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{ \n \"error\": true,\n \"message\": \"error blank data while fetching coupon for user\",\n \"status\": 404,\n \"data\": null\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/userManage.js",
+    "groupTitle": "user_dashboard",
+    "name": "GetCouponforcheckout"
+  },
+  {
+    "group": "user_dashboard",
+    "version": "0.0.1",
+    "type": "get",
     "url": "/fetchCouponUser",
     "title": "api to fetch coupon for user",
     "parameter": {

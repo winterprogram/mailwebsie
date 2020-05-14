@@ -10,6 +10,10 @@ let usercoupon = new Schema({
         type: String,
         index: true
     },
+    merchantid: {
+        type: String,
+        index: true
+    },
     category: {
         type: String
     },

@@ -182,8 +182,8 @@ let userCouponDisribution = (req, res) => {
             // resolve(resultData)
             let listOfAllCouponWithInRangeTwo = [];
             // let listOfAllCouponWithInRangeFive = []
-            let userlatitude = "18.995279";
-            let userlongitude = "73.116272";
+            let userlatitude = "18.993292";
+            let userlongitude = "73.115773";
             for (let i in validCoupon) {
                 // console.log(validCoupon)
                 logger.info('caculating user to coupon distance', 'merchantToUser:userCouponDisribution()')
@@ -271,6 +271,7 @@ let userCouponDisribution = (req, res) => {
 
             let userCategory = category;
             let couponSortList = [];
+            console.log(cafeFastFood)
 
             // pick random element from array of objects of coupon
 
@@ -281,6 +282,7 @@ let userCouponDisribution = (req, res) => {
             }
 
             if (cafeFastFood.length > 1) {
+                console.log((cafeFastFood.length > 1))
                 couponSortList.push(cafeFastFood[Math.floor(Math.random() * cafeFastFood.length)])
             } else {
                 couponSortList.push(cafeFastFood[0])
@@ -306,7 +308,6 @@ let userCouponDisribution = (req, res) => {
 
 
             // sort by priority
-            // console.log(userCategory)
 
             let sortcategorylist = couponSortList.filter(i => category.includes(i.category))
             let firstuserCoupon = sortcategorylist
@@ -351,6 +352,7 @@ let userCouponDisribution = (req, res) => {
                                 userid: "FmTD3G",
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
+                                merchantid: firstuserCoupon[x].merchantid,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -387,6 +389,7 @@ let userCouponDisribution = (req, res) => {
                                 userid: "FmTD3G",
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
+                                merchantid: firstuserCoupon[x].merchantid,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -423,6 +426,7 @@ let userCouponDisribution = (req, res) => {
                                 userid: "FmTD3G",
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
+                                merchantid: firstuserCoupon[x].merchantid,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -460,6 +464,7 @@ let userCouponDisribution = (req, res) => {
                                 userid: "FmTD3G",
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
+                                merchantid: firstuserCoupon[x].merchantid,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -508,6 +513,7 @@ let userCouponDisribution = (req, res) => {
                                 userid: "FmTD3G",
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
+                                merchantid: firstuserCoupon[x].merchantid,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -543,6 +549,7 @@ let userCouponDisribution = (req, res) => {
                                 userid: "FmTD3G",
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
+                                merchantid: firstuserCoupon[x].merchantid,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -582,6 +589,7 @@ let userCouponDisribution = (req, res) => {
                                 userid: "FmTD3G",
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
+                                merchantid: firstuserCoupon[x].merchantid,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -621,6 +629,7 @@ let userCouponDisribution = (req, res) => {
                                 userid: "FmTD3G",
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
+                                merchantid: firstuserCoupon[x].merchantid,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -686,7 +695,34 @@ let getAllCouponForUser = (req, res) => {
 }
 
 
-
+let couponSectionDuringCheckout = (req, res) => {
+    let findUserAndMerchantTogether = () => {
+        return new Promise((resolve, reject) => {
+            userCoupon.find({ $and: [{ userid: "FmTD3G" }, { merchantid: "h8Sgh" }, { valid: "1" }] }).lean().exec((err, result) => {
+                if (err) {
+                    logger.error('error fetching coupon for user', 'userCouponDetail:getAllCouponForUser()', 5)
+                    let response = api.apiresponse(true, 403, 'error fetching coupon for user', null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(result)) {
+                    logger.error('error blank data while fetching coupon for user', 'userCouponDetail:getAllCouponForUser()', 1)
+                    let response = api.apiresponse(true, 404, 'error blank data while fetching coupon for user', null)
+                    reject(response)
+                } else {
+                    logger.info('coupon for user fetched', 'userCouponDetail:getAllCouponForUser()')
+                    let response = api.apiresponse(false, 200, 'coupon for user fetched', result)
+                    resolve(response)
+                }
+            })
+        })
+    }
+    findUserAndMerchantTogether(req, res).then((resolve) => {
+        logger.info('coupon for user fetched', 'userCouponDetail:getAllCouponForUser()')
+        res.send(resolve)
+    }).catch((err) => {
+        logger.error('error blank data while fetching coupon for user', 'userCouponDetail:getAllCouponForUser()', 1)
+        res.send(err)
+    })
+}
 
 
 
@@ -695,5 +731,6 @@ let getAllCouponForUser = (req, res) => {
 module.exports = {
     userMerchantDisplay: userMerchantDisplay,
     userCouponDisribution: userCouponDisribution,
-    getAllCouponForUser: getAllCouponForUser
+    getAllCouponForUser: getAllCouponForUser,
+    couponSectionDuringCheckout: couponSectionDuringCheckout
 }

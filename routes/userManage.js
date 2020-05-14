@@ -149,6 +149,55 @@ let routes = (app) => {
                "data": null
                 }
             */
+    app.get('/couponforCheckOut', usercontroller.couponSectionDuringCheckout)
+    /**
+                 * @apiGroup user dashboard
+                 * @apiVersion 0.0.1
+                 * @api {get} /couponforCheckOut api to fetch coupon as per user and merchant matching key
+                 * 
+                 * @apiParam {string} userid userid of the user. (header params)(required)
+                 * @apiParam {string} merchantid merchantid of the merchant. (header params)(required)
+                 *  
+                 * @apiSuccess {object}  API Response shows error status, message, http status code and result.
+                 * 
+                 * @apiSuccessExample {object} Success-Response:
+                 * {
+                "error": false,
+                "message": 200,
+                "status": "coupon for user fetched",
+                "data": [
+               {
+              "_id": "5ebd91c798fb0b295805a2b0",
+              "status": "Active",
+              "userid": "FmTD3G",
+              "couponcode": "NvEW3Z",
+              "category": "Cafe/Fast Food",
+              "merchantid": "h8SghQ",
+              "enddate": "22-05-2020",
+              "valid": "1",
+              "__v": 0
+              },
+             {
+              "_id": "5ebd91d998fb0b295805a2b2",
+              "status": "Active",
+              "userid": "FmTD3G",
+              "couponcode": "NvEW3Z",
+              "category": "Cafe/Fast Food",
+              "merchantid": "h8SghQ",
+              "enddate": "22-05-2020",
+              "valid": "1",
+               "__v": 0
+              }
+                ]
+            }
+                 * @apiErrorExample Error-Response:
+                  { 
+                   "error": true,
+                   "message": "error blank data while fetching coupon for user",
+                   "status": 404,
+                   "data": null
+                    }
+                */
 
     // merchant signup and login
     app.post('/merchantSignup', merchantData.merchantData)
