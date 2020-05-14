@@ -22,10 +22,6 @@ let usercoupon = new Schema({
     },
     valid: {
         type: String
-    },
-    status: {
-        type: String,
-        default: "Active"
     }
 })
 

@@ -726,11 +726,78 @@ let couponSectionDuringCheckout = (req, res) => {
 
 
 
+let purgecouponforUser = (req, res) => {
+
+    let deletecouponforpurge = () => {
+        return new Promise((resolve, reject) => {
+            // let day = (Number(moment().format('DD'))+1).toString();
+            // let month = moment().format('MM')
+            // let year = moment().format('YYYY')
+            // let datetoday = `${day}-${month}-${year}`
+            let datetoday = moment().format('DD-MM-YYYY')
+            // console.log(datetoday)
+            userCoupon.find({ valid: "1" }).exec((err, result) => {
+                // console.log(result)
+                if (err) {
+                    logger.error('cron service error at purge for user', 'deletecouponforpurge :purgecoupon()', 5)
+                    let response = api.apiresponse('cron service error at purge for user', 'deletecouponforpurge :purgecoupon()', 500, null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(result)) {
+                    logger.error('cron service error at purge for user received blank data', 'deletecouponforpurge :purgecoupon()', 5)
+                    let response = api.apiresponse('cron service error at purge for user received blank data', 'deletecouponforpurge :purgecoupon()', 500, null)
+                    reject(response)
+                } else {
+                    for (let i = 0; i < result.length; i++) {
+                        let a = result[i].enddate
+                        let b = a.split("-")
+                        let zero = "0";
+                        // let c = ((b[0])).toString()
+                        let c = (Number(b[0]) + 1).toString()
+                        let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
+                        console.log(enddate)
+                        if (enddate == datetoday) {
+                            logger.info('cron servise updated for user', 'deletecouponforpurge()')
+                            userCoupon.updateMany({ valid: "1", enddate: result[i].enddate }, { $set: { valid: "0" } }).exec((error, data) => {
+                                //  console.log(result)
+                                if (error) {
+                                    logger.error('cron service error at purge for user', 'deletecouponforpurge :purgecoupon()', 5)
+                                    let response = api.apiresponse(true, 'cron service error at purge for user', 'deletecouponforpurge :purgecoupon()', 500, null)
+                                    reject(response)
+                                } else if (emptyCheck.emptyCheck(data)) {
+                                    logger.error('cron service error at purge for user received blank data', 'deletecouponforpurge :purgecoupon()', 5)
+                                    let response = api.apiresponse(true, 'cron service error at purge for user received blank data', 'deletecouponforpurge :purgecoupon()', 404, null)
+                                    reject(response)
+                                } else {
+                                    logger.info('Cron service purge done for user ', 'deletecouponforpurge :purgecoupon() ')
+                                    resolve(data)
+
+                                }
+                            })
+                        }
+                    }
+
+                }
+            })
+        })
+    }
+
+    deletecouponforpurge(req, res).then((resolve) => {
+        logger.info('corn purge done for merchant', 'deletecouponforpurge')
+        let response = api.apiresponse(false, 'corn purge done for merchant', 200, null)
+        res.send(response)
+    }).catch((err) => {
+        logger.error('error at corn purge for merchant', 'deletecouponforpurge', 5)
+        let response = api.apiresponse(true, 'error at corn purge for merchant', 500, null)
+        // console.log(err)
+        res.send(response)
+    })
+}
 
 
 module.exports = {
     userMerchantDisplay: userMerchantDisplay,
     userCouponDisribution: userCouponDisribution,
     getAllCouponForUser: getAllCouponForUser,
-    couponSectionDuringCheckout: couponSectionDuringCheckout
+    couponSectionDuringCheckout: couponSectionDuringCheckout,
+    purgecouponforUser: purgecouponforUser
 }

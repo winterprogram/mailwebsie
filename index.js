@@ -20,6 +20,7 @@ const crons = require('node-cron')
 const moment = require('moment')
 const timeZone = 'Asia/Calcutta'
 const purge = require('./controllers/coupongen')
+const userPurge = require('./controllers/usercontoller')
 // app.use(cors({origin: 'http://localhost:4200'}));
 
 app.use(cookieparser())
@@ -40,7 +41,8 @@ server.on('listening', onlisten)
 crons.schedule('0  1 * * *', () => {
     console.log('running a task every minute')
     purge.purgecoupon()
-    console.log('coupon purge done for merchant')
+    userPurge.purgecouponforUser()
+    console.log('coupon purge done for user/merchant')
 
 })
 
