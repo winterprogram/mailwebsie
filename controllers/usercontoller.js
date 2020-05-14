@@ -182,8 +182,8 @@ let userCouponDisribution = (req, res) => {
             // resolve(resultData)
             let listOfAllCouponWithInRangeTwo = [];
             // let listOfAllCouponWithInRangeFive = []
-            let userlatitude = "18.993292";
-            let userlongitude = "73.115773";
+            let userlatitude = req.headers.userlatitude;
+            let userlongitude = req.headers.userlongitude;
             for (let i in validCoupon) {
                 // console.log(validCoupon)
                 logger.info('caculating user to coupon distance', 'merchantToUser:userCouponDisribution()')
@@ -217,7 +217,7 @@ let userCouponDisribution = (req, res) => {
 
     let sortCouponToUsercategory = (listOfAllCouponWithInRangeTwo) => {
         return new Promise((resolve, reject) => {
-            signup.find({ userid: "FmTD3G" }).lean().exec((err, resultData) => {
+            signup.find({ userid: req.headers.userid }).lean().exec((err, resultData) => {
                 // console.log(resultData[0].categoryselected:) 
                 if (err) {
                     logger.error('error while fetching user with userid', 'finduser:userCouponDisribution()', 5)
@@ -313,7 +313,7 @@ let userCouponDisribution = (req, res) => {
             let firstuserCoupon = sortcategorylist
 
             console.log("After sorting")
-            userCoupon.find({ userid: "FmTD3G" }).lean().exec((err, data) => {
+            userCoupon.find({ userid: req.headers.userid }).lean().exec((err, data) => {
                 // console.log(data)
                 if (err) {
                     logger.error('error while fetching user with userid and category', 'couponToUser:userCouponDisribution()', 5)
@@ -349,7 +349,7 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: "FmTD3G",
+                                userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
@@ -386,7 +386,7 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: "FmTD3G",
+                                userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
@@ -423,7 +423,7 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: "FmTD3G",
+                                userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
@@ -461,7 +461,7 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: "FmTD3G",
+                                userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
@@ -510,7 +510,7 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: "FmTD3G",
+                                userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
@@ -546,7 +546,7 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: "FmTD3G",
+                                userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
@@ -586,7 +586,7 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: "FmTD3G",
+                                userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
@@ -626,7 +626,7 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: "FmTD3G",
+                                userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
@@ -698,7 +698,7 @@ let getAllCouponForUser = (req, res) => {
 let couponSectionDuringCheckout = (req, res) => {
     let findUserAndMerchantTogether = () => {
         return new Promise((resolve, reject) => {
-            userCoupon.find({ $and: [{ userid: "FmTD3G" }, { merchantid: "h8Sgh" }, { valid: "1" }] }).lean().exec((err, result) => {
+            userCoupon.find({ $and: [{ userid: req.headers.userid }, { merchantid: req.headers.merchantid }, { valid: "1" }] }).lean().exec((err, result) => {
                 if (err) {
                     logger.error('error fetching coupon for user', 'userCouponDetail:getAllCouponForUser()', 5)
                     let response = api.apiresponse(true, 403, 'error fetching coupon for user', null)
