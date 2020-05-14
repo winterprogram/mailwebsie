@@ -103,8 +103,54 @@ let routes = (app) => {
             }
         */
 
-    // merchant signup and login
+    // fetch coupon user wise
+    app.get('/fetchCouponUser', usercontroller.getAllCouponForUser)
 
+    /**
+             * @apiGroup user dashboard
+             * @apiVersion 0.0.1
+             * @api {get} /fetchCouponUser api to fetch coupon for user
+             * 
+             * @apiParam {string} userid userid of the user. (header params)(required)
+             *  
+             * @apiSuccess {object}  API Response shows error status, message, http status code and result.
+             * 
+             * @apiSuccessExample {object} Success-Response:
+             * {
+            "error": false,
+            "message": 200,
+            "status": "coupon for user fetched",
+            "data": [
+        {
+            "_id": "5ebc5b09fb22412e143b3f46",
+            "userid": "FmTD3G",
+            "couponcode": "WGgFqK",
+            "category": "Ice-Cream Parlour",
+            "enddate": "21-05-2020",
+            "valid": "1",
+            "__v": 0
+        },
+        {
+            "_id": "5ebc5b09fb22412e143b3f47",
+            "userid": "FmTD3G",
+            "couponcode": "NvEW3Z",
+            "category": "Cafe/Fast Food",
+            "enddate": "21-05-2020",
+            "valid": "1",
+            "__v": 0
+        }
+            ]
+        }
+             * @apiErrorExample Error-Response:
+              { 
+               "error": true,
+               "message": "error blank data while fetching coupon for user",
+               "status": 404,
+               "data": null
+                }
+            */
+
+    // merchant signup and login
     app.post('/merchantSignup', merchantData.merchantData)
     app.post('/merchantlogin', merchantlogin.merchantlogin)
     //image upload 

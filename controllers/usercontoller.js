@@ -655,7 +655,35 @@ let userCouponDisribution = (req, res) => {
     })
 }
 
+let getAllCouponForUser = (req, res) => {
+    let userCouponDetail = () => {
+        return new Promise((resolve, reject) => {
+            userCoupon.find({ userid: req.headers.userid }).lean().exec((err, result) => {
+                if (err) {
+                    logger.error('error fetching coupon for user', 'userCouponDetail:getAllCouponForUser()', 5)
+                    let response = api.apiresponse(true, 403, 'error fetching coupon for user', null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(result)) {
+                    logger.error('error blank data while fetching coupon for user', 'userCouponDetail:getAllCouponForUser()', 1)
+                    let response = api.apiresponse(true, 404, 'error blank data while fetching coupon for user', null)
+                    reject(response)
+                } else {
+                    logger.info('coupon for user fetched', 'userCouponDetail:getAllCouponForUser()')
+                    let response = api.apiresponse(false, 200, 'coupon for user fetched', result)
+                    resolve(response)
+                }
+            })
+        })
+    }
+    userCouponDetail(req, res).then((resolve) => {
+        logger.info('coupon for user fetched', 'userCouponDetail:getAllCouponForUser()')
+        res.send(resolve)
+    }).catch((err) => {
+        logger.error('error blank data while fetching coupon for user', 'userCouponDetail:getAllCouponForUser()', 1)
+        res.send(err)
+    })
 
+}
 
 
 
@@ -666,5 +694,6 @@ let userCouponDisribution = (req, res) => {
 
 module.exports = {
     userMerchantDisplay: userMerchantDisplay,
-    userCouponDisribution: userCouponDisribution
+    userCouponDisribution: userCouponDisribution,
+    getAllCouponForUser: getAllCouponForUser
 }
