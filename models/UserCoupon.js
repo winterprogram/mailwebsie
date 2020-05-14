@@ -3,10 +3,12 @@ const Schema = mongoose.Schema
 
 let usercoupon = new Schema({
     userid: {
-        type: String
+        type: String,
+        index: true
     },
     couponcode: {
-        type: String
+        type: String,
+        index: true
     },
     category: {
         type: String
@@ -16,6 +18,10 @@ let usercoupon = new Schema({
     },
     valid: {
         type: String
+    },
+    status: {
+        type: String,
+        default: "Active"
     }
 })
 

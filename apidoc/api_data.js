@@ -130,5 +130,71 @@ define({ "api": [
     "filename": "routes/userManage.js",
     "groupTitle": "user_dashboard",
     "name": "GetFormaps"
+  },
+  {
+    "group": "user_dashboard",
+    "version": "0.0.1",
+    "type": "post",
+    "url": "/coupontouser",
+    "title": "api distribute merchant coupon to user after successfull transaction. Number of coupon is decided on amount transaction by user",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "userlatitude",
+            "description": "<p>Current latitude of the user. (header params)(required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "userlongitude",
+            "description": "<p>Current longitude of the user. (header params)(required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "userid",
+            "description": "<p>userid of the user. (header params)(required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "API",
+            "description": "<p>Response shows error status, message, http status code and result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n        \"error\": false,\n        \"message\": 200,\n        \"status\": \"coupon distributed to user successfully\",\n        \"data\": [\n            {\n                \n               \"_id\" : ObjectId(\"5ebc5d336da6bd244055c5f2\"),\n\t           \"userid\" : \"FmTD3G\",\n\t           \"couponcode\" : \"9PA1FS\",\n\t           \"category\" : \"Cafe/Fast Food\",\n\t           \"enddate\" : \"21-05-2020\",\n\t           \"valid\" : \"1\",\n\t           \"__v\" : 0\n            }\n        ]\n    }",
+          "type": "object"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{ \n \"error\": true,\n \"message\": \"no merchant available with valid coupon\",\n \"status\": 500,\n \"data\": null\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/userManage.js",
+    "groupTitle": "user_dashboard",
+    "name": "PostCoupontouser"
   }
 ] });

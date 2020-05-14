@@ -260,16 +260,7 @@ let userCouponDisribution = (req, res) => {
                             }
                         }
                     }
-                    // console.log(iceCreamList)
-                    //  console.log(cafeFastFood)
-                    // console.log(beautySalonSpa)
-                    // console.log(restaurantBar)
-                    // console.log(boutiques)
-
-                    // listOfAllCouponWithInRangeTwo.filter(i => i.category.indexOf() !== -1);
                     resolve([category, iceCreamList, cafeFastFood, beautySalonSpa, restaurantBar, boutiques])
-
-
                 }
             })
 
@@ -654,17 +645,12 @@ let userCouponDisribution = (req, res) => {
         })
     }
 
-
-
-
-
-
     addGeoCode(req, res).then(findValidCoupon).then(findCouponNeartoUser).then(sortCouponToUsercategory).then(couponToUser).then((resolve) => {
-        logger.info('merchant available with valid coupon', 'findAllActiveCoupon:userCouponDisribution()')
-        let response = api.apiresponse(false, 200, 'merchant available with valid coupon', resolve)
+        logger.info('coupon distributed to user successfully ', 'userCouponDisribution()')
+        let response = api.apiresponse(false, 200, 'coupon distributed to user successfully ', resolve)
         res.send(response)
     }).catch((err) => {
-        logger.error('no merchant available with valid coupon', 'findAllActiveCoupon:userCouponDisribution()', 10)
+        logger.error('no merchant available with valid coupon', 'userCouponDisribution()', 10)
         res.send(err)
     })
 }

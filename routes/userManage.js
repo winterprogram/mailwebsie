@@ -65,6 +65,44 @@ let routes = (app) => {
 
     // user coupon distribution
     app.post('/coupontouser', usercontroller.userCouponDisribution)
+    /**
+         * @apiGroup user dashboard
+         * @apiVersion 0.0.1
+         * @api {post} /coupontouser api distribute merchant coupon to user after successfull transaction. Number of coupon is decided on amount transaction by user
+         * 
+         * @apiParam {string} userlatitude Current latitude of the user. (header params)(required)
+         * @apiParam {string} userlongitude Current longitude of the user. (header params)(required)
+         * @apiParam {string} userid userid of the user. (header params)(required)
+         *  
+         * @apiSuccess {object}  API Response shows error status, message, http status code and result.
+         * 
+         * @apiSuccessExample {object} Success-Response:
+         * {
+        "error": false,
+        "message": 200,
+        "status": "coupon distributed to user successfully",
+        "data": [
+            {
+                
+               "_id" : ObjectId("5ebc5d336da6bd244055c5f2"),
+	           "userid" : "FmTD3G",
+	           "couponcode" : "9PA1FS",
+	           "category" : "Cafe/Fast Food",
+	           "enddate" : "21-05-2020",
+	           "valid" : "1",
+	           "__v" : 0
+            }
+        ]
+    }
+         * @apiErrorExample Error-Response:
+          { 
+           "error": true,
+           "message": "no merchant available with valid coupon",
+           "status": 500,
+           "data": null
+            }
+        */
+
     // merchant signup and login
 
     app.post('/merchantSignup', merchantData.merchantData)
