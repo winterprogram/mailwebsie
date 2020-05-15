@@ -65,9 +65,9 @@ let userMerchantDisplay = (req, res) => {
                     { latitude: Number(userlatitude), longitude: Number(userlongitude) },
                     { latitude: Number(resultobject[i].latitude), longitude: Number(resultobject[i].longitude) }
                 )) * 0.001
-                console.log(userdistance)
+                //console.log(userdistance)
                 if (userdistance <= 15) {
-                    console.log(resultobject[i])
+                   // console.log(resultobject[i])
                     logger.info('merchant destination is less than 15 Km', 'calculateDistance:userMerchantDisplay()')
                     listofmerchant.push(resultobject[i])
                 } else {
@@ -184,15 +184,20 @@ let userCouponDisribution = (req, res) => {
             // let listOfAllCouponWithInRangeFive = []
             let userlatitude = req.headers.userlatitude;
             let userlongitude = req.headers.userlongitude;
+            //console.log(typeof(userlatitude));
             for (let i in validCoupon) {
-                // console.log(validCoupon)
+               // console.log(validCoupon[i])
+                 //console.log(validCoupon[i].latitude);
+                 //console.log(typeof(validCoupon[i].latitude));
                 logger.info('caculating user to coupon distance', 'merchantToUser:userCouponDisribution()')
+                //console.log('user'+userlatitude);
                 let userdistance = (geolib.getDistance(
                     { latitude: Number(userlatitude), longitude: Number(userlongitude) },
                     { latitude: Number(validCoupon[i].latitude), longitude: Number(validCoupon[i].longitude) }
                 )) * 0.001
-                // console.log(userdistance)
+                //console.log('userdistance'+userdistance)
                 if (userdistance <= 5) {
+                    //console.log(validCoupon[i])
                     logger.info('coupon found with in 5KM radius', 'merchantToUser:userCouponDisribution()')
                     listOfAllCouponWithInRangeTwo.push(validCoupon[i])
                 }
@@ -237,14 +242,15 @@ let userCouponDisribution = (req, res) => {
                     let beautySalonSpa = [];
                     let restaurantBar = [];
                     let boutiques = [];
-                    console.log(category)
+                    //console.log(category)
                     // for (let x in category) {
                     // listOfAllCouponWithInRangeTwo.filter(i => i.category.indexOf(category[x]) == -1);
                     search(listOfAllCouponWithInRangeTwo)
-                    // console.log(listOfAllCouponWithInRangeTwo)
+                    //console.log(listOfAllCouponWithInRangeTwo)
                     // }
                     // search category selected by user and seperate
                     function search(myArray) {
+                        //console.log(myArray)
                         for (var i = 0; i < myArray.length; i++) {
                             if (myArray[i].category == "Ice-Cream Parlour") {
                                 iceCreamList.push(myArray[i])
@@ -260,6 +266,7 @@ let userCouponDisribution = (req, res) => {
                             }
                         }
                     }
+                    //console.log(beautySalonSpa)
                     resolve([category, iceCreamList, cafeFastFood, beautySalonSpa, restaurantBar, boutiques])
                 }
             })
@@ -271,47 +278,34 @@ let userCouponDisribution = (req, res) => {
 
             let userCategory = category;
             let couponSortList = [];
-            console.log(cafeFastFood)
+            //console.log(beautySalonSpa)
 
             // pick random element from array of objects of coupon
 
-            if (iceCreamList.length > 1) {
+            if (iceCreamList.length > 0) {
                 couponSortList.push(iceCreamList[Math.floor(Math.random() * iceCreamList.length)])
-            } else {
-                couponSortList.push(iceCreamList[0])
-            }
+            } 
 
-            if (cafeFastFood.length > 1) {
-                console.log((cafeFastFood.length > 1))
+            if (cafeFastFood.length > 0) {
                 couponSortList.push(cafeFastFood[Math.floor(Math.random() * cafeFastFood.length)])
-            } else {
-                couponSortList.push(cafeFastFood[0])
-            }
-
-            if (beautySalonSpa.length > 1) {
+            } 
+            if (beautySalonSpa.length > 0) {
                 couponSortList.push(beautySalonSpa[Math.floor(Math.random() * beautySalonSpa.length)])
-            } else {
-                couponSortList.push(beautySalonSpa[0])
             }
 
-            if (restaurantBar.length > 1) {
+            if (restaurantBar.length > 0) {
                 couponSortList.push(restaurantBar[Math.floor(Math.random() * restaurantBar.length)])
-            } else {
-                couponSortList.push(restaurantBar[0])
-            }
+            } 
 
-            if (boutiques.length > 1) {
+            if (boutiques.length > 0) {
                 couponSortList.push(boutiques[Math.floor(Math.random() * boutiques.length)])
-            } else {
-                couponSortList.push(boutiques[0])
-            }
+            } 
 
-
+console.log(couponSortList)
             // sort by priority
-
+            
             let sortcategorylist = couponSortList.filter(i => category.includes(i.category))
             let firstuserCoupon = sortcategorylist
-
             console.log("After sorting")
             userCoupon.find({ userid: req.headers.userid }).lean().exec((err, data) => {
                 // console.log(data)
@@ -447,6 +441,7 @@ let userCouponDisribution = (req, res) => {
                         }
                     }
                     if (purchasedAmount >= 2000) {
+                        console.log(firstuserCoupon)
                         console.log("I am here - 4")
                         for (let x = firstuserCoupon.length; x > 5; x--) {
                             // let item = firstuserCoupon[Math.floor(Math.random() * firstuserCoupon.length)];
