@@ -77,7 +77,8 @@ let userMerchantDisplay = (req, res) => {
             // console.log(listofmerchant)
             if (emptyCheck.emptyCheck(listofmerchant)) {
                 logger.error('merchant is far >15 Km', 'calculateDistance:userMerchantDisplay()', 10)
-                reject(listofmerchant)
+                let response = api.apiresponse(true, 404, 'merchant is far >15 Km', null)
+                reject(response)
 
             } else {
                 resolve(listofmerchant)
@@ -212,7 +213,7 @@ let userCouponDisribution = (req, res) => {
                 resolve(listOfAllCouponWithInRangeTwo)
             } else {
                 logger.error('no coupon found with in 5KM', 'merchantToUser:userCouponDisribution()', 5)
-                let response=api.apiresponse(true,404,'no coupon found with in 5KM',null)
+                let response = api.apiresponse(true, 404, 'no coupon found with in 5KM', null)
                 reject(response)
             }
 
@@ -343,12 +344,12 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                               userid: req.headers.userid,
+                                userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
-                                faltdiscountupto:firstuserCoupon[x].faltdiscountupto, 
+                                faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -387,7 +388,7 @@ let userCouponDisribution = (req, res) => {
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
-                                faltdiscountupto:firstuserCoupon[x].faltdiscountupto, 
+                                faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -421,12 +422,12 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                               userid: req.headers.userid,
+                                userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
-                                faltdiscountupto:firstuserCoupon[x].faltdiscountupto, 
+                                faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -462,12 +463,12 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                               userid: req.headers.userid,
+                                userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
-                                faltdiscountupto:firstuserCoupon[x].faltdiscountupto, 
+                                faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -513,12 +514,12 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                               userid: req.headers.userid,
+                                userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
-                                faltdiscountupto:firstuserCoupon[x].faltdiscountupto, 
+                                faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -551,12 +552,12 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                               userid: req.headers.userid,
+                                userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
-                                faltdiscountupto:firstuserCoupon[x].faltdiscountupto, 
+                                faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -593,12 +594,12 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                               userid: req.headers.userid,
+                                userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
-                                faltdiscountupto:firstuserCoupon[x].faltdiscountupto, 
+                                faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -622,7 +623,7 @@ let userCouponDisribution = (req, res) => {
                         // resolve(firstuserCoupon)
                     }
                     if (purchasedAmount >= 2000) {
-                        
+
                         console.log("I am here - 4")
                         for (let x = firstuserCoupon.length; x > 5; x--) {
                             firstuserCoupon.pop()
@@ -636,12 +637,12 @@ let userCouponDisribution = (req, res) => {
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                               userid: req.headers.userid,
+                                userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
-                                faltdiscountupto:firstuserCoupon[x].faltdiscountupto, 
+                                faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -672,7 +673,7 @@ let userCouponDisribution = (req, res) => {
         res.send(response)
     }).catch((err) => {
         logger.error('no merchant available with valid coupon', 'userCouponDisribution()', 10)
-        console.log('a'+err)
+        console.log('a' + err)
         res.send(err)
     })
 }

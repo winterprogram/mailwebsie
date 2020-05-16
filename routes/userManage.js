@@ -79,8 +79,8 @@ let routes = (app) => {
          * @apiSuccessExample {object} Success-Response:
          * {
         "error": false,
-        "message": 200,
-        "status": "coupon distributed to user successfully",
+        "status": 200,
+        "message": "coupon distributed to user successfully",
         "data": [
             {
                 

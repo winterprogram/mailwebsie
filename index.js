@@ -107,3 +107,4 @@ mongoose.connection.on('open', (req, res, err) => {
     }
 })
 
+module.exports = server

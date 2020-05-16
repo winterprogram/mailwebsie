@@ -1,8 +1,8 @@
-let apiresponse = (err, message, status, data) => {
+let apiresponse = (err, status,message, data) => {
     let response = {
         error: err,
-        message: message,
         status: status,
+        message: message,
         data: data
     }
     return response
