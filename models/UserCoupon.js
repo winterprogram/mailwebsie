@@ -20,6 +20,12 @@ let usercoupon = new Schema({
     enddate: {
         type: String
     },
+    discount: {
+        type: String
+    },
+    faltdiscountupto: {
+        type: String
+    },
     valid: {
         type: String
     }

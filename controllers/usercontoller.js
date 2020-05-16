@@ -67,7 +67,7 @@ let userMerchantDisplay = (req, res) => {
                 )) * 0.001
                 //console.log(userdistance)
                 if (userdistance <= 15) {
-                   // console.log(resultobject[i])
+                    // console.log(resultobject[i])
                     logger.info('merchant destination is less than 15 Km', 'calculateDistance:userMerchantDisplay()')
                     listofmerchant.push(resultobject[i])
                 } else {
@@ -186,9 +186,9 @@ let userCouponDisribution = (req, res) => {
             let userlongitude = req.headers.userlongitude;
             //console.log(typeof(userlatitude));
             for (let i in validCoupon) {
-               // console.log(validCoupon[i])
-                 //console.log(validCoupon[i].latitude);
-                 //console.log(typeof(validCoupon[i].latitude));
+                // console.log(validCoupon[i])
+                //console.log(validCoupon[i].latitude);
+                //console.log(typeof(validCoupon[i].latitude));
                 logger.info('caculating user to coupon distance', 'merchantToUser:userCouponDisribution()')
                 //console.log('user'+userlatitude);
                 let userdistance = (geolib.getDistance(
@@ -206,7 +206,7 @@ let userCouponDisribution = (req, res) => {
                 //     listOfAllCouponWithInRangeFive.push(validCoupon[i])
                 // }
             }
-            if (listOfAllCouponWithInRangeTwo.length >= 0) {
+            if (listOfAllCouponWithInRangeTwo.length > 0) {
                 logger.info('coupon found with in 2KM radius -2', 'merchantToUser:userCouponDisribution()')
                 // console.log(listOfAllCouponWithInRangeTwo)
                 resolve(listOfAllCouponWithInRangeTwo)
@@ -281,29 +281,28 @@ let userCouponDisribution = (req, res) => {
             //console.log(beautySalonSpa)
 
             // pick random element from array of objects of coupon
-
             if (iceCreamList.length > 0) {
                 couponSortList.push(iceCreamList[Math.floor(Math.random() * iceCreamList.length)])
-            } 
+            }
 
             if (cafeFastFood.length > 0) {
                 couponSortList.push(cafeFastFood[Math.floor(Math.random() * cafeFastFood.length)])
-            } 
+            }
             if (beautySalonSpa.length > 0) {
                 couponSortList.push(beautySalonSpa[Math.floor(Math.random() * beautySalonSpa.length)])
             }
 
             if (restaurantBar.length > 0) {
                 couponSortList.push(restaurantBar[Math.floor(Math.random() * restaurantBar.length)])
-            } 
+            }
 
             if (boutiques.length > 0) {
                 couponSortList.push(boutiques[Math.floor(Math.random() * boutiques.length)])
-            } 
+            }
 
-console.log(couponSortList)
-            // sort by priority
-            
+            console.log(couponSortList)
+            // sort by priority/*  */
+
             let sortcategorylist = couponSortList.filter(i => category.includes(i.category))
             let firstuserCoupon = sortcategorylist
             console.log("After sorting")
@@ -343,10 +342,12 @@ console.log(couponSortList)
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: req.headers.userid,
+                               userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
+                                discount: firstuserCoupon[x].discount,
+                                faltdiscountupto:firstuserCoupon[x].faltdiscountupto, 
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -384,6 +385,8 @@ console.log(couponSortList)
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
+                                discount: firstuserCoupon[x].discount,
+                                faltdiscountupto:firstuserCoupon[x].faltdiscountupto, 
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -417,10 +420,12 @@ console.log(couponSortList)
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: req.headers.userid,
+                               userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
+                                discount: firstuserCoupon[x].discount,
+                                faltdiscountupto:firstuserCoupon[x].faltdiscountupto, 
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -456,10 +461,12 @@ console.log(couponSortList)
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: req.headers.userid,
+                               userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
+                                discount: firstuserCoupon[x].discount,
+                                faltdiscountupto:firstuserCoupon[x].faltdiscountupto, 
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -505,10 +512,12 @@ console.log(couponSortList)
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: req.headers.userid,
+                               userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
+                                discount: firstuserCoupon[x].discount,
+                                faltdiscountupto:firstuserCoupon[x].faltdiscountupto, 
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -541,10 +550,12 @@ console.log(couponSortList)
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: req.headers.userid,
+                               userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
+                                discount: firstuserCoupon[x].discount,
+                                faltdiscountupto:firstuserCoupon[x].faltdiscountupto, 
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -581,10 +592,12 @@ console.log(couponSortList)
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: req.headers.userid,
+                               userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
+                                discount: firstuserCoupon[x].discount,
+                                faltdiscountupto:firstuserCoupon[x].faltdiscountupto, 
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -621,10 +634,12 @@ console.log(couponSortList)
                             let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                             let valid = "1";
                             let firstLot = new userCoupon({
-                                userid: req.headers.userid,
+                               userid: req.headers.userid,
                                 couponcode: firstuserCoupon[x].couponcode,
                                 category: firstuserCoupon[x].category,
                                 merchantid: firstuserCoupon[x].merchantid,
+                                discount: firstuserCoupon[x].discount,
+                                faltdiscountupto:firstuserCoupon[x].faltdiscountupto, 
                                 enddate: enddate,
                                 valid: valid
                             })
