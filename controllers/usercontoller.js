@@ -212,7 +212,8 @@ let userCouponDisribution = (req, res) => {
                 resolve(listOfAllCouponWithInRangeTwo)
             } else {
                 logger.error('no coupon found with in 5KM', 'merchantToUser:userCouponDisribution()', 5)
-                reject(listOfAllCouponWithInRangeTwo)
+                let response=api.apiresponse(true,404,'no coupon found with in 5KM',null)
+                reject(response)
             }
 
             // }
@@ -621,12 +622,13 @@ let userCouponDisribution = (req, res) => {
                         // resolve(firstuserCoupon)
                     }
                     if (purchasedAmount >= 2000) {
+                        
                         console.log("I am here - 4")
                         for (let x = firstuserCoupon.length; x > 5; x--) {
                             firstuserCoupon.pop()
                         }
                         for (let x = 0; x < firstuserCoupon.length; x++) {
-                            // console.log("I am here")
+                            //console.log("I am here")
                             let datetoday = moment().format('DD-MM-YYYY')
                             let b = datetoday.split("-")
                             let zero = "0";
@@ -670,6 +672,7 @@ let userCouponDisribution = (req, res) => {
         res.send(response)
     }).catch((err) => {
         logger.error('no merchant available with valid coupon', 'userCouponDisribution()', 10)
+        console.log('a'+err)
         res.send(err)
     })
 }
