@@ -31,8 +31,8 @@ const moment = require('moment')
 const Razorpay = require('razorpay')
 
 let instance = new Razorpay({
-    key_id: 'rzp_test_4Mu3PQaOJWjgyV',
-    key_secret: 'vohB9Xj17vQf5GxOokCO1ldQ',
+    key_id: '',
+    key_secret: '',
 })
 
 let storePayments = (req, res) => {
