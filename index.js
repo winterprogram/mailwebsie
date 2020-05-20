@@ -10,6 +10,7 @@ const middlewareOnStart = require('./middleware/errorOnInitial')
 const middlewareOnRoute = require('./middleware/errorOnRoutes')
 const cookieparser = require('cookie-parser')
 const bodyparser = require('body-parser')
+const helmet = require('helmet')
 const empty = require('./libs/emptyCheck')
 const api = require('./libs/apiresponse')
 var cors = require('cors');
@@ -77,7 +78,7 @@ function onlisten() {
 
     let db = mongoose.connect(appconfigs.db.uri, { useNewUrlParser: true, useUnifiedTopology: true })
 }
-
+app.use(helmet())
 app.use(middlewareOnRoute.routes)
 let route = './routes'
 fs.readdirSync(route).forEach(function (file) {

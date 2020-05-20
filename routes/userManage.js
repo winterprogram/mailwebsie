@@ -78,7 +78,7 @@ let routes = (app) => {
          * @apiSuccess {object}  API Response shows error status, message, http status code and result.
          * 
          * @apiSuccessExample {object} Success-Response:
-         * {
+ * {
         "error": false,
         "status": 200,
         "message": "coupon distributed to user successfully",
@@ -117,7 +117,7 @@ let routes = (app) => {
              * @apiSuccess {object}  API Response shows error status, message, http status code and result.
              * 
              * @apiSuccessExample {object} Success-Response:
-             * {
+     * {
             "error": false,
             "message": 200,
             "status": "coupon for user fetched",
@@ -168,25 +168,25 @@ let routes = (app) => {
                 "status": "coupon for user fetched",
                 "data": [
                {
-              "_id": "5ebd91c798fb0b295805a2b0",
-              "status": "Active",
-              "userid": "FmTD3G",
-              "couponcode": "NvEW3Z",
-              "category": "Cafe/Fast Food",
-              "merchantid": "h8SghQ",
-              "enddate": "22-05-2020",
-              "valid": "1",
-              "__v": 0
+                "_id": "5ebd91c798fb0b295805a2b0",
+                "status": "Active",
+                "userid": "FmTD3G",
+                "couponcode": "NvEW3Z",
+                "category": "Cafe/Fast Food",
+                "merchantid": "h8SghQ",
+                "enddate": "22-05-2020",
+                "valid": "1",
+                "__v": 0
               },
              {
-              "_id": "5ebd91d998fb0b295805a2b2",
-              "status": "Active",
-              "userid": "FmTD3G",
-              "couponcode": "NvEW3Z",
-              "category": "Cafe/Fast Food",
-              "merchantid": "h8SghQ",
-              "enddate": "22-05-2020",
-              "valid": "1",
+               "_id": "5ebd91d998fb0b295805a2b2",
+               "status": "Active",
+               "userid": "FmTD3G",
+               "couponcode": "NvEW3Z",
+               "category": "Cafe/Fast Food",
+               "merchantid": "h8SghQ",
+               "enddate": "22-05-2020",
+               "valid": "1",
                "__v": 0
               }
                 ]
@@ -200,6 +200,8 @@ let routes = (app) => {
                     }
                 */
     app.post('/payments', payments.storePayments)
+
+
     // merchant signup and login
     app.post('/merchantSignup', merchantData.merchantData)
     app.post('/merchantlogin', merchantlogin.merchantlogin)
@@ -220,15 +222,15 @@ let routes = (app) => {
      * 
      * @apiSuccessExample {object} Success-Response:
      * {
-    "error": false,
-    "message": "resolved ",
-    "status": 200,
-    "data": {
+     "error": false,
+     "message": "resolved ",
+     "status": 200,
+     "data": {
         "n": 1,
         "nModified": 1,
         "ok": 1
     }
-}
+        }
      * @apiErrorExample Error-Response:
       { 
        "error": true,

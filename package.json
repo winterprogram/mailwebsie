@@ -27,6 +27,7 @@
     "express": "^4.17.1",
     "geolib": "^3.2.1",
     "google-distance-matrix": "^1.1.1",
+    "helmet": "^3.22.0",
     "jsonwebtoken": "^8.5.1",
     "method-override": "^3.0.0",
     "mixpanel-browser": "^2.36.0",
