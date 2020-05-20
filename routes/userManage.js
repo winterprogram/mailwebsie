@@ -8,6 +8,7 @@ const merchantlogin = require('./../controllers/userloginMerchant')
 const admin = require('../controllers/admin')
 const usercontroller = require('./../controllers/usercontoller')
 const merchantImageUpload = require('./../controllers/imageupload')
+const payments = require('./../controllers/payments')
 
 let routes = (app) => {
     // user signup and login
@@ -198,7 +199,7 @@ let routes = (app) => {
                    "data": null
                     }
                 */
-
+    app.post('/payments', payments.storePayments)
     // merchant signup and login
     app.post('/merchantSignup', merchantData.merchantData)
     app.post('/merchantlogin', merchantlogin.merchantlogin)
