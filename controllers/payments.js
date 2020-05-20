@@ -39,6 +39,7 @@ let storePayments = (req, res) => {
         orderid: req.body.orderid,
         signature: req.body.signature,
         errorcode: req.body.errorcode,
+        orderamount:req.body.orderamount,
         message: req.body.message,
         createdon: datetoday
     })

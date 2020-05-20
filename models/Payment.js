@@ -3,10 +3,13 @@ const Schema = mongoose.Schema
 
 const paymentId = new Schema({
     merchantid: {
-        type: String
+        type: String,
+        index: true,
+        required: true
     },
     userid: {
-        type: String
+        type: String,
+        required: true
     },
     paymentid: {
         type: String
@@ -23,8 +26,11 @@ const paymentId = new Schema({
     message: {
         type: String
     },
-    createdon:{
-        type:String
+    orderamount: {
+        type: String
+    },
+    createdon: {
+        type: String
     }
 })
 
