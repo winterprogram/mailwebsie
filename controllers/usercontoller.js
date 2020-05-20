@@ -129,7 +129,7 @@ let userCouponDisribution = (req, res) => {
                         "category": "$geocode.category",
                         "latitude": "$geocode.latitude",
                         "longitude": "$geocode.longitude",
-                        "merchantname":"$geocode.fullname"
+                        "merchantname":"$geocode.shopname"
                     }
                 }
             ]).exec((err, result) => {
