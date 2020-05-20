@@ -200,7 +200,41 @@ let routes = (app) => {
                     }
                 */
     app.post('/payments', payments.storePayments)
-
+    /**
+                 * @apiGroup user dashboard
+                 * @apiVersion 0.0.1
+                 * @api {post} /payments api to store order of the user generated from razorpay
+                 * 
+                 * @apiParam {number} amount amount entered byuser. (body params)(required)
+                 * @apiParam {string} userid userid of the user. (body params)(required)
+                 * @apiParam {string} merchantid merchantid of the merchant. (body params)(required)
+                 * 
+                 * @apiSuccess {object}  API Response shows error status, message, http status code and result.
+                 * 
+                 * @apiSuccessExample {object} Success-Response:
+                 *{
+                   "error": false,
+                   "status": 200,
+                   "message": "data saved for payments",
+                   "data": {
+                   "notes": [],
+                   "_id": "5ec58b1741eea03c2cc06ba5",
+                   "id": "order_Esja9JRvG0EymB",
+                   "entity": "order",
+                   "amount": 50000,
+                   "amount_paid": 0,
+                   "amount_due": 50000,
+                   "currency": "INR",
+                   "receipt": "order_HIxzP4G_s40O",
+                   "offer_id": null,
+                   "status": "created",
+                   "attempts": 0,
+                   "created_at": 1590004503,
+                   "createdon": "21-05-2020",
+                   "__v": 0
+                  }
+                    }
+                */
 
     // merchant signup and login
     app.post('/merchantSignup', merchantData.merchantData)

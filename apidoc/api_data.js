@@ -47,7 +47,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n    \"error\": false,\n    \"message\": \"resolved \",\n    \"status\": 200,\n    \"data\": {\n        \"n\": 1,\n        \"nModified\": 1,\n        \"ok\": 1\n    }\n}",
+          "content": "{\n     \"error\": false,\n     \"message\": \"resolved \",\n     \"status\": 200,\n     \"data\": {\n        \"n\": 1,\n        \"nModified\": 1,\n        \"ok\": 1\n    }\n        }",
           "type": "object"
         }
       ]
@@ -106,7 +106,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n                \"error\": false,\n                \"message\": 200,\n                \"status\": \"coupon for user fetched\",\n                \"data\": [\n               {\n              \"_id\": \"5ebd91c798fb0b295805a2b0\",\n              \"status\": \"Active\",\n              \"userid\": \"FmTD3G\",\n              \"couponcode\": \"NvEW3Z\",\n              \"category\": \"Cafe/Fast Food\",\n              \"merchantid\": \"h8SghQ\",\n              \"enddate\": \"22-05-2020\",\n              \"valid\": \"1\",\n              \"__v\": 0\n              },\n             {\n              \"_id\": \"5ebd91d998fb0b295805a2b2\",\n              \"status\": \"Active\",\n              \"userid\": \"FmTD3G\",\n              \"couponcode\": \"NvEW3Z\",\n              \"category\": \"Cafe/Fast Food\",\n              \"merchantid\": \"h8SghQ\",\n              \"enddate\": \"22-05-2020\",\n              \"valid\": \"1\",\n               \"__v\": 0\n              }\n                ]\n            }",
+          "content": "{\n                \"error\": false,\n                \"message\": 200,\n                \"status\": \"coupon for user fetched\",\n                \"data\": [\n               {\n                \"_id\": \"5ebd91c798fb0b295805a2b0\",\n                \"status\": \"Active\",\n                \"userid\": \"FmTD3G\",\n                \"couponcode\": \"NvEW3Z\",\n                \"category\": \"Cafe/Fast Food\",\n                \"merchantid\": \"h8SghQ\",\n                \"enddate\": \"22-05-2020\",\n                \"valid\": \"1\",\n                \"__v\": 0\n              },\n             {\n               \"_id\": \"5ebd91d998fb0b295805a2b2\",\n               \"status\": \"Active\",\n               \"userid\": \"FmTD3G\",\n               \"couponcode\": \"NvEW3Z\",\n               \"category\": \"Cafe/Fast Food\",\n               \"merchantid\": \"h8SghQ\",\n               \"enddate\": \"22-05-2020\",\n               \"valid\": \"1\",\n               \"__v\": 0\n              }\n                ]\n            }",
           "type": "object"
         }
       ]
@@ -290,7 +290,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n        \"error\": false,\n        \"message\": 200,\n        \"status\": \"coupon distributed to user successfully\",\n        \"data\": [\n            {\n                \n               \"_id\" : ObjectId(\"5ebc5d336da6bd244055c5f2\"),\n\t           \"userid\" : \"FmTD3G\",\n\t           \"couponcode\" : \"9PA1FS\",\n\t           \"category\" : \"Cafe/Fast Food\",\n\t           \"enddate\" : \"21-05-2020\",\n\t           \"valid\" : \"1\",\n\t           \"__v\" : 0\n            }\n        ]\n    }",
+          "content": "{\n        \"error\": false,\n        \"status\": 200,\n        \"message\": \"coupon distributed to user successfully\",\n        \"data\": [\n            {\n                \n               \"_id\" : ObjectId(\"5ebc5d336da6bd244055c5f2\"),\n\t           \"userid\" : \"FmTD3G\",\n\t           \"couponcode\" : \"9PA1FS\",\n\t           \"category\" : \"Cafe/Fast Food\",\n\t           \"enddate\" : \"21-05-2020\",\n\t           \"valid\" : \"1\",\n\t           \"__v\" : 0\n            }\n        ]\n    }",
           "type": "object"
         }
       ]
@@ -307,5 +307,62 @@ define({ "api": [
     "filename": "routes/userManage.js",
     "groupTitle": "user_dashboard",
     "name": "PostCoupontouser"
+  },
+  {
+    "group": "user_dashboard",
+    "version": "0.0.1",
+    "type": "post",
+    "url": "/payments",
+    "title": "api to store order of the user generated from razorpay",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "number",
+            "optional": false,
+            "field": "amount",
+            "description": "<p>amount entered byuser. (body params)(required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "userid",
+            "description": "<p>userid of the user. (body params)(required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "merchantid",
+            "description": "<p>merchantid of the merchant. (body params)(required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "API",
+            "description": "<p>Response shows error status, message, http status code and result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n                   \"error\": false,\n                   \"status\": 200,\n                   \"message\": \"data saved for payments\",\n                   \"data\": {\n                   \"notes\": [],\n                   \"_id\": \"5ec58b1741eea03c2cc06ba5\",\n                   \"id\": \"order_Esja9JRvG0EymB\",\n                   \"entity\": \"order\",\n                   \"amount\": 50000,\n                   \"amount_paid\": 0,\n                   \"amount_due\": 50000,\n                   \"currency\": \"INR\",\n                   \"receipt\": \"order_HIxzP4G_s40O\",\n                   \"offer_id\": null,\n                   \"status\": \"created\",\n                   \"attempts\": 0,\n                   \"created_at\": 1590004503,\n                   \"createdon\": \"21-05-2020\",\n                   \"__v\": 0\n                  }\n                    }",
+          "type": "object"
+        }
+      ]
+    },
+    "filename": "routes/userManage.js",
+    "groupTitle": "user_dashboard",
+    "name": "PostPayments"
   }
 ] });

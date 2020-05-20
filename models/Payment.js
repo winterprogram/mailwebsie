@@ -4,34 +4,52 @@ const Schema = mongoose.Schema
 const paymentId = new Schema({
     merchantid: {
         type: String,
-        index: true,
-        required: true
+        required: true,
+        index: true
     },
     userid: {
         type: String,
         required: true
     },
-    paymentid: {
+    id: {
         type: String
     },
-    orderid: {
+    entity: {
         type: String
     },
-    signature: {
+    amount: {
+        type: Number
+    },
+    amount_paid: {
+        type: Number
+    },
+    amount_due: {
+        type: Number
+    },
+    currency: {
         type: String
     },
-    errorcode: {
+    receipt: {
         type: String
     },
-    message: {
+    offer_id: {
         type: String
     },
-    orderamount: {
+    status: {
         type: String
+    },
+    attempts: {
+        type: Number
+    },
+    notes: {
+        type: Array
+    },
+    created_at: {
+        type: Number
     },
     createdon: {
         type: String
-    }
+    },
 })
 
 let paymentsfromuser = mongoose.model('razorpayments', paymentId)
