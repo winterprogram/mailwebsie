@@ -128,7 +128,8 @@ let userCouponDisribution = (req, res) => {
                         "valid": 1,
                         "category": "$geocode.category",
                         "latitude": "$geocode.latitude",
-                        "longitude": "$geocode.longitude"
+                        "longitude": "$geocode.longitude",
+                        "merchantname":"$geocode.fullname"
                     }
                 }
             ]).exec((err, result) => {
@@ -350,6 +351,7 @@ let userCouponDisribution = (req, res) => {
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
                                 faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
+                                merchantname:firstuserCoupon[x].merchantname,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -389,6 +391,7 @@ let userCouponDisribution = (req, res) => {
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
                                 faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
+                                merchantname:firstuserCoupon[x].merchantname,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -428,6 +431,7 @@ let userCouponDisribution = (req, res) => {
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
                                 faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
+                                merchantname:firstuserCoupon[x].merchantname,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -469,6 +473,7 @@ let userCouponDisribution = (req, res) => {
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
                                 faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
+                                merchantname:firstuserCoupon[x].merchantname,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -520,6 +525,7 @@ let userCouponDisribution = (req, res) => {
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
                                 faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
+                                merchantname:firstuserCoupon[x].merchantname,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -558,6 +564,7 @@ let userCouponDisribution = (req, res) => {
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
                                 faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
+                                merchantname:firstuserCoupon[x].merchantname,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -600,6 +607,7 @@ let userCouponDisribution = (req, res) => {
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
                                 faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
+                                merchantname:firstuserCoupon[x].merchantname,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -643,6 +651,7 @@ let userCouponDisribution = (req, res) => {
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
                                 faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
+                                merchantname:firstuserCoupon[x].merchantname,
                                 enddate: enddate,
                                 valid: valid
                             })

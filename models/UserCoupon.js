@@ -23,6 +23,9 @@ let usercoupon = new Schema({
     discount: {
         type: String
     },
+    merchantname:{
+        type: String
+    },
     faltdiscountupto: {
         type: String
     },
