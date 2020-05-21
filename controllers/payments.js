@@ -81,10 +81,48 @@ let storePayments = (req, res) => {
             }
         })
     });
+}
 
 
+let getPaymentByOrder = (req, res) => {
+    let amountPaidByUser = () => {
+        return new Promise((resolve, reject) => {
+            let a = req.body.order
+            instance.orders.fetch(a, function (err, order) {
+                console.log(order.amount_paid)
+                if (order.amount_paid > 0) {
+                    payments.update({ id: a }, { $set: { amount_paid: order.amount_paid, amount_due: 0 } }).exec((err, data) => {
+                        if (err) {
+                            logger.error('error while updating payments', 'amountPaidByUser:getPaymentByOrder()', 1)
+                            let response = api.apiresponse(true, 500, 'error while saving payments', null)
+                            reject(response)
+                        } else if (emptyCheck.emptyCheck(data)) {
+                            logger.error('error blank data while updating payments', 'amountPaidByUser:getPaymentByOrder()', 1)
+                            let response = api.apiresponse(true, 404, 'error blank data while updating payments', null)
+                            reject(response)
+                        } else {
+                            logger.info('data updated for payments', 'amountPaidByUser:getPaymentByOrder()')
+                            resolve(data)
+                        }
+                    })
+                } else {
+                    logger.error('amount_paid is = 0', 'amountPaidByUser:getPaymentByOrder()', 5)
+                    let response = api.apiresponse(true, 500, 'amount_paid is = 0', null)
+                    reject(response)
+                }
+            });
+        })
+    }
+
+    amountPaidByUser(req, res).then((resolve) => {
+        let response = api.apiresponse(false, 200, 'data updated for payments', resolve)
+        res.send(response)
+    }).catch((err) => {
+        res.send(err)
+    })
 }
 
 module.exports = {
-    storePayments: storePayments
+    storePayments: storePayments,
+    getPaymentByOrder: getPaymentByOrder
 }

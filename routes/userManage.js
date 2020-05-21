@@ -236,6 +236,8 @@ let routes = (app) => {
                     }
                 */
 
+        app.post('/getPaymentByOrder',payments.getPaymentByOrder)
+
     // merchant signup and login
     app.post('/merchantSignup', merchantData.merchantData)
     app.post('/merchantlogin', merchantlogin.merchantlogin)
