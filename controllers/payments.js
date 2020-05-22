@@ -131,13 +131,13 @@ let merchantEarning = (req, res) => {
                     logger.error('error while fetching merchant payment info', 'getMerchantAmount:merchantEarning()', 1)
                     let response = api.apiresponse(true, 500, 'error while saving payments', null)
                     reject(response)
-                } else if (emptyCheck.emptyCheck(data)) {
+                } else if (emptyCheck.emptyCheck(result)) {
                     logger.error('error blank data while updating payments', 'getMerchantAmount:merchantEarning()', 1)
                     let response = api.apiresponse(true, 404, 'error blank data while updating payments', null)
                     reject(response)
                 } else {
                     logger.info('data updated for payments', 'getMerchantAmount:merchantEarning()')
-                    resolve(data)
+                    resolve(result)
                 }
             })
         })
