@@ -122,7 +122,36 @@ let getPaymentByOrder = (req, res) => {
     })
 }
 
+
+let merchantEarning = (req, res) => {
+    let getMerchantAmount = () => {
+        return new Promise((resolve, reject) => {
+            payments.find({ $and: [{ merchantid: req.heards.merchantid }, { amount_paid: { $gt: 0 } }] }).exec((err, result) => {
+                if (err) {
+                    logger.error('error while fetching merchant payment info', 'getMerchantAmount:merchantEarning()', 1)
+                    let response = api.apiresponse(true, 500, 'error while saving payments', null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(data)) {
+                    logger.error('error blank data while updating payments', 'getMerchantAmount:merchantEarning()', 1)
+                    let response = api.apiresponse(true, 404, 'error blank data while updating payments', null)
+                    reject(response)
+                } else {
+                    logger.info('data updated for payments', 'getMerchantAmount:merchantEarning()')
+                    resolve(data)
+                }
+            })
+        })
+    }
+    getMerchantAmount(req, res).then((resolve) => {
+        let response = api.apiresponse(false, 200, 'data fetched for merchant', resolve)
+        res.send(response)
+    }).catch((err) => {
+        res.send(err)
+    })
+}
+
 module.exports = {
     storePayments: storePayments,
-    getPaymentByOrder: getPaymentByOrder
+    getPaymentByOrder: getPaymentByOrder,
+    merchantEarning: merchantEarning
 }

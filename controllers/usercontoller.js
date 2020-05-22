@@ -29,6 +29,7 @@ const userCoupon = mongoose.model('coupondistribution')
 const signup = mongoose.model('signupforuser')
 const moment = require('moment')
 
+
 let userMerchantDisplay = (req, res) => {
 
     let getallmerchants = () => {
@@ -682,7 +683,7 @@ let userCouponDisribution = (req, res) => {
         res.send(response)
     }).catch((err) => {
         logger.error('no merchant available with valid coupon', 'userCouponDisribution()', 10)
-        console.log('a' + err)
+        // console.log('a' + err)
         res.send(err)
     })
 }
