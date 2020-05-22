@@ -26,6 +26,8 @@ const c = require('./../models/Coupongen')
 const coupon = mongoose.model('coupons')
 const a = require('./../models/Payment')
 const payments = mongoose.model('razorpayments')
+const b = require('./../models/Adminpayment')
+const payout = mongoose.model('weeklypayout')
 const signup = mongoose.model('signupforuser')
 const moment = require('moment')
 const Razorpay = require('razorpay')
@@ -47,7 +49,6 @@ let storePayments = (req, res) => {
         payment_capture: '1'
     };
     instance.orders.create(options, function (error, order) {
-        // console.log(order);
         let saveData = new payments({
             merchantid: req.body.merchantid,
             userid: req.body.userid,
@@ -126,7 +127,7 @@ let getPaymentByOrder = (req, res) => {
 let merchantEarning = (req, res) => {
     let getMerchantAmount = () => {
         return new Promise((resolve, reject) => {
-            payments.find({ $and: [{ merchantid: req.heards.merchantid }, { amount_paid: { $gt: 0 } }] }).exec((err, result) => {
+            payments.find({ $and: [{ merchantid: req.heards.merchantid }, { isPaid: false }, { amount_paid: { $gt: 0 } }] }).exec((err, result) => {
                 if (err) {
                     logger.error('error while fetching merchant payment info', 'getMerchantAmount:merchantEarning()', 1)
                     let response = api.apiresponse(true, 500, 'error while saving payments', null)
@@ -142,7 +143,25 @@ let merchantEarning = (req, res) => {
             })
         })
     }
-    getMerchantAmount(req, res).then((resolve) => {
+    let fillByDate = (result) => {
+        return new Promise((resolve, reject) => {
+            let finalamount = [];
+            for (let i in result) {
+                let temp = result[i].amount_paid - (result[i].amount_paid * 0.04);
+                finalamount.push(temp)
+            }
+            if (finalamount.length > 0) {
+                logger.info('final data after commission cut', 'fillByDate:merchantEarning()')
+                resolve(finalamount)
+            } else {
+                logger.error('error blank data while updating payments', 'fillByDate:merchantEarning()', 1)
+                let response = api.apiresponse(true, 404, 'error blank data while updating payments', null)
+                reject(response)
+            }
+
+        })
+    }
+    getMerchantAmount(req, res).then(fillByDate).then((resolve) => {
         let response = api.apiresponse(false, 200, 'data fetched for merchant', resolve)
         res.send(response)
     }).catch((err) => {
@@ -150,8 +169,101 @@ let merchantEarning = (req, res) => {
     })
 }
 
+
+let paidisTrue = (req, res) => {
+    let findMerWithFalse = () => {
+        return new Promise((resolve, reject) => {
+            payments.find({ $and: [{ merchantid: req.heards.merchantid }, { isPaid: false }, { amount_paid: { $gt: 0 } }] }).exec((err, result) => {
+                if (err) {
+                    logger.error('error while fetching merchant payment info', 'findMerWithFalse:paidisTrue()', 1)
+                    let response = api.apiresponse(true, 500, 'error while saving payments', null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(result)) {
+                    logger.error('error blank data while updating payments', 'findMerWithFalse:paidisTrue()', 1)
+                    let response = api.apiresponse(true, 404, 'error blank data while updating payments', null)
+                    reject(response)
+                } else {
+                    logger.info('data for payout', 'findMerWithFalse:paidisTrue()')
+                    resolve(result)
+                }
+            })
+        })
+    }
+
+    let saveDataBeforeSave = (result) => {
+        return new Promise((resolve, reject) => {
+            // get list of all merchants
+            let merchantIdTemp = [];
+            for (let i = 0; i < result.length; i++) {
+                let temp = result[i].merchantid;
+                merchantIdTemp.push(temp)
+            }
+            // merchant wise data payout
+            let finalamount = [];
+            let adminAmount = [];
+            let datetoday = moment().format('DD-MM-YYYY')
+            for (let i = 0; i < result.length; i++) {
+                for (let x = 0; x < merchantIdTemp.length; x++) {
+                    if (result[i].merchantid == merchantIdTemp[x].merchantid) {
+                        let temp = result[i].amount_paid - (result[i].amount_paid * 0.04);
+                        finalamount.push(temp)
+                        let adTemp = (result[i].amount_paid * 0.04);
+                        adminAmount.push(adTemp)
+                    }
+                    let weekly = new payout({
+                        merchantid: merchantIdTemp[x].merchantid,
+                        merchantpayout: finalamount,
+                        adminpayout: adminAmount,
+                        createdon: datetoday,
+                        isPaid: true
+                    })
+                    weekly.save((err, data) => {
+                        if (err) {
+                            logger.error('error while saving payout data', 'saveDataBeforeSave:paidisTrue()', 1)
+                            let response = api.apiresponse(true, 500, 'error while saving payments', null)
+                            reject(response)
+                        } else if (emptyCheck.emptyCheck(data)) {
+                            logger.error('error blank data while updating payments', 'saveDataBeforeSave:paidisTrue()', 1)
+                            let response = api.apiresponse(true, 404, 'error blank data while updating payments', null)
+                            reject(response)
+                        } else {
+                            logger.info('new data for payments', 'saveDataBeforeSave:paidisTrue()')
+                            resolve(data)
+                        }
+                    })
+                }
+
+
+            }
+        })
+    }
+    let updateData = () => {
+        return new Promise((resolve, reject) => {
+            payments.update({ isPaid: false }, { $set: { isPaid: true } }).exec((error, data) => {
+                if (error) {
+                    logger.error('error while fetching merchant payment info', 'updateData:paidisTrue()', 1)
+                    let response = api.apiresponse(true, 500, 'error while saving payments', null)
+                    reject(response)
+                } else {
+                    logger.info('data updated for payments', 'updateData:paidisTrue()')
+                    resolve(data)
+                }
+            })
+
+        })
+    }
+    findMerWithFalse(req, res).then(saveDataBeforeSave).then(updateData).then((resolve) => {
+        let response = api.apiresponse(false, 200, 'data updated for merchant', resolve)
+        res.send(response)
+    }).catch((err) => {
+        res.send(err)
+    })
+
+}
+
 module.exports = {
     storePayments: storePayments,
     getPaymentByOrder: getPaymentByOrder,
-    merchantEarning: merchantEarning
+    merchantEarning: merchantEarning,
+    paidisTrue: paidisTrue
 }

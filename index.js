@@ -22,6 +22,7 @@ const moment = require('moment')
 const timeZone = 'Asia/Calcutta'
 const purge = require('./controllers/coupongen')
 const userPurge = require('./controllers/usercontoller')
+const paymentupdate = require('./controllers/payments')
 // app.use(cors({origin: 'http://localhost:4200'}));
 
 app.use(cookieparser())
@@ -43,6 +44,13 @@ crons.schedule('0  1 * * *', () => {
     console.log('running a task every minute')
     purge.purgecoupon()
     userPurge.purgecouponforUser()
+    console.log('coupon purge done for user/merchant')
+
+})
+
+crons.schedule('01  12 * * 5', () => {
+    console.log('running a task every minute')
+    paymentupdate.paidisTrue()
     console.log('coupon purge done for user/merchant')
 
 })

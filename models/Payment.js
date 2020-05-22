@@ -50,6 +50,10 @@ const paymentId = new Schema({
     createdon: {
         type: String
     },
+    isPaid: {
+        type: Boolean,
+        default: false
+    }
 })
 
 let paymentsfromuser = mongoose.model('razorpayments', paymentId)

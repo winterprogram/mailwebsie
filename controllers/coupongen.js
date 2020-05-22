@@ -354,7 +354,7 @@ let deletecoupon = (req, res) => {
                     let response = api.apiresponse(true, 'coupon exist didn\'t exist for this merchant', 404, null)
                     reject(response)
                 } else {
-                    coupon.updateOne({ valid: "1", merchantid: req.headers.merchantid }, { $set: { valid: "0"} }).exec((error, data) => {
+                    coupon.updateOne({ valid: "1", merchantid: req.headers.merchantid }, { $set: { valid: "0" } }).exec((error, data) => {
                         if (error) {
                             logger.error('something went wrong during updating valid 1 to 0', 'deletecoupon:update()', 10)
                             let response = api.apiresponse(true, 'something went wrong during updating valid 1 to 0', 500, null)
@@ -455,10 +455,6 @@ let purgecoupon = (req, res) => {
 
     let deletecouponforpurge = () => {
         return new Promise((resolve, reject) => {
-            // let day = (Number(moment().format('DD'))+1).toString();
-            // let month = moment().format('MM')
-            // let year = moment().format('YYYY')
-            // let datetoday = `${day}-${month}-${year}`
             let datetoday = moment().format('DD-MM-YYYY')
             // console.log(datetoday)
             coupon.find({ valid: "1" }).exec((err, result) => {
@@ -476,7 +472,7 @@ let purgecoupon = (req, res) => {
                         let a = result[i].enddate
                         let b = a.split("-")
                         let zero = "0";
-                        let c = (Number(b[0]) + 1).toString()
+                        let c = (Number(b[0]) + 7).toString()
                         let enddate = `${c.length > 1 ? c : zero.concat(c)}-${b[1]}-${b[2]}`
                         console.log(enddate)
                         if (enddate == datetoday) {
