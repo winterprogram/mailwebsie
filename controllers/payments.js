@@ -196,43 +196,62 @@ let paidisTrue = (req, res) => {
             let merchantIdTemp = [];
             for (let i = 0; i < result.length; i++) {
                 let temp = result[i].merchantid;
-                merchantIdTemp.push(temp)
-            }
-            // merchant wise data payout
-            let finalamount = [];
-            let adminAmount = [];
-            let datetoday = moment().format('DD-MM-YYYY')
-            for (let i = 0; i < result.length; i++) {
-                for (let x = 0; x < merchantIdTemp.length; x++) {
-                    if (result[i].merchantid == merchantIdTemp[x].merchantid) {
-                        let temp = result[i].amount_paid - (result[i].amount_paid * 0.04);
-                        finalamount.push(temp)
-                        let adTemp = (result[i].amount_paid * 0.04);
-                        adminAmount.push(adTemp)
-                    }
-                    let weekly = new payout({
-                        merchantid: merchantIdTemp[x].merchantid,
-                        merchantpayout: finalamount,
-                        adminpayout: adminAmount,
-                        createdon: datetoday,
-                        isPaid: true
-                    })
-                    weekly.save((err, data) => {
-                        if (err) {
-                            logger.error('error while saving payout data', 'saveDataBeforeSave:paidisTrue()', 1)
-                            let response = api.apiresponse(true, 500, 'error while saving payments', null)
-                            reject(response)
-                        } else if (emptyCheck.emptyCheck(data)) {
-                            logger.error('error blank data while updating payments', 'saveDataBeforeSave:paidisTrue()', 1)
-                            let response = api.apiresponse(true, 404, 'error blank data while updating payments', null)
-                            reject(response)
-                        } else {
-                            logger.info('new data for payments', 'saveDataBeforeSave:paidisTrue()')
-                            resolve(data)
+                // merchantIdTemp.push(temp)
+                // merchant wise data payout
+                payments.find({ merchantid: temp }).exec((error, datapay) => {
+                    if (error) {
+                        logger.error('error while fetching merchant payment info', 'saveDataBeforeSave:paidisTrue()', 1)
+                        let response = api.apiresponse(true, 500, 'error while saving payments', null)
+                        reject(response)
+                    } else if (emptyCheck.emptyCheck(datapay)) {
+                        logger.error('error blank data while updating payments', 'saveDataBeforeSave:paidisTrue()', 1)
+                        let response = api.apiresponse(true, 404, 'error blank data while updating payments', null)
+                        reject(response)
+                    } else {
+                        logger.info('data for payout', 'saveDataBeforeSave:paidisTrue()')
+                        resolve(datapay)
+                        let finalamount = [];
+                        let adminAmount = [];
+                        let datetoday = moment().format('DD-MM-YYYY')
+                        for (let x = 0; x < datapay.length; x++) {
+                            let temp = result[i].amount_paid - (result[i].amount_paid * 0.04);
+                            finalamount.push(temp)
+                            let adTemp = (result[i].amount_paid * 0.04);
+                            adminAmount.push(adTemp)
                         }
-                    })
-                }
-
+                        let final = 0;
+                        let adminfinal = 0;
+                        if (finalamount.length > 0) {
+                            for (let i = 0; i < finalamount.length; i++) {
+                                final += finalamount[i]
+                            }
+                            for (let x = 0; x < adminAmount.length; x++) {
+                                adminfinal += adminAmount[x]
+                            }
+                        }
+                        let weekly = new payout({
+                            merchantid: datapay[0].merchantid,
+                            merchantpayout: final,
+                            adminpayout: adminfinal,
+                            createdon: datetoday,
+                            isPaid: true
+                        })
+                        weekly.save((err, data) => {
+                            if (err) {
+                                logger.error('error while saving payout data', 'saveDataBeforeSave:paidisTrue()', 1)
+                                let response = api.apiresponse(true, 500, 'error while saving payments', null)
+                                reject(response)
+                            } else if (emptyCheck.emptyCheck(data)) {
+                                logger.error('error blank data while updating payments', 'saveDataBeforeSave:paidisTrue()', 1)
+                                let response = api.apiresponse(true, 404, 'error blank data while updating payments', null)
+                                reject(response)
+                            } else {
+                                logger.info('new data for payments', 'saveDataBeforeSave:paidisTrue()')
+                                resolve(data)
+                            }
+                        })
+                    }
+                })
 
             }
         })
