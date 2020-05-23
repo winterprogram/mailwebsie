@@ -193,7 +193,7 @@ let merchantData = (req, res) => {
             eventemiter.emit('welcomemail', ((resolve.email).toString()))
         }, 1000)
 
-        let response = api.apiresponse(false, "200", 'user registered', resolve)
+        let response = api.apiresponse(false, 200, 'user registered', resolve)
         res.send(response)
     }).catch((err) => {
         console.log("errorhandler");

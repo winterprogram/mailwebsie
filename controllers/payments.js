@@ -258,7 +258,7 @@ let paidisTrue = (req, res) => {
     }
     let updateData = () => {
         return new Promise((resolve, reject) => {
-            payments.update({ isPaid: false }, { $set: { isPaid: true } }).exec((error, data) => {
+            payments.updateMany({ isPaid: false }, { $set: { isPaid: true } }).exec((error, data) => {
                 if (error) {
                     logger.error('error while fetching merchant payment info', 'updateData:paidisTrue()', 1)
                     let response = api.apiresponse(true, 500, 'error while saving payments', null)

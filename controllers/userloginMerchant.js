@@ -26,7 +26,7 @@ let merchantlogin = (req, res) => {
     let mobileDigitCheck = () => {
         return new Promise((resolve, reject) => {
             if (emptyCheck.emptyCheck(req.body.mobilenumber)) {
-                let apis = api.apiresponse(true, 'mobilenumber can\'t be empty', 400, null)
+                let apis = api.apiresponse(true, 400, 'mobilenumber can\'t be empty', null)
                 reject(apis)
             } else {
                 let regex = /^[0-9]{10}/
@@ -52,29 +52,29 @@ let merchantlogin = (req, res) => {
             merchant.find({ mobilenumber: req.body.mobilenumber }).exec((err, data) => {
                 // console.log(data[0].password)
                 if (err) {
-                    let apis = api.apiresponse(true, 'error at last stage ', 500, null)
+                    let apis = api.apiresponse(true, 500, 'error at last stage ', null)
                     // send user to signup 
                     reject(apis)
                 } else if (emptyCheck.emptyCheck(data)) {
-                    let apis = api.apiresponse(true, 'mobienumber doesn\'t exist please login ', 500, null)
+                    let apis = api.apiresponse(true, 500, 'mobienumber doesn\'t exist please login ', null)
                     // send user to signup 
                     reject(apis)
                 }
                 else {
                     passencry.passcheck(req.body.password, data[0].password, ((error, result) => {
                         if (error) {
-                            let apis = api.apiresponse(true, 'Something went wrong', 500, null)
+                            let apis = api.apiresponse(true, 500, 'Something went wrong', null)
                             reject(apis)
                         }
                         else if ((data[0].valid == 0)) {
-                            let apis = api.apiresponse(true, 'Merchant doesn\'t have right\'s to access', 503, null)
+                            let apis = api.apiresponse(true, 503, 'Merchant doesn\'t have right\'s to access', null)
                             reject(apis)
                         }
                         else if (result == true) {
-                            let apis = api.apiresponse(false, 'password  match', 200, data)
+                            let apis = api.apiresponse(false, 200, 'password  match', data)
                             resolve(apis)
                         } else {
-                            let apis = api.apiresponse(true, 'password didn\'t match / wrong password', 404, null)
+                            let apis = api.apiresponse(true, 404, 'password didn\'t match / wrong password', null)
                             reject(apis)
                         }
                     }))
@@ -90,15 +90,15 @@ let merchantlogin = (req, res) => {
         return new Promise((resolve, reject) => {
             if (merchantData.data[0].imageuploaded == false) {
                 logger.error('images are not uploaded by this merchant', 'imageUploadCheck()', 5)
-                let apis = api.apiresponse(true, 'images are not uploaded by this merchant', 503, null)
+                let apis = api.apiresponse(true, 503, 'images are not uploaded by this merchant', null)
                 reject(apis)
             } else {
                 jwt.generateToken(merchantData, ((err, result) => {
                     if (err) {
-                        let response = api.apiresponse(true, 'Error while generating Jwt token stage', 500, null)
+                        let response = api.apiresponse(true, 500, 'Error while generating Jwt token stage', null)
                         reject(response)
                     } else if (emptyCheck.emptyCheck(result)) {
-                        let response = api.apiresponse(true, 'data while generating jwt is vacant', 404, null)
+                        let response = api.apiresponse(true, 404, 'data while generating jwt is vacant', null)
                         reject(response)
                     }
 
@@ -106,13 +106,13 @@ let merchantlogin = (req, res) => {
                         console.log(merchantData.data[0])
                         mertoken.deleteOne({ merchantid: merchantData.data[0].merchantid }).exec((err, result) => {
                             if (err) {
-                                let response = api.apiresponse(true, 'error while deleting the merchant token', 504, null)
+                                let response = api.apiresponse(true, 504, 'error while deleting the merchant token', null)
                                 reject(response)
                             } else if (emptyCheck.emptyCheck(result)) {
-                                let response = api.apiresponse(true, 'error while deleting the merchant token', 400, null)
+                                let response = api.apiresponse(true, 400, 'error while deleting the merchant token', null)
                                 reject(response)
                             } else {
-                                let response = api.apiresponse(true, 'data successfully deleted adding new one', 200, result)
+                                let response = api.apiresponse(true, 200, 'data successfully deleted adding new one', result)
                                 resolve(response)
                             }
                         })
@@ -127,16 +127,16 @@ let merchantlogin = (req, res) => {
                         })
                         tok.save((error, authtokendetails) => {
                             if (error) {
-                                let response = api.apiresponse(true, 'Error while storing Jwt token stage -2', 500, error)
+                                let response = api.apiresponse(true, 500, 'Error while storing Jwt token stage -2', error)
                                 reject(response)
                             } else if ((emptyCheck.emptyCheck(authtokendetails))) {
 
-                                let response = api.apiresponse(true, 'Error while storing Jwt token empty data', 404, null)
+                                let response = api.apiresponse(true, 404, 'Error while storing Jwt token empty data', null)
                                 reject(response)
                             } else {
                                 // let auth = authtokendetails.toObject()
                                 //  console.log(authtokendetails)
-                                let a = api.apiresponse(true, 'user token stored successfully(1st login)', 403, authtokendetails)
+                                let a = api.apiresponse(true, 403, 'user token stored successfully(1st login)', authtokendetails)
                                 resolve(a)
                             }
                         })
@@ -160,7 +160,7 @@ let merchantlogin = (req, res) => {
         resolve.merchantData.dob = undefined
         // resolve.merchantData.mobilenumber = undefined
         // resolve.merchantData.email = undefined
-        let apis = api.apiresponse(false, 'successful login', 200, resolve)
+        let apis = api.apiresponse(false, 200, 'successful login', resolve)
         res.send(apis)
     }).catch((err) => {
         console.log(err)
@@ -181,27 +181,27 @@ let merchantresetpass = (req, res) => {
 
                     if (error) {
                         logger.error('token expired please logout user', 'merchantresetpass:verifyclaim()', 10)
-                        let response = api.apiresponse(true, 'token expired please logout user', 503, error)
+                        let response = api.apiresponse(true, 503, 'token expired please logout user', error)
                         reject(response)
                     } else if (emptyCheck.emptyCheck(userdata)) {
                         logger.error(' token can\'t be blank logout user', 'merchantresetpass:verifyclaim()', 10)
-                        let response = api.apiresponse(true, ' token can\'t be blank logout user', 500, null)
+                        let response = api.apiresponse(true, 500, ' token can\'t be blank logout user', null)
                         reject(response)
                     } else {
-                        let response = api.apiresponse(false, 'token stisfies the claim', 200, userdata)
+                        let response = api.apiresponse(false, 200, 'token stisfies the claim', userdata)
                         resolve(response)
                     }
                 }
                 ))
 
                 if (err) {
-                    let response = api.apiresponse(true, ' some error at stage 1.1 verifyclaim', 503, null)
+                    let response = api.apiresponse(true, 503, ' some error at stage 1.1 verifyclaim', null)
                     reject(response)
                 } else if (emptyCheck.emptyCheck(result)) {
-                    let response = api.apiresponse(true, ' user not found', 400, null)
+                    let response = api.apiresponse(true, 400, ' user not found', null)
                     reject(response)
                 } else {
-                    let response = api.apiresponse(false, 'userfound', 200, result)
+                    let response = api.apiresponse(false, 200, 'userfound', result)
                     resolve(response)
                 }
             })
@@ -213,11 +213,11 @@ let merchantresetpass = (req, res) => {
                 console.log(result)
                 if (err) {
                     logger.error('error while fetching merchant details', 'findmerchant : merchantresetpass()', 10)
-                    let response = api.apiresponse(true, 'error while fetching merchant details', 500, null)
+                    let response = api.apiresponse(true, 500, 'error while fetching merchant details', null)
                     reject(response)
                 } else if (emptyCheck.emptyCheck(result)) {
                     logger.error('error merchnat not found in db', 'findmerchant : merchantresetpass()', 10)
-                    let response = api.apiresponse(true, 'error merchnat not found in db', 404, null)
+                    let response = api.apiresponse(true, 404, 'error merchnat not found in db', null)
                     reject(response)
                 } else {
                     logger.info('merchant info exist', 'findmerchant()')
@@ -233,11 +233,11 @@ let merchantresetpass = (req, res) => {
             merchant.updateOne({ merchantid: result.merchantid }, { $set: { password: password } }).exec((error, data) => {
                 if (error) {
                     logger.error('error while updating password', 'updatepass : merchantresetpass()', 10)
-                    let response = api.apiresponse(true, 'error while fetching merchant details', 500, null)
+                    let response = api.apiresponse(true, 500, 'error while fetching merchant details', null)
                     reject(response)
                 } else if (emptyCheck.emptyCheck(data)) {
                     logger.error('error password can\'t be blank', 'updatepass : merchantresetpass()', 10)
-                    let response = api.apiresponse(true, 'error merchnat not found in db', 404, null)
+                    let response = api.apiresponse(true, 404, 'error merchnat not found in db', null)
                     reject(response)
                 } else {
                     logger.info('password updated', 'updatepass()')
@@ -249,11 +249,11 @@ let merchantresetpass = (req, res) => {
     verifyclaim(req, res).then(findmerchant).then(updatepass).then((resolve) => {
 
         logger.info('password updated', 'merchantresetpass()')
-        let response = api.apiresponse(false, 'password updated successfully', 200, resolve)
+        let response = api.apiresponse(false, 200, 'password updated successfully', resolve)
         res.send(response)
     }).catch((err) => {
         logger.error('password update failed', 'merchantresetpass()')
-        let response = api.apiresponse(false, 'password update failed', 404, err)
+        let response = api.apiresponse(false, 404, 'password update failed', err)
         res.send(response)
     })
 }
@@ -269,18 +269,18 @@ let imageuploadcheck = (req, res) => {
         }).exec((error, result) => {
             if (error) {
                 logger.error('error at update image', 'imageUploadCheck()', 5)
-                let apis = api.apiresponse(true, 'error at update image ', 500, null)
+                let apis = api.apiresponse(true, 500, 'error at update image ', null)
                 // send user to signup 
                 res.send(apis)
             } else if (emptyCheck.emptyCheck(result)) {
                 logger.error('error headers params are empty', 'imageUploadCheck()', 5)
-                let apis = api.apiresponse(true, 'error headers params are empty', 500, null)
+                let apis = api.apiresponse(true, 500, 'error headers params are empty', null)
                 // send user to signup 
                 res.send(apis)
             }
             else {
                 logger.info('headers:- parmas updated', 'imageUploadCheck()')
-                let apis = api.apiresponse(false, 'resolvec ', 200, result)
+                let apis = api.apiresponse(false, 200, 'resolvec ', result)
                 res.send(apis)
 
 

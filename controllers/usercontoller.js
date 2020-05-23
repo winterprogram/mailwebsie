@@ -130,7 +130,7 @@ let userCouponDisribution = (req, res) => {
                         "category": "$geocode.category",
                         "latitude": "$geocode.latitude",
                         "longitude": "$geocode.longitude",
-                        "merchantname":"$geocode.shopname"
+                        "merchantname": "$geocode.shopname"
                     }
                 }
             ]).exec((err, result) => {
@@ -321,7 +321,7 @@ let userCouponDisribution = (req, res) => {
 
 
                     // add header params here
-                    let purchasedAmount = 2001;
+                    let purchasedAmount = req.headers.order.amount_paid;
 
                     if (purchasedAmount < 100) {
                         console.log('I\'am not here')
@@ -352,7 +352,7 @@ let userCouponDisribution = (req, res) => {
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
                                 faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
-                                merchantname:firstuserCoupon[x].merchantname,
+                                merchantname: firstuserCoupon[x].merchantname,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -392,7 +392,7 @@ let userCouponDisribution = (req, res) => {
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
                                 faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
-                                merchantname:firstuserCoupon[x].merchantname,
+                                merchantname: firstuserCoupon[x].merchantname,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -432,7 +432,7 @@ let userCouponDisribution = (req, res) => {
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
                                 faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
-                                merchantname:firstuserCoupon[x].merchantname,
+                                merchantname: firstuserCoupon[x].merchantname,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -474,7 +474,7 @@ let userCouponDisribution = (req, res) => {
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
                                 faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
-                                merchantname:firstuserCoupon[x].merchantname,
+                                merchantname: firstuserCoupon[x].merchantname,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -495,7 +495,7 @@ let userCouponDisribution = (req, res) => {
                         }
                     }
                 } else {
-                    let purchasedAmount = 2001;
+                    let purchasedAmount = req.headers.order.amount_paid;
 
                     if (purchasedAmount < 100) {
                         console.log('I\'am not here')
@@ -526,7 +526,7 @@ let userCouponDisribution = (req, res) => {
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
                                 faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
-                                merchantname:firstuserCoupon[x].merchantname,
+                                merchantname: firstuserCoupon[x].merchantname,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -565,7 +565,7 @@ let userCouponDisribution = (req, res) => {
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
                                 faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
-                                merchantname:firstuserCoupon[x].merchantname,
+                                merchantname: firstuserCoupon[x].merchantname,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -608,7 +608,7 @@ let userCouponDisribution = (req, res) => {
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
                                 faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
-                                merchantname:firstuserCoupon[x].merchantname,
+                                merchantname: firstuserCoupon[x].merchantname,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -652,7 +652,7 @@ let userCouponDisribution = (req, res) => {
                                 merchantid: firstuserCoupon[x].merchantid,
                                 discount: firstuserCoupon[x].discount,
                                 faltdiscountupto: firstuserCoupon[x].faltdiscountupto,
-                                merchantname:firstuserCoupon[x].merchantname,
+                                merchantname: firstuserCoupon[x].merchantname,
                                 enddate: enddate,
                                 valid: valid
                             })
@@ -817,11 +817,49 @@ let purgecouponforUser = (req, res) => {
     })
 }
 
+let redeemedCouponByUser = (req, res) => {
+    let findcouponandUser = () => {
+        return new Promise((resolve, reject) => {
+            userCoupon.update({
+                $and:
+                    [{ merchantid: req.headers.merchantid },
+                    { userid: req.headers.userid },
+                    { couponcode: req.headers.couponcode }]
+            },
+                { $set: { valid: "0", isRedmeed: true } }).exec((error, data) => {
+                    if (error) {
+                        logger.error('error while updating coupon for user after using it', 'findcouponandUser :redeemedCouponByUser()', 5)
+                        let response = api.apiresponse(true, 500, 'error while updating coupon for user after using it', 'findcouponandUser :redeemedCouponByUser()', null)
+                        reject(response)
+                    } else if (emptyCheck.emptyCheck(data)) {
+                        logger.error('error no coupon found for merchant', 'findcouponandUser :redeemedCouponByUser()', 5)
+                        let response = api.apiresponse(true, 404, 'error no coupon found for merchant', 'findcouponandUser :redeemedCouponByUser()', null)
+                        reject(response)
+                    } else {
+                        logger.info('coupon reedemed for user ', 'findcouponandUser :redeemedCouponByUser()')
+                        resolve(data)
+
+                    }
+                })
+        })
+    }
+
+    findcouponandUser(req, res).then((resolve) => {
+        logger.info('coupon reedemed for user successfully ', 'findcouponandUser :redeemedCouponByUser()')
+        let response = api.apiresponse(false, 200, 'coupon reedemed for user successfully', resolve)
+        res.send(response)
+    }).catch((err) => {
+        logger.error('error occured at the redeemedCouponByUser', 'findcouponandUser :redeemedCouponByUser()', 4)
+        res.send(err)
+    })
+}
+
 
 module.exports = {
     userMerchantDisplay: userMerchantDisplay,
     userCouponDisribution: userCouponDisribution,
     getAllCouponForUser: getAllCouponForUser,
     couponSectionDuringCheckout: couponSectionDuringCheckout,
-    purgecouponforUser: purgecouponforUser
+    purgecouponforUser: purgecouponforUser,
+    redeemedCouponByUser: redeemedCouponByUser
 }

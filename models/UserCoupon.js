@@ -23,11 +23,15 @@ let usercoupon = new Schema({
     discount: {
         type: String
     },
-    merchantname:{
+    merchantname: {
         type: String
     },
     faltdiscountupto: {
         type: String
+    },
+    isRedmeed: {
+        type: Boolean,
+        default: false
     },
     valid: {
         type: String

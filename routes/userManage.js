@@ -236,9 +236,33 @@ let routes = (app) => {
                     }
                 */
 
-    app.post('/getPaymentByOrder', payments.getPaymentByOrder)
+    app.put('/getPaymentByOrder', payments.getPaymentByOrder)
 
-    app.get('/merchantEarning', payments.merchantEarning);
+    // update coupon code for user after successful payment
+    app.put('/redeemCouponforUser', usercontroller.redeemedCouponByUser)
+    /**
+                * @apiGroup user dashboard
+                * @apiVersion 0.0.1
+                * @api {put} /redeemCouponforUser api to redeem coupon for user after successful payment
+                * 
+                * @apiParam {string} couponcode coupon code applied by user during transaction. (header params)(required)
+                * @apiParam {string} userid userid of the user. (header params)(required)
+                * @apiParam {string} merchantid merchantid of the merchant. (header params)(required)
+                * 
+                * @apiSuccess {object}  API Response shows error status, message, http status code and result.
+                * 
+                * @apiSuccessExample {object} Success-Response:
+                *{
+                  "error": false,
+                  "status": 200,
+                  "message": "coupon reedemed for user successfully",
+                  "data": {
+                  
+                 }
+                   }
+               */
+
+    app.get('/merchantEarning', payments.merchantEarning)
     // merchant signup and login
     app.post('/merchantSignup', merchantData.merchantData)
     app.post('/merchantlogin', merchantlogin.merchantlogin)
