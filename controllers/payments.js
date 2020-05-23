@@ -54,7 +54,7 @@ let storePayments = (req, res) => {
             userid: req.body.userid,
             id: order.id,
             entity: order.entity,
-            amount: order.amount,
+            amount: (order.amount/100),
             amount_paid: order.amount_paid,
             amount_due: order.amount_due,
             currency: order.currency,
@@ -127,7 +127,7 @@ let getPaymentByOrder = (req, res) => {
 let merchantEarning = (req, res) => {
     let getMerchantAmount = () => {
         return new Promise((resolve, reject) => {
-            payments.find({ $and: [{ merchantid: req.heards.merchantid }, { isPaid: false }, { amount_paid: { $gt: 0 } }] }).exec((err, result) => {
+            payments.find({ $and: [{ merchantid: req.headers.merchantid }, { isPaid: false }, { amount_paid: { $gt: 0 } }] }).exec((err, result) => {
                 if (err) {
                     logger.error('error while fetching merchant payment info', 'getMerchantAmount:merchantEarning()', 1)
                     let response = api.apiresponse(true, 500, 'error while saving payments', null)
