@@ -48,7 +48,7 @@ crons.schedule('0  1 * * *', () => {
 
 })
 
-crons.schedule('01  12 * * 5', () => {
+crons.schedule('* * * * *', () => {
     console.log('running a task every minute')
     paymentupdate.paidisTrue()
     console.log('coupon purge done for user/merchant')

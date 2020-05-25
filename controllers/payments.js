@@ -198,7 +198,7 @@ let paidisTrue = (req, res) => {
                 let temp = result[i].merchantid;
                 // merchantIdTemp.push(temp)
                 // merchant wise data payout
-                payments.find({ merchantid: temp }).exec((error, datapay) => {
+                payments.find({ $and: [{ isPaid: false }, { merchantid: temp }, { amount_paid: { $gt: 0 } }] }).exec((error, datapay) => {
                     if (error) {
                         logger.error('error while fetching merchant payment info', 'saveDataBeforeSave:paidisTrue()', 1)
                         let response = api.apiresponse(true, 500, 'error while saving payments', null)
@@ -213,12 +213,15 @@ let paidisTrue = (req, res) => {
                         let finalamount = [];
                         let adminAmount = [];
                         let datetoday = moment().format('DD-MM-YYYY')
+                        // console.log(datapay.length)
                         for (let x = 0; x < datapay.length; x++) {
-                            let temp = result[i].amount_paid - (result[i].amount_paid * 0.04);
+                            let temp = datapay[i].amount_paid - (datapay[i].amount_paid * 0.04);
                             finalamount.push(temp)
-                            let adTemp = (result[i].amount_paid * 0.04);
+                            // console.log(temp)
+                            let adTemp = (datapay[i].amount_paid * 0.04);
                             adminAmount.push(adTemp)
                         }
+
                         let final = 0;
                         let adminfinal = 0;
                         if (finalamount.length > 0) {
@@ -275,6 +278,7 @@ let paidisTrue = (req, res) => {
         let response = api.apiresponse(false, 200, 'data updated for merchant', resolve)
         res.send(response)
     }).catch((err) => {
+        console.log(err)
         res.send(err)
     })
 
