@@ -97,7 +97,7 @@ let getPaymentByOrder = (req, res) => {
                             logger.error('error while updating payments', 'amountPaidByUser:getPaymentByOrder()', 1)
                             let response = api.apiresponse(true, 500, 'error while saving payments', null)
                             reject(response)
-                        } else if (emptyCheck.emptyCheck(data)) {
+                        } else if (data.nModified == 0) {
                             logger.error('error blank data while updating payments', 'amountPaidByUser:getPaymentByOrder()', 1)
                             let response = api.apiresponse(true, 404, 'error blank data while updating payments', null)
                             reject(response)

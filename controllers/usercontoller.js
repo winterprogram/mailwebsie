@@ -831,7 +831,7 @@ let redeemedCouponByUser = (req, res) => {
                         logger.error('error while updating coupon for user after using it', 'findcouponandUser :redeemedCouponByUser()', 5)
                         let response = api.apiresponse(true, 500, 'error while updating coupon for user after using it', 'findcouponandUser :redeemedCouponByUser()', null)
                         reject(response)
-                    } else if (emptyCheck.emptyCheck(data)) {
+                    } else if (data.nModified == 0) {
                         logger.error('error no coupon found for merchant', 'findcouponandUser :redeemedCouponByUser()', 5)
                         let response = api.apiresponse(true, 404, 'error no coupon found for merchant', 'findcouponandUser :redeemedCouponByUser()', null)
                         reject(response)
