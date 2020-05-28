@@ -20,7 +20,7 @@ const messaging = admin.messaging()
             title: "This is a Notification",
             body: "This is the body of the notification message."
         },
-        topic: 'puppies'
+        token: 'c_YeMBPwQYWExjBnoELcO4:APA91bHU5CtgwOSS8FuFRqM0Jq70CJFzK6nWVyBYenIb1Vm7QRUc8HjVATGHOGy306MOqLvx04Divg6YeOTRdO1Uh1QjSqqEz-wzV-rjAYVb9gAUK4bRRvN7Y7LzTPknAfgbQzCsNz3d'
         };
 
     messaging.send(payload)
