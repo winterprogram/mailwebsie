@@ -263,6 +263,33 @@ let routes = (app) => {
                */
 
     app.get('/merchantEarning', payments.merchantEarning)
+ /**
+                * @apiGroup Merchant dashboard
+                * @apiVersion 0.0.1
+                * @api {get} /merchantEarning api to fetch merchant payment.
+                * 
+                * @apiParam {string} merchantid merchantid of the of the merchant. (header params)(required)
+                * 
+                * @apiSuccess {object}  API Response shows error status, message, http status code and result.
+                * {
+                   "error": false,
+                   "status": 200,
+                   "message": "data fetched for merchant",
+                   "data": {
+                   "amount": 50000
+                  }
+                    }
+                * @apiErrorExample Error-Response:
+                *{
+                  "error": true,
+                  "status": 404,
+                  "message": "error blank data while updating payments",
+                  "data": {
+                  
+                 }
+                   }
+               */
+
     // merchant signup and login
     app.post('/merchantSignup', merchantData.merchantData)
     app.post('/merchantlogin', merchantlogin.merchantlogin)

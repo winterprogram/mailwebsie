@@ -23,6 +23,14 @@ const timeZone = 'Asia/Calcutta'
 const purge = require('./controllers/coupongen')
 const userPurge = require('./controllers/usercontoller')
 const paymentupdate = require('./controllers/payments')
+const admin = require('firebase-admin');
+let serviceAccount = require('./My First Project-d1e7bc48e4ba.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+let db = admin.firestore();
 // app.use(cors({origin: 'http://localhost:4200'}));
 
 app.use(cookieparser())
@@ -48,12 +56,12 @@ crons.schedule('0  1 * * *', () => {
 
 })
 
-crons.schedule('* * * * *', () => {
-    console.log('running a task every minute')
-    paymentupdate.paidisTrue()
-    console.log('coupon purge done for user/merchant')
+// crons.schedule('* * * * *', () => {
+//     console.log('running a task every minute')
+//     paymentupdate.paidisTrue()
+//     console.log('coupon purge done for user/merchant')
 
-})
+// })
 
 
 function onError(err) {
