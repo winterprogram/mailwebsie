@@ -20,10 +20,9 @@ const messaging = admin.messaging()
             title: "This is a Notification",
             body: "This is the body of the notification message."
         },
-        topic: 'topic'
+        topic: 'puppies'
         };
 
-        console.log(messaging.send(payload))
     messaging.send(payload)
     .then((result) => {
         console.log(result)
