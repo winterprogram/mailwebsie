@@ -321,7 +321,7 @@ let userCouponDisribution = (req, res) => {
 
 
                     // add header params here
-                    let purchasedAmount = req.headers.order.amount_paid;
+                    let purchasedAmount = parseInt(req.headers.amount_paid);
 
                     if (purchasedAmount < 100) {
                         console.log('I\'am not here')
@@ -495,7 +495,8 @@ let userCouponDisribution = (req, res) => {
                         }
                     }
                 } else {
-                    let purchasedAmount = req.headers.order.amount_paid;
+                    let purchasedAmount = parseInt(req.headers.amount_paid);
+
 
                     if (purchasedAmount < 100) {
                         console.log('I\'am not here')
