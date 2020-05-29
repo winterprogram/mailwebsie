@@ -40,13 +40,21 @@ app.use(bodyparser.json())
 
 app.use(middlewareOnStart.appOnstart)
 // adding listerner
+
 const server = http.createServer(app)
 server.listen(appconfigs.port)
 // server.listen(process.env.PORT || 3000, function(){
 //     console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
 //   });
 server.on('error', onError)
-server.on('listening', onlisten)
+server.on('listening', onlisten)    
+
+app.all('*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    next();
+});
 
 crons.schedule('0  1 * * *', () => {
     console.log('running a task every minute')

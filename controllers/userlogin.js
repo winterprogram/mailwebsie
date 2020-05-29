@@ -25,7 +25,7 @@ let userlogin = (req, res) => {
     let mobileDigitCheck = () => {
         return new Promise((resolve, reject) => {
             if (emptyCheck.emptyCheck(req.body.mobilenumber)) {
-                let apis = api.apiresponse(true, 'mobilenumber can\'t be empty', 400, null)
+                let apis = api.apiresponse(true, 400, 'mobilenumber can\'t be empty', null)
                 reject(apis)
             } else {
                 let regex = /^[0-9]{10}/
@@ -50,11 +50,11 @@ let userlogin = (req, res) => {
             signup.find({ mobilenumber: req.body.mobilenumber }).exec((err, data) => {
                 // console.log(data[0].password)
                 if (err) {
-                    let apis = api.apiresponse(true, 'error at last stage ', 500, null)
+                    let apis = api.apiresponse(true, 500, 'error at last stage ', null)
                     // send user to signup 
                     reject(apis)
                 } else if (emptyCheck.emptyCheck(data)) {
-                    let apis = api.apiresponse(true, 'mobienumber doesn\'t exist please login ', 500, null)
+                    let apis = api.apiresponse(true, 500, 'mobienumber doesn\'t exist please login ', null)
                     // send user to signup 
                     reject(apis)
                 }
@@ -63,17 +63,17 @@ let userlogin = (req, res) => {
                     //  console.log(data[0].password)
                     passencry.passcheck(req.body.password, data[0].password, ((error, result) => {
                         if (error) {
-                            let apis = api.apiresponse(true, 404,'password didn\'t match / wrong password', null)
+                            let apis = api.apiresponse(true, 404, 'password didn\'t match / wrong password', null)
                             reject(apis)
                         } else if ((data[0].valid == 0)) {
-                            let apis = api.apiresponse(true, 503,'User doesn\'t have rights to access', null)
+                            let apis = api.apiresponse(true, 503, 'User doesn\'t have rights to access', null)
                             reject(apis)
                         }
                         else if (result == true) {
-                            let apis = api.apiresponse(false,200, 'password  match', data)
+                            let apis = api.apiresponse(false, 200, 'password  match', data)
                             resolve(apis)
                         } else {
-                            let apis = api.apiresponse(true,404, 'password didn\'t match / wrong password', null)
+                            let apis = api.apiresponse(true, 404, 'password didn\'t match / wrong password', null)
                             reject(apis)
                         }
                     }))
@@ -137,10 +137,10 @@ let userlogin = (req, res) => {
         return new Promise((resolve, reject) => {
             jwt.generateToken(userData, ((err, result) => {
                 if (err) {
-                    let response = api.apiresponse(true,500, 'Error while generating Jwt token stage', null)
+                    let response = api.apiresponse(true, 500, 'Error while generating Jwt token stage', null)
                     reject(response)
                 } else if (emptyCheck.emptyCheck(result)) {
-                    let response = api.apiresponse(true,404, 'data while generating jwt is vacant', null)
+                    let response = api.apiresponse(true, 404, 'data while generating jwt is vacant', null)
                     reject(response)
                 } else {
                     result.userid = userData.data[0].userid
@@ -155,15 +155,15 @@ let userlogin = (req, res) => {
                     })
                     token.save((error, authtokendetails) => {
                         if (error) {
-                            let response = api.apiresponse(true,500, 'Error while storing Jwt token stage -2', error)
+                            let response = api.apiresponse(true, 500, 'Error while storing Jwt token stage -2', error)
                             reject(response)
                         } else if ((emptyCheck.emptyCheck(authtokendetails))) {
-                            let response = api.apiresponse(true,404, 'Error while storing Jwt token empty data', null)
+                            let response = api.apiresponse(true, 404, 'Error while storing Jwt token empty data', null)
                             reject(response)
                         } else {
                             // let auth = authtokendetails.toObject()
                             // console.log(authtokendetails)
-                            let a = api.apiresponse(true,403, 'user token stored successfully(1st login)', authtokendetails)
+                            let a = api.apiresponse(true, 403, 'user token stored successfully(1st login)', authtokendetails)
                             resolve(a)
                         }
                     })
@@ -190,7 +190,7 @@ let userlogin = (req, res) => {
         // resolve.email = undefined
         resolve.userData.city = undefined
 
-        let apis = api.apiresponse(false,200, 'successful login', resolve)
+        let apis = api.apiresponse(false, 200, 'successful login', resolve)
         res.send(apis)
     }).catch((err) => {
         console.log(err)
