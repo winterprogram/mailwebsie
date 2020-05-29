@@ -24,13 +24,9 @@ const purge = require('./controllers/coupongen')
 const userPurge = require('./controllers/usercontoller')
 const paymentupdate = require('./controllers/payments')
 const admin = require('firebase-admin');
-let serviceAccount = require('./My First Project-d1e7bc48e4ba.json');
+let serviceAccount = require('./freechers-3a71a-firebase-adminsdk-lawi2-5439473ac6.json');
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
 
-let db = admin.firestore();
 // app.use(cors({origin: 'http://localhost:4200'}));
 
 app.use(cookieparser())

@@ -119,8 +119,8 @@ let getPaymentByOrder = (req, res) => {
     amountPaidByUser(req, res).then((resolve) => {
         let response = api.apiresponse(false, 200, 'data updated for payments', resolve)
         title = 'Payment Success'
-        body = `Payment received`
-        deviceToken = req.headers.deviceToken
+        body = `Payment received of ${resolve.amount_paid}`
+        deviceToken = req.body.deviceToken
         setTimeout((fcmpush.fcmpush(title, body, deviceToken)), 1000)
         res.send(response)
     }).catch((err) => {
