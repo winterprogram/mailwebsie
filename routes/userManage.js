@@ -255,45 +255,32 @@ let routes = (app) => {
                       "message": "data fetched for user",
                       "data": [
                       {
-                       "_id": "5ecea5efb508e31e28ba5821",
-                       "notes": [],
-                        "isPaid": false,
-                        "merchantid": "Zeu1ok",
-                       "userid": "azMY4k",
-                       "id": "order_EvT1K0W4rZnsWY",
+                       "isPaid": false,
+                        "userid": "azMY4k",
                        "entity": "order",
-                       "amount": 102,
                        "amount_paid": 0,
-                       "amount_due": 102,
-                       "currency": "INR",
                        "receipt": "order_66Uaf48_A1jw",
-                       "offer_id": null,
-                       "status": "created",
-                       "attempts": 0,
-                       "created_at": 1590601199,
                        "createdon": "27-05-2020",
-                       "__v": 0
+                       "merchantname": "yfx"
                       },
                      {
-                      "_id": "5ec97a9e8ee57825146df8a6",
-                      "notes": [],
+                       "isPaid": true,
+                       "userid": "azMY4k",
+                       "entity": "order",
+                       "amount_paid": 0,
+                       "receipt": "order_3aZvWpM_ODPt",
+                       "createdon": "24-05-2020",
+                       "merchantname": "yfx"
+                     },
+                     {
                       "isPaid": true,
-                      "merchantid": "Zeu1ok",
                       "userid": "azMY4k",
-                      "id": "order_Etup7FgFLd9Ngs",
                       "entity": "order",
-                      "amount": 10,
-                      "amount_paid": 0,
-                      "amount_due": 10,
-                      "currency": "INR",
-                      "receipt": "order_3aZvWpM_ODPt",
-                      "offer_id": null,
-                      "status": "created",
-                      "attempts": 0,
-                      "created_at": 1590262431,
-                      "createdon": "24-05-2020",
-                      "__v": 0
-                    },
+                      "amount_paid": 102,
+                      "receipt": "order_FYe8cZu_MxQm",
+                      "createdon": "23-05-2020",
+                      "merchantname": "yfx"
+                    }
           
                      ]
                    }
@@ -332,86 +319,56 @@ let routes = (app) => {
                  }
                    }
                */
-
-    app.get('/merchantEarning', payments.merchantEarning)
+    app.put('/updatePassword', usercontroller.updateUserPass)
     /**
-                   * @apiGroup Merchant dashboard
+                   * @apiGroup user dashboard
                    * @apiVersion 0.0.1
-                   * @api {get} /merchantEarning api to fetch merchant payment.
+                   * @api {put} /updatePassword api to update the user password.
                    * 
-                   * @apiParam {string} merchantid merchantid of the of the merchant. (header params)(required)
+                   * @apiParam {string} userid userid of the user. (header params)(required)
+                   * @apiParam {string} password current password of the user. (body params)(required)
+                   * @apiParam {string} newpass new password of the user. (body params)(required)
                    * 
                    * @apiSuccess {object}  API Response shows error status, message, http status code and result.
-                   * {
-                      "error": false,
-                      "status": 200,
-                      "message": "data fetched for merchant",
-                      "data": {
-                      "amount": 50000
-                     }
-                       }
-                   * @apiErrorExample Error-Response:
+                   * 
+                   * @apiSuccessExample {object} Success-Response:
                    *{
-                     "error": true,
-                     "status": 404,
-                     "message": "error blank data while updating payments",
-                     "data": {
-                     
+                      "error": true,
+                      "status": 503,
+                      "message": "password didn't match",
+                      "data": null
                     }
-                      }
+
+                       * @apiErrorExample Error-Response:
+                     {
+                      "error": true,
+                      "status": 503,
+                      "message": "password didn't match",
+                      "data": null
+                    }   
                   */
 
-    // merchant signup and login
-    app.post('/merchantSignup', merchantData.merchantData)
-    app.post('/merchantlogin', merchantlogin.merchantlogin)
-    //image upload 
-    app.post('/imageupload', merchantImageUpload.getPresignedUrl)
-    //image upload check
-    app.put('/imageuploadcheck', merchantlogin.imageuploadcheck)
+    app.put('/userCategoryUpdate', usercontroller.updateUserCategory)
     /**
-     * @apiGroup Merchant images
-     * @apiVersion 0.0.1
-     * @api {put} /imageuploadcheck api to update boolean that if images is uploaded by merchants
-     * 
-     * @apiParam {string} mobilenumber Mobile number of the merchants. (header params)(required)
-     * @apiParam {boolean} imageuploaded True if the images are successfully uploaded by merchant. (header params)(required)
-     * @apiParam {array} imageurl download url of amazon s3. (body params)(required)
-     *  
-     * @apiSuccess {object}  API Response shows error status, message, http status code and result.
-     * 
-     * @apiSuccessExample {object} Success-Response:
-     * {
-     "error": false,
-     "message": "resolved ",
-     "status": 200,
-     "data": {
-        "n": 1,
-        "nModified": 1,
-        "ok": 1
-    }
-        }
-     * @apiErrorExample Error-Response:
-      { 
-       "error": true,
-       "message": "error headers params are empty",
-       "status": 500,
-       "data": null
-        }
-    */
-
-    // reset password
-    app.put('/resetpassmerchant', merchantlogin.merchantresetpass)
-
-    // merchant coupon code gen
-    app.post('/code', coupongen.coupongen)
-    // merchant coupon edit
-    app.put('/couponedit', coupongen.editcoupon)
-    //merchant delete coupon
-    app.put('/deletecoupon', coupongen.deletecoupon)
-    // get coupon details for transaction section
-    app.get('/couponsformanage', coupongen.getcoupon)
-    //get all coupon details for manage coupon section
-    app.get('/couponsfortrans', coupongen.getcouponfortrans)
+                  * @apiGroup user dashboard
+                  * @apiVersion 0.0.1
+                  * @api {put} /updatePassword api to update the user password.
+                  * 
+                  * @apiParam {string} userid userid of the user. (header params)(required)
+                  * @apiParam {string} categoryselected category selected by the user. (body params)(required)
+                  * 
+                  * @apiSuccess {object}  API Response shows error status, message, http status code and result.
+                  * 
+                  * @apiSuccessExample {object} Success-Response:
+                  *{
+                    "error": false,
+                    "status": 200,
+                    "message": "password updated for user",
+                    "data": {
+                    
+                   }
+                     }
+                 */
 
     // admin
     app.get('/getmerchantinfo', admin.merchantregisterData)

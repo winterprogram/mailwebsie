@@ -934,6 +934,109 @@ let getListOfPaymentsDoneByUser = (req, res) => {
 }
 
 
+let updateUserPass = (req, res) => {
+    let findUser = () => {
+        return new Promise((resolve, reject) => {
+            signup.find({ userid: req.headers.userid }).exec((error, data) => {
+                if (error) {
+                    logger.error('error while finding user', 'findUser:updateUserPass()', 10)
+                    let response = api.apiresponse(true, 500, 'error while finding user', null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(data)) {
+                    logger.error('error received blank finding user', 'findUser:updateUserPass()', 10)
+                    let response = api.apiresponse(true, 404, 'error received blank finding user', null)
+                    reject(response)
+                } else {
+                    logger.info('user found', 'findUser:updateUserPass()')
+                    resolve(data)
+                }
+            })
+        })
+    }
+
+    let matchPass = (data) => {
+        return new Promise((resolve, reject) => {
+            passencry.passcheck(req.body.password, data[0].password, ((errorpass, correctpass) => {
+                if (errorpass) {
+                    logger.error('error while checking user pass', 'matchPass:updateUserPass()', 5)
+                    let response = api.apiresponse(true, 500, 'error while checking user pass', null)
+                    reject(response)
+                } else if (correctpass == true) {
+                    signup.update(
+                        { userid: req.headers.userid },
+                        {
+                            $set:
+                            {
+                                password: (passencry.passhash(req.body.newpass))
+                            }
+                        }).exec((errorData, resultData) => {
+                            if (errorData) {
+                                logger.error('error while updating user password', 'matchPass:updateUserPass()', 10)
+                                let response = api.apiresponse(true, 500, 'error while updating user password', null)
+                                reject(response)
+                            } else if (resultData.nModified == 0) {
+                                logger.error('user password updating failed', 'matchPass:updateUserPass()', 5)
+                                let response = api.apiresponse(true, 400, 'user password updating failed', null)
+                                reject(response)
+                            } else {
+                                logger.info('password updated', 'matchPass:updateUserPass()')
+                                resolve(resultData)
+                            }
+                        })
+                } else {
+                    logger.error('password didn\'t match', 'matchPass:updateUserPass()', 10)
+                    let response = api.apiresponse(true, 503, 'password didn\'t match', null)
+                    reject(response)
+                }
+            }))
+        })
+    }
+
+    findUser(req, res).then(matchPass).then((resolve) => {
+        logger.info('password updated for user', 'updateUserPass()')
+        let response = api.apiresponse(false, 200, 'password updated for user', resolve)
+        res.send(response)
+    }).catch((err) => {
+        logger.error('error while updating the password for user', 'updateUserPass()')
+        res.send(err)
+    })
+
+}
+
+let updateUserCategory = (req, res) => {
+    let updateCategory = () => {
+        return new Promise((resolve, reject) => {
+            signup.update(
+                { userid: req.headers.userid },
+                {
+                    $set:
+                        { categoryselected: req.body.categoryselected }
+                }).exec((err, data) => {
+                    if (err) {
+                        logger.error('error while updating category', 'updateCategory:updateUserCategory()', 10)
+                        let response = api.apiresponse(true, 500, 'error while updating category', null)
+                        reject(response)
+                    } else if (data.nModified == 0) {
+                        logger.error('error received blank data to update', 'updateCategory:updateUserCategory()', 10)
+                        let response = api.apiresponse(true, 400, 'error received blank data to update', null)
+                        reject(response)
+                    } else {
+                        logger.info('data updated successfully', 'updateCategory:updateUserCategory()')
+                        resolve(data)
+                    }
+                })
+        })
+    }
+    updateCategory(req, res).then((resolve) => {
+        logger.info('data updated successfully', 'updateUserCategory()')
+        let response = api.apiresponse(false, 200, 'data updated successfully', resolve)
+        res.send(response)
+    }).catch((err) => {
+        logger.error('someting went wronh while updating category', 'updateUserCategory()')
+        res.send(err)
+    })
+}
+
 module.exports = {
     userMerchantDisplay: userMerchantDisplay,
     userCouponDisribution: userCouponDisribution,
@@ -941,5 +1044,7 @@ module.exports = {
     couponSectionDuringCheckout: couponSectionDuringCheckout,
     purgecouponforUser: purgecouponforUser,
     redeemedCouponByUser: redeemedCouponByUser,
-    getListOfPaymentsDoneByUser: getListOfPaymentsDoneByUser
+    getListOfPaymentsDoneByUser: getListOfPaymentsDoneByUser,
+    updateUserPass: updateUserPass,
+    updateUserCategory: updateUserCategory
 }

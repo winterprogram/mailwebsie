@@ -1,6 +1,103 @@
 [
   {
-    "group": "Merchant_images",
+    "group": "Merchant_Dashbaord",
+    "version": "0.0.1",
+    "type": "get",
+    "url": "/merchantEarning",
+    "title": "api to fetch merchant payment (Total sum).",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "merchantid",
+            "description": "<p>merchantid of the of the merchant. (header params)(required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "API",
+            "description": "<p>Response shows error status, message, http status code and result. { &quot;error&quot;: false, &quot;status&quot;: 200, &quot;message&quot;: &quot;data fetched for merchant&quot;, &quot;data&quot;: { &quot;amount&quot;: 50000 } }</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n                     \"error\": true,\n                     \"status\": 404,\n                     \"message\": \"error blank data while updating payments\",\n                     \"data\": {\n                     \n                    }\n                      }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/merchantapi.js",
+    "groupTitle": "Merchant_Dashbaord",
+    "name": "GetMerchantearning"
+  },
+  {
+    "group": "Merchant_Dashbaord",
+    "version": "0.0.1",
+    "type": "get",
+    "url": "/merchantTransaction",
+    "title": "api to fetch merchant wise transaction which is sorted date wise",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "merchantid",
+            "description": "<p>merchant id  of the merchants. (header params)(required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "API",
+            "description": "<p>Response shows error status, message, http status code and result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n            \"error\": false,\n            \"status\": 200,\n            \"message\": \"data fetched for merchant\",\n            \"data\": [\n            {\n            \"isPaid\": true,\n            \"entity\": \"order\",\n            \"amount_paid\": 102,\n            \"receipt\": \"order_FYe8cZu_MxQm\",\n            \"createdon\": \"23-05-2020\",\n            \"merchantname\": \"yfx\"\n            }\n             ]   \n            }",
+          "type": "object"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{ \n \"error\": true,\n \"message\": \"error headers params are empty\",\n \"status\": 500,\n \"data\": null\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/merchantapi.js",
+    "groupTitle": "Merchant_Dashbaord",
+    "name": "GetMerchanttransaction"
+  },
+  {
+    "group": "Merchant_Dashbaord",
     "version": "0.0.1",
     "type": "put",
     "url": "/imageuploadcheck",
@@ -61,8 +158,8 @@
         }
       ]
     },
-    "filename": "routes/userManage.js",
-    "groupTitle": "Merchant_images",
+    "filename": "routes/merchantapi.js",
+    "groupTitle": "Merchant_Dashbaord",
     "name": "PutImageuploadcheck"
   },
   {
@@ -245,6 +342,58 @@
   {
     "group": "user_dashboard",
     "version": "0.0.1",
+    "type": "get",
+    "url": "/transactionHistoryOfUser",
+    "title": "api to get list of transactions done by user and output is sorted date wise i.e. latest transaction comes first.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "userid",
+            "description": "<p>userid of the user. (header params)(required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "API",
+            "description": "<p>Response shows error status, message, http status code and result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n                      \"error\": false,\n                      \"status\": 200,\n                      \"message\": \"data fetched for user\",\n                      \"data\": [\n                      {\n                       \"isPaid\": false,\n                        \"userid\": \"azMY4k\",\n                       \"entity\": \"order\",\n                       \"amount_paid\": 0,\n                       \"receipt\": \"order_66Uaf48_A1jw\",\n                       \"createdon\": \"27-05-2020\",\n                       \"merchantname\": \"yfx\"\n                      },\n                     {\n                       \"isPaid\": true,\n                       \"userid\": \"azMY4k\",\n                       \"entity\": \"order\",\n                       \"amount_paid\": 0,\n                       \"receipt\": \"order_3aZvWpM_ODPt\",\n                       \"createdon\": \"24-05-2020\",\n                       \"merchantname\": \"yfx\"\n                     },\n                     {\n                      \"isPaid\": true,\n                      \"userid\": \"azMY4k\",\n                      \"entity\": \"order\",\n                      \"amount_paid\": 102,\n                      \"receipt\": \"order_FYe8cZu_MxQm\",\n                      \"createdon\": \"23-05-2020\",\n                      \"merchantname\": \"yfx\"\n                    }\n          \n                     ]\n                   }",
+          "type": "object"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n \"error\": true,\n \"status\": 404,\n \"message\": \"error no payments found for user\",\n \"data\": null\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/userManage.js",
+    "groupTitle": "user_dashboard",
+    "name": "GetTransactionhistoryofuser"
+  },
+  {
+    "group": "user_dashboard",
+    "version": "0.0.1",
     "type": "post",
     "url": "/coupontouser",
     "title": "api distribute merchant coupon to user after successfull transaction. Number of coupon is decided on amount transaction by user",
@@ -364,5 +513,178 @@
     "filename": "routes/userManage.js",
     "groupTitle": "user_dashboard",
     "name": "PostPayments"
+  },
+  {
+    "group": "user_dashboard",
+    "version": "0.0.1",
+    "type": "put",
+    "url": "/redeemCouponforUser",
+    "title": "api to redeem coupon for user after successful payment",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "couponcode",
+            "description": "<p>coupon code applied by user during transaction. (header params)(required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "userid",
+            "description": "<p>userid of the user. (header params)(required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "merchantid",
+            "description": "<p>merchantid of the merchant. (header params)(required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "API",
+            "description": "<p>Response shows error status, message, http status code and result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n                  \"error\": false,\n                  \"status\": 200,\n                  \"message\": \"coupon reedemed for user successfully\",\n                  \"data\": {\n                  \n                 }\n                   }",
+          "type": "object"
+        }
+      ]
+    },
+    "filename": "routes/userManage.js",
+    "groupTitle": "user_dashboard",
+    "name": "PutRedeemcouponforuser"
+  },
+  {
+    "group": "user_dashboard",
+    "version": "0.0.1",
+    "type": "put",
+    "url": "/updatePassword",
+    "title": "api to update the user password.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "userid",
+            "description": "<p>userid of the user. (header params)(required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "password",
+            "description": "<p>current password of the user. (body params)(required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "newpass",
+            "description": "<p>new password of the user. (body params)(required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "API",
+            "description": "<p>Response shows error status, message, http status code and result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n                      \"error\": true,\n                      \"status\": 503,\n                      \"message\": \"password didn't match\",\n                      \"data\": null\n                    }",
+          "type": "object"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": " {\n  \"error\": true,\n  \"status\": 503,\n  \"message\": \"password didn't match\",\n  \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/userManage.js",
+    "groupTitle": "user_dashboard",
+    "name": "PutUpdatepassword"
+  },
+  {
+    "group": "user_dashboard",
+    "version": "0.0.1",
+    "type": "put",
+    "url": "/updatePassword",
+    "title": "api to update the user password.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "userid",
+            "description": "<p>userid of the user. (header params)(required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "categoryselected",
+            "description": "<p>category selected by the user. (body params)(required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "API",
+            "description": "<p>Response shows error status, message, http status code and result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n                    \"error\": false,\n                    \"status\": 200,\n                    \"message\": \"password updated for user\",\n                    \"data\": {\n                    \n                   }\n                     }",
+          "type": "object"
+        }
+      ]
+    },
+    "filename": "routes/userManage.js",
+    "groupTitle": "user_dashboard",
+    "name": "PutUpdatepassword"
   }
 ]
