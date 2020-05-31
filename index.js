@@ -99,6 +99,10 @@ function onlisten() {
     let db = mongoose.connect(appconfigs.db.uri, { useNewUrlParser: true, useUnifiedTopology: true })
 }
 app.use(helmet())
+
+const socketLib = require("./libs/socket");
+const socket = socketLib.setServer(server);
+
 app.use(middlewareOnRoute.routes)
 let route = './routes'
 fs.readdirSync(route).forEach(function (file) {

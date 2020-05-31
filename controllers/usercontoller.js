@@ -28,7 +28,8 @@ const a = require('./../models/UserCoupon')
 const userCoupon = mongoose.model('coupondistribution')
 const signup = mongoose.model('signupforuser')
 const moment = require('moment')
-
+const b = require('./../models/Payment')
+const payments = mongoose.model('razorpayments')
 
 let userMerchantDisplay = (req, res) => {
 
@@ -105,6 +106,13 @@ let userCouponDisribution = (req, res) => {
         return new Promise((resolve, reject) => {
             coupon.aggregate([
                 {
+                    $match:
+                    {
+                        valid: "1"
+
+                    }
+                },
+                {
                     $lookup:
                     {
                         from: "signupforusermerchants",
@@ -154,16 +162,16 @@ let userCouponDisribution = (req, res) => {
 
     let findValidCoupon = (result) => {
         return new Promise((resolve, reject) => {
-            let validCoupon = [];
+            let validCoupon = result;
             let nonValidcoupon = [];
-            for (let i in result) {
-                if (result[i].valid == "1") {
-                    validCoupon.push(result[i])
-                }
-                else {
-                    nonValidcoupon.push(result[i])
-                }
-            }
+            // for (let i in result) {
+            //     if (result[i].valid == "1") {
+            //         validCoupon.push(result[i])
+            //     }
+            //     else {
+            //         nonValidcoupon.push(result[i])
+            //     }
+            // }
             if (validCoupon.length != 0) {
                 logger.info('merchant > 0 available with valid coupon', 'findAllActiveCoupon:userCouponDisribution()')
                 // console.log(validCoupon)
@@ -855,6 +863,76 @@ let redeemedCouponByUser = (req, res) => {
     })
 }
 
+let getListOfPaymentsDoneByUser = (req, res) => {
+    let userTransactionHistory = () => {
+        return new Promise((resolve, reject) => {
+            payments.aggregate([
+                {
+                    $match:
+                    {
+                        userid: req.headers.userid
+
+                    }
+                },
+                {
+                    $lookup:
+                    {
+                        from: 'signupforusermerchants',
+                        localField: 'merchantid',
+                        foreignField: 'merchantid',
+                        as: 'merchantname'
+                    }
+                },
+                {
+                    $unwind: '$merchantname'
+
+                },
+                {
+                    $project: {
+                        "_id": 0,
+                        "isPaid": 1,
+                        "userid": 1,
+                        "entity": 1,
+                        "amount_paid": 1,
+                        "receipt": 1,
+                        "createdon": 1,
+                        "merchantname": "$merchantname.shopname"
+
+                    }
+                },
+                {
+                    $sort: {
+                        "createdon": -1
+                    }
+                }
+            ]).exec((err, data) => {
+                if (err) {
+                    logger.error('error while fetching user payment', 'userTransactionHistory :getListOfPaymentsDoneByUser()', 5)
+                    let response = api.apiresponse(true, 500, 'error while fetching user payment', 'userTransactionHistory :getListOfPaymentsDoneByUser()', null)
+                    reject(response)
+                } else if (emptyCheck.emptyCheck(data)) {
+                    logger.error('error no payments found for user', 'userTransactionHistory :getListOfPaymentsDoneByUser()', 10)
+                    let response = api.apiresponse(true, 404, 'error no payments found for user', null)
+                    reject(response)
+                } else {
+                    logger.info('data fetched for user', 'userTransactionHistory :getListOfPaymentsDoneByUser()')
+                    resolve(data)
+                }
+            })
+        })
+    }
+
+    userTransactionHistory(req, res).then((resolve) => {
+        logger.info('data fetched for user', 'getListOfPaymentsDoneByUser()')
+        let response = api.apiresponse(false, 200, 'data fetched for user', resolve)
+        res.send(response)
+    }).catch((err) => {
+        logger.error('some error occured', 'getListOfPaymentsDoneByUser()', 5)
+        // console.log(err)
+        res.send(err)
+    })
+}
+
 
 module.exports = {
     userMerchantDisplay: userMerchantDisplay,
@@ -862,5 +940,6 @@ module.exports = {
     getAllCouponForUser: getAllCouponForUser,
     couponSectionDuringCheckout: couponSectionDuringCheckout,
     purgecouponforUser: purgecouponforUser,
-    redeemedCouponByUser: redeemedCouponByUser
+    redeemedCouponByUser: redeemedCouponByUser,
+    getListOfPaymentsDoneByUser: getListOfPaymentsDoneByUser
 }

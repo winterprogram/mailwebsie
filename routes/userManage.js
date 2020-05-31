@@ -234,7 +234,78 @@ let routes = (app) => {
                    "__v": 0
                   }
                     }
-                */
+            
+            
+                    */
+
+    app.get('/transactionHistoryOfUser', usercontroller.getListOfPaymentsDoneByUser)
+    /**
+                    * @apiGroup user dashboard
+                    * @apiVersion 0.0.1
+                    * @api {get} /transactionHistoryOfUser api to get list of transactions done by user and output is sorted date wise i.e. latest transaction comes first.
+                    * 
+                    * @apiParam {string} userid userid of the user. (header params)(required)
+                    * 
+                    * @apiSuccess {object}  API Response shows error status, message, http status code and result.
+                    * 
+                    * @apiSuccessExample {object} Success-Response:
+                    *{
+                      "error": false,
+                      "status": 200,
+                      "message": "data fetched for user",
+                      "data": [
+                      {
+                       "_id": "5ecea5efb508e31e28ba5821",
+                       "notes": [],
+                        "isPaid": false,
+                        "merchantid": "Zeu1ok",
+                       "userid": "azMY4k",
+                       "id": "order_EvT1K0W4rZnsWY",
+                       "entity": "order",
+                       "amount": 102,
+                       "amount_paid": 0,
+                       "amount_due": 102,
+                       "currency": "INR",
+                       "receipt": "order_66Uaf48_A1jw",
+                       "offer_id": null,
+                       "status": "created",
+                       "attempts": 0,
+                       "created_at": 1590601199,
+                       "createdon": "27-05-2020",
+                       "__v": 0
+                      },
+                     {
+                      "_id": "5ec97a9e8ee57825146df8a6",
+                      "notes": [],
+                      "isPaid": true,
+                      "merchantid": "Zeu1ok",
+                      "userid": "azMY4k",
+                      "id": "order_Etup7FgFLd9Ngs",
+                      "entity": "order",
+                      "amount": 10,
+                      "amount_paid": 0,
+                      "amount_due": 10,
+                      "currency": "INR",
+                      "receipt": "order_3aZvWpM_ODPt",
+                      "offer_id": null,
+                      "status": "created",
+                      "attempts": 0,
+                      "created_at": 1590262431,
+                      "createdon": "24-05-2020",
+                      "__v": 0
+                    },
+          
+                     ]
+                   }
+               
+                * @apiErrorExample Error-Response:
+                     {
+                      "error": true,
+                      "status": 404,
+                      "message": "error no payments found for user",
+                      "data": null
+                      }
+                       */
 
     app.put('/getPaymentByOrder', payments.getPaymentByOrder)
 
@@ -263,32 +334,32 @@ let routes = (app) => {
                */
 
     app.get('/merchantEarning', payments.merchantEarning)
- /**
-                * @apiGroup Merchant dashboard
-                * @apiVersion 0.0.1
-                * @api {get} /merchantEarning api to fetch merchant payment.
-                * 
-                * @apiParam {string} merchantid merchantid of the of the merchant. (header params)(required)
-                * 
-                * @apiSuccess {object}  API Response shows error status, message, http status code and result.
-                * {
-                   "error": false,
-                   "status": 200,
-                   "message": "data fetched for merchant",
-                   "data": {
-                   "amount": 50000
-                  }
+    /**
+                   * @apiGroup Merchant dashboard
+                   * @apiVersion 0.0.1
+                   * @api {get} /merchantEarning api to fetch merchant payment.
+                   * 
+                   * @apiParam {string} merchantid merchantid of the of the merchant. (header params)(required)
+                   * 
+                   * @apiSuccess {object}  API Response shows error status, message, http status code and result.
+                   * {
+                      "error": false,
+                      "status": 200,
+                      "message": "data fetched for merchant",
+                      "data": {
+                      "amount": 50000
+                     }
+                       }
+                   * @apiErrorExample Error-Response:
+                   *{
+                     "error": true,
+                     "status": 404,
+                     "message": "error blank data while updating payments",
+                     "data": {
+                     
                     }
-                * @apiErrorExample Error-Response:
-                *{
-                  "error": true,
-                  "status": 404,
-                  "message": "error blank data while updating payments",
-                  "data": {
-                  
-                 }
-                   }
-               */
+                      }
+                  */
 
     // merchant signup and login
     app.post('/merchantSignup', merchantData.merchantData)
@@ -343,7 +414,9 @@ let routes = (app) => {
     app.get('/couponsfortrans', coupongen.getcouponfortrans)
 
     // admin
-    app.get('/getmerchantinfo', admin.userregisterData)
+    app.get('/getmerchantinfo', admin.merchantregisterData)
+
+    app.get('/getuserData', admin.userauthdeatils)
 }
 
 

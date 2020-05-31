@@ -22,11 +22,11 @@ const event = require('events')
 const eventemiter = new event.EventEmitter();
 // importing jwt token lib
 const jwt = require('./../libs/jswt')
-
+const logger = require('./../libs/logger')
 
 // get list of registered users 
 
-let userregisterData = (req, res) => {
+let merchantregisterData = (req, res) => {
     merchant.find().lean().exec((err, result) => {
         if (err) {
             let response = api.apiresponse(true, 504, "Something went wrong in get user data", null)
@@ -44,10 +44,26 @@ let userregisterData = (req, res) => {
 }
 
 let userauthdeatils = (req,res)=>{
-    
+    signup.find().lean().exec((err, result) => {
+        if (err) {
+            logger.error('Something went wrong in get user data','userauthdeatils()',10)
+            let response = api.apiresponse(true, 504, "Something went wrong in get user data", null)
+            res.send(response)
+        } else if (emptyCheck.emptyCheck(result)) {
+            logger.error('user deatils can\'t be fetch from server','userauthdeatils()',5)
+            let response = api.apiresponse(true, 404, "user deatils can't be fetch from server", null)
+            res.send(response)
+        }
+        else {
+            logger.info('received all user deatails','userauthdeatils()')
+            let response = api.apiresponse(false, 200, "received all user deatails", result)
+            res.send(response)
+        }
+    })  
 }
 
 
 module.exports = {
-    userregisterData: userregisterData
+    merchantregisterData: merchantregisterData,
+    userauthdeatils:userauthdeatils
 }

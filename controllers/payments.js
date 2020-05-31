@@ -93,7 +93,13 @@ let getPaymentByOrder = (req, res) => {
             instance.orders.fetch(a, function (err, order) {
                 console.log(order.amount_paid)
                 if (order.amount_paid > 0) {
-                    payments.update({ id: a }, { $set: { amount_paid: (order.amount_paid > 0 ? (order.amount_paid / 100) : order.amount_paid), amount_due: 0 } }).exec((err, data) => {
+                    payments.update({ id: a }, {
+                        $set:
+                        {
+                            amount_paid: (order.amount_paid > 0 ? (order.amount_paid / 100) : order.amount_paid)
+                            , amount_due: 0
+                        }
+                    }).exec((err, data) => {
                         if (err) {
                             logger.error('error while updating payments', 'amountPaidByUser:getPaymentByOrder()', 1)
                             let response = api.apiresponse(true, 500, 'error while saving payments', null)
@@ -132,7 +138,11 @@ let getPaymentByOrder = (req, res) => {
 let merchantEarning = (req, res) => {
     let getMerchantAmount = () => {
         return new Promise((resolve, reject) => {
-            payments.find({ $and: [{ merchantid: req.headers.merchantid }, { isPaid: false }, { amount_paid: { $gt: 0 } }] }).exec((err, result) => {
+            payments.find({
+                $and:
+                    [{ merchantid: req.headers.merchantid },
+                    { isPaid: false }, { amount_paid: { $gt: 0 } }]
+            }).exec((err, result) => {
                 if (err) {
                     logger.error('error while fetching merchant payment info', 'getMerchantAmount:merchantEarning()', 1)
                     let response = api.apiresponse(true, 500, 'error while saving payments', null)
@@ -200,10 +210,10 @@ let paidisTrue = (req, res) => {
             // get list of all merchants
             let merchantIdTemp = [];
             for (let i = 0; i < result.length; i++) {
-                let temp = result[i].merchantid;
+                let selectMerchantId = result[i].merchantid;
                 // merchantIdTemp.push(temp)
                 // merchant wise data payout
-                payments.find({ $and: [{ isPaid: false }, { merchantid: temp }, { amount_paid: { $gt: 0 } }] }).exec((error, datapay) => {
+                payments.find({ $and: [{ isPaid: false }, { merchantid: selectMerchantId }, { amount_paid: { $gt: 0 } }] }).exec((error, datapay) => {
                     if (error) {
                         logger.error('error while fetching merchant payment info', 'saveDataBeforeSave:paidisTrue()', 1)
                         let response = api.apiresponse(true, 500, 'error while saving payments', null)
@@ -288,6 +298,7 @@ let paidisTrue = (req, res) => {
     })
 
 }
+
 
 module.exports = {
     storePayments: storePayments,
