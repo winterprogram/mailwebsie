@@ -3,6 +3,110 @@
     "group": "Merchant_Dashbaord",
     "version": "0.0.1",
     "type": "get",
+    "url": "/getCouponCountDist",
+    "title": "api to fetch total merchant coupon distibuted.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "merchantid",
+            "description": "<p>merchant id  of the merchants. (header params)(required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "API",
+            "description": "<p>Response shows error status, message, http status code and result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n        \"error\": false,\n        \"status\": 200,\n        \"message\": \"data fetched for no of coupon\",\n        \"data\": 2\n        }",
+          "type": "object"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n    \"error\": true,\n    \"status\": 404,\n    \"message\": \"error no coupon found for merchant as no active coupon exist\",\n    \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/merchantapi.js",
+    "groupTitle": "Merchant_Dashbaord",
+    "name": "GetGetcouponcountdist"
+  },
+  {
+    "group": "Merchant_Dashbaord",
+    "version": "0.0.1",
+    "type": "get",
+    "url": "/getCouponCountUsed",
+    "title": "api to fetch total merchant coupon used.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "merchantid",
+            "description": "<p>merchant id  of the merchants. (header params)(required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "API",
+            "description": "<p>Response shows error status, message, http status code and result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     \"error\": false,\n     \"status\": 200,\n     \"message\": \"data fetched for no of coupon reedmed\",\n     \"data\": 2\n     }",
+          "type": "object"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n    \"error\": true,\n    \"status\": 404,\n    \"message\": \"error no coupon found for merchant as no active coupon exist\",\n    \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/merchantapi.js",
+    "groupTitle": "Merchant_Dashbaord",
+    "name": "GetGetcouponcountused"
+  },
+  {
+    "group": "Merchant_Dashbaord",
+    "version": "0.0.1",
+    "type": "get",
     "url": "/merchantEarning",
     "title": "api to fetch merchant payment (Total sum).",
     "parameter": {

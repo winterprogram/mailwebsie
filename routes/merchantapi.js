@@ -12,6 +12,9 @@ const payments = require('./../controllers/payments')
 const merchantDashboard = require('./../controllers/merchantController')
 
 let routes = (app) => {
+    // merchant signup and login
+    app.post('/merchantSignup', merchantData.merchantData)
+    app.post('/merchantlogin', merchantlogin.merchantlogin)
 
     app.get('/merchantEarning', payments.merchantEarning)
     /**
@@ -40,10 +43,6 @@ let routes = (app) => {
                     }
                       }
                   */
-
-    // merchant signup and login
-    app.post('/merchantSignup', merchantData.merchantData)
-    app.post('/merchantlogin', merchantlogin.merchantlogin)
     //image upload (aws key)
     app.post('/imageupload', merchantImageUpload.getPresignedUrl)
     //image upload check
@@ -128,6 +127,60 @@ let routes = (app) => {
            "data": null
             }
         */
+    // get total distibuted coupon count
+    app.get('/getCouponCountDist', merchantDashboard.noOfDistributedCoupon)
+
+    /**
+     * @apiGroup Merchant Dashbaord
+     * @apiVersion 0.0.1
+     * @api {get} /getCouponCountDist api to fetch total merchant coupon distibuted.
+     * 
+     * @apiParam {string} merchantid merchant id  of the merchants. (header params)(required)
+     *  
+     * @apiSuccess {object}  API Response shows error status, message, http status code and result.
+     * 
+     * @apiSuccessExample {object} Success-Response:
+     * {
+        "error": false,
+        "status": 200,
+        "message": "data fetched for no of coupon",
+        "data": 2
+        }
+     * @apiErrorExample Error-Response:
+    {
+        "error": true,
+        "status": 404,
+        "message": "error no coupon found for merchant as no active coupon exist",
+        "data": null
+    }
+    */
+    // get coupon count of redeemed coupon
+    app.get('/getCouponCountUsed', merchantDashboard.countOfRedeemedCoupon)
+    /**
+  * @apiGroup Merchant Dashbaord
+  * @apiVersion 0.0.1
+  * @api {get} /getCouponCountUsed api to fetch total merchant coupon used.
+  * 
+  * @apiParam {string} merchantid merchant id  of the merchants. (header params)(required)
+  *  
+  * @apiSuccess {object}  API Response shows error status, message, http status code and result.
+  * 
+  * @apiSuccessExample {object} Success-Response:
+  * {
+     "error": false,
+     "status": 200,
+     "message": "data fetched for no of coupon reedmed",
+     "data": 2
+     }
+  * @apiErrorExample Error-Response:
+ {
+     "error": true,
+     "status": 404,
+     "message": "error no coupon found for merchant as no active coupon exist",
+     "data": null
+ }
+ */
+
 }
 
 
