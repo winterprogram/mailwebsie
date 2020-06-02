@@ -402,11 +402,11 @@ let getcouponfortrans = (req, res) => {
             coupon.find({ merchantid: req.headers.merchantid, valid: "1" }).exec((err, result) => {
                 if (err) {
                     logger.error('error while fetching merchant coupon details', 'findmerchant : getcoupon()', 10)
-                    let response = api.apiresponse(true, 'error while fetching merchant coupon details', 500, null)
+                    let response = api.apiresponse(true, 500, 'error while fetching merchant coupon details', null)
                     reject(response)
                 } else if (emptyCheck.emptyCheck(result)) {
                     logger.error('error while fetching merchant coupon details', 'findmerchant : getcoupon()', 10)
-                    let response = api.apiresponse(true, 'error while fetching merchant coupon details', 403, null)
+                    let response = api.apiresponse(true, 403, 'error while fetching merchant coupon details', null)
                     reject(response)
                 }
                 else {
@@ -418,11 +418,11 @@ let getcouponfortrans = (req, res) => {
     }
     getc(req, res).then((resolve) => {
         logger.info('coupon fetched', 'final promise')
-        let response = api.apiresponse(false, ' coupon fetched', 200, resolve)
+        let response = api.apiresponse(false, 200, ' coupon fetched', resolve)
         res.send(response)
     }).catch((err) => {
         logger.error('something went wrong coupon is not valid', 'getcoupon()', 10)
-        let response = api.apiresponse(true, ' coupon is not valid', 500, null)
+        let response = api.apiresponse(true, 500, ' coupon is not valid', null)
         console.log(err)
         res.send(response)
     })
