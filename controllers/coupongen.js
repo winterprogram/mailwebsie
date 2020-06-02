@@ -433,16 +433,16 @@ let getcoupon = (req, res) => {
     coupon.find({ merchantid: req.headers.merchantid }).exec((err, result) => {
         if (err) {
             logger.error('error while fetching merchant coupon details', 'findmerchant : getcoupon()', 10)
-            let response = api.apiresponse(true, 'error while fetching merchant coupon details', 500, null)
+            let response = api.apiresponse(true, 500,'error while fetching merchant coupon details', null)
             res.send(response)
         } else if (emptyCheck.emptyCheck(result)) {
             logger.error('error while fetching merchant coupon details', 'findmerchant : getcoupon()', 10)
-            let response = api.apiresponse(true, 'error while fetching merchant coupon details', 403, null)
+            let response = api.apiresponse(true, 403,'error while fetching merchant coupon details', null)
             res.send(response)
         }
         else {
             logger.info('Coupon is fetched', 'Remark it as red/green depending on valid')
-            let response = api.apiresponse(false, 'coupon is fetched', 200, result)
+            let response = api.apiresponse(false,200, 'coupon is fetched', result)
             res.send(response)
 
         }
