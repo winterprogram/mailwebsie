@@ -83,55 +83,7 @@ let userlogin = (req, res) => {
         }
         )
     }
-    // let checkforboolen = (data) => {
 
-    //     return new Promise((resolve, reject) => {
-
-    //         // if(emptyCheck.emptyCheck(data[0].submitedpriority)){
-
-    //         // }
-    //          if (data[0].submitedpriority == false) {
-    //             logger.error('ask user to submit category list', 'checkforboolen()', 5)
-    //             let response = api.apiresponse(true, 'ask user to submit category list', 500, data)
-    //             reject(response)
-    //         } else {
-    //             signup.find({ mobilenumber: req.body.mobilenumber }).exec((error, dataforcategory) => {
-    //                 if (error) {
-    //                     logger.error('something went wrong while finding user', 'checkforboolen()', 5)
-    //                     let response = api.apiresponse(true, 'something went wrong while finding user : checkforboolen()', 500, null)
-    //                     reject(response)
-    //                 } else if (emptyCheck.emptyCheck(dataforcategory)) {
-    //                     logger.error('something went wrong user is blank', 'checkforboolen()', 5)
-    //                     let response = api.apiresponse(true, 'something went wrong user is blank', 404, null)
-    //                     reject(response)
-    //                 } else {
-    //                     logger.info('data is not blank', 'checkforboolen()')
-    //                     signup.updateOne({ mobilenumber: req.body.mobilenumber },
-    //                         {
-    //                             $set:
-    //                             {
-    //                                 submitedpriority: req.body.submitedpriority, categoryselected: req.body.categoryselected
-    //                             }
-    //                         }).exec((error, result) => {
-    //                             if (error) {
-    //                                 logger.error('something went wrong while finding user', 'checkforboolen()', 5)
-    //                                 let response = api.apiresponse(true, 'something went wrong while finding user : checkforboolen()', 500, null)
-    //                                 reject(response)
-    //                             } else if (emptyCheck.emptyCheck(result)) {
-    //                                 logger.error('something went wrong user is blank', 'checkforboolen()', 5)
-    //                                 let response = api.apiresponse(true, 'something went wrong user is blank', 404, null)
-    //                                 reject(response)
-    //                             }else{
-
-    //                                 resolve(result)
-    //                             }
-    //                         })
-    //                 }
-    //             })
-    //         }
-    //     })
-
-    // }
 
     let jwtTokengen = (userData) => {
         return new Promise((resolve, reject) => {
@@ -151,6 +103,7 @@ let userlogin = (req, res) => {
                         authtoken: result.token,
                         secreatekey: result.tokensecreate,
                         // userinfo: (result.userData),
+                        devicetoken: req.body.devicetoken,
                         createdon: Date.now()
                     })
                     token.save((error, authtokendetails) => {

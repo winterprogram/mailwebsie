@@ -18,6 +18,9 @@ const tokendata = new Schema({
         default: '',
         index: true
     },
+    devicetoken: {
+        type: String
+    },
     userinfo: {
         type: String
     },
