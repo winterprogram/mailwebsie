@@ -146,68 +146,119 @@ let noOfDistributedCoupon = (req, res) => {
     })
 }
 
+let countOfRedeemedCoupon = async (req, res) => {
+    try {
+        let getCountOfRedeem = await coupon.aggregate([
+            {
+                $match:
+                {
+                    "merchantid": req.headers.merchantid,
+                    "valid": "1"
+                }
+            },
+            {
+                $lookup: {
+                    from: "coupondistributions",
+                    localField: 'couponcode',
+                    foreignField: 'couponcode',
+                    as: 'couponCount'
+                }
+            },
+            {
+                $unwind: "$couponCount"
+            },
+            {
+                $project: {
+                    "_id": 0,
+                    "merchantid": 1,
+                    "couponcode": 1,
+                    "isRedmeed": 1
+                }
+            },
+            {
+                $match: {
+                    "isRedmeed": true
+                }
+            }
+        ])
+        // console.log(getCountOfRedeem)
+        if (emptyCheck.emptyCheck(getCountOfRedeem)) {
+            logger.error('error no coupon found for merchant as no active coupon exist', 'getCountOfRedeem:countOfRedeemedCoupon()', 10)
+            let response = api.apiresponse(true, 404, 'error no coupon found for merchant as no active coupon exist', null)
+            res.send(response)
+        } else {
+            logger.info('data fetched for no of coupon', 'getCountOfRedeem:countOfRedeemedCoupon()')
+            res.send(getCountOfRedeem.length)
+        }
 
-let countOfRedeemedCoupon = (req, res) => {
-    let getCountOfRedeem = () => {
-        return new Promise((resolve, reject) => {
-            coupon.aggregate([
-                {
-                    $match:
-                    {
-                        "merchantid": req.headers.merchantid,
-                        "valid": "1"
-                    }
-                },
-                {
-                    $lookup: {
-                        from: "coupondistributions",
-                        localField: 'couponcode',
-                        foreignField: 'couponcode',
-                        as: 'couponCount'
-                    }
-                },
-                {
-                    $unwind: "$couponCount"
-                },
-                {
-                    $project: {
-                        "_id": 0,
-                        "merchantid": 1,
-                        "couponcode": 1,
-                        "isRedmeed": 1
-                    }
-                },
-                {
-                    $match: {
-                        "isRedmeed": true
-                    }
-                }
-            ]).exec((err, data) => {
-                if (err) {
-                    logger.error('error while fetching redeemed coupon count', 'getCountOfRedeem:countOfRedeemedCoupon()', 5)
-                    let response = api.apiresponse(true, 500, 'error while fetching distributed coupon count', 'getCountOfRedeem:countOfRedeemedCoupon()', null)
-                    reject(response)
-                } else if (emptyCheck.emptyCheck(data)) {
-                    logger.error('error no coupon found for merchant as no active coupon exist', 'getCountOfRedeem:countOfRedeemedCoupon()', 10)
-                    let response = api.apiresponse(true, 404, 'error no coupon found for merchant as no active coupon exist', null)
-                    reject(response)
-                } else {
-                    logger.info('data fetched for no of coupon', 'getCountOfRedeem:countOfRedeemedCoupon()')
-                    resolve(data.length)
-                }
-            })
-        })
+    } catch (err) {
+        logger.error('error while fetching redeemed coupon count', 'getCountOfRedeem:countOfRedeemedCoupon()', 5)
+        let response = api.apiresponse(true, 500, 'error while fetching distributed coupon count', 'getCountOfRedeem:countOfRedeemedCoupon()', null)
+        reject(response)
     }
-    getCountOfRedeem(req, res).then((resolve) => {
-        logger.info('data fetched for no of coupon reedmed', 'countOfRedeemedCoupon()')
-        let response = api.apiresponse(false, 200, 'data fetched for no of coupon reedmed', resolve)
-        res.send(response)
-    }).catch((err) => {
-        logger.error('something went wrong while fetching coupon reedmed count', 'noOfDistributedCoupon()', 5)
-        res.send(err)
-    })
-
 }
+
+// let countOfRedeemedCoupon = (req, res) => {
+//     let getCountOfRedeem = () => {
+//         return new Promise((resolve, reject) => {
+//             coupon.aggregate([
+//                 {
+//                     $match:
+//                     {
+//                         "merchantid": req.headers.merchantid,
+//                         "valid": "1"
+//                     }
+//                 },
+//                 {
+//                     $lookup: {
+//                         from: "coupondistributions",
+//                         localField: 'couponcode',
+//                         foreignField: 'couponcode',
+//                         as: 'couponCount'
+//                     }
+//                 },
+//                 {
+//                     $unwind: "$couponCount"
+//                 },
+//                 {
+//                     $project: {
+//                         "_id": 0,
+//                         "merchantid": 1,
+//                         "couponcode": 1,
+//                         "isRedmeed": 1
+//                     }
+//                 },
+//                 {
+//                     $match: {
+//                         "isRedmeed": true
+//                     }
+//                 }
+//             ]).exec((err, data) => {
+//                 if (err) {
+//                     logger.error('error while fetching redeemed coupon count', 'getCountOfRedeem:countOfRedeemedCoupon()', 5)
+//                     let response = api.apiresponse(true, 500, 'error while fetching distributed coupon count', 'getCountOfRedeem:countOfRedeemedCoupon()', null)
+//                     reject(response)
+//                 } else if (emptyCheck.emptyCheck(data)) {
+//                     logger.error('error no coupon found for merchant as no active coupon exist', 'getCountOfRedeem:countOfRedeemedCoupon()', 10)
+//                     let response = api.apiresponse(true, 404, 'error no coupon found for merchant as no active coupon exist', null)
+//                     reject(response)
+//                 } else {
+//                     logger.info('data fetched for no of coupon', 'getCountOfRedeem:countOfRedeemedCoupon()')
+//                     resolve(data.length)
+//                 }
+//             })
+//         })
+//     }
+//     getCountOfRedeem(req, res).then((resolve) => {
+//         logger.info('data fetched for no of coupon reedmed', 'countOfRedeemedCoupon()')
+//         let response = api.apiresponse(false, 200, 'data fetched for no of coupon reedmed', resolve)
+//         res.send(response)
+//     }).catch((err) => {
+//         logger.error('something went wrong while fetching coupon reedmed count', 'noOfDistributedCoupon()', 5)
+//         res.send(err)
+//     })
+
+// }
 
 let saveBankDataForMerchant = async (req, res) => {
     try {
