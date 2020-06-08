@@ -25,7 +25,7 @@ const jwt = require('./../libs/jswt')
 const logger = require('./../libs/logger')
 const a = require('./../models/Payment')
 const payments = mongoose.model('razorpayments')
-
+const bankData = require('./../models/BankDetail')
 
 let paymentTransactionOfMerchant = (req, res) => {
     let paymentsTrans = () => {
@@ -209,8 +209,35 @@ let countOfRedeemedCoupon = (req, res) => {
 
 }
 
+let saveBankDataForMerchant = async (req, res) => {
+    try {
+        let merchantid = await bankData.find({ merchantid: req.headers.merchantid })
+        if (emptyCheck.emptyCheck(merchantid)) {
+            logger.info('merchant new entry', 'saveBankDataForMerchant()')
+            let newBank = new bankData({
+                merchantid: req.headers.merchantid,
+                bankAccount: req.body.bankAccount,
+                ifscCode: req.body.ifscCode,
+                bankName: req.body.bankName
+            })
+            let saveData = await newBank.save();
+            let response = api.apiresponse(false, 200, 'merchant bank details stored', saveData._doc)
+            res.send(response)
+        } else {
+            logger.error('merchant data already exist', 'saveBankDataForMerchant()', 10)
+            let response = api.apiresponse(false, 400, 'merchant bank details present', null)
+            res.send(response)
+        }
+    } catch (err) {
+        logger.error('something went wrong while storing bank data for merchant', 'saveBankDataForMerchant()')
+        let response = api.apiresponse(false, 500, 'something went wrong while storing bank data for merchant', err)
+        res.send(response)
+    }
+}
+
 module.exports = {
-    paymentTransactionOfMerchant: paymentTransactionOfMerchant,
-    noOfDistributedCoupon: noOfDistributedCoupon,
-    countOfRedeemedCoupon: countOfRedeemedCoupon
+    paymentTransactionOfMerchant,
+    noOfDistributedCoupon,
+    countOfRedeemedCoupon,
+    saveBankDataForMerchant
 }

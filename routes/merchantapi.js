@@ -181,6 +181,8 @@ let routes = (app) => {
  }
  */
 
+    app.post('/bankdeatils', merchantDashboard.saveBankDataForMerchant)
+
 }
 
 
