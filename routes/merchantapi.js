@@ -336,6 +336,38 @@ app.put('/merchantCityChange', merchantDashboard.merchantEditCity)
 "data": null
 }
 */
+
+app.put('/merchantGeoChange', merchantDashboard.merchantEditGeoLocation)
+
+/**
+* @apiGroup Merchant Dashbaord
+* @apiVersion 0.0.1
+* @api {get} /merchantGeoChange api change merchant geocode.
+* 
+* @apiParam {string} merchantid merchant id  of the merchants. (header params)(required)
+* @apiParam {string} latitude new latitude of the merchants shop. (body params)(required)
+* @apiParam {string} longitude new longitude of the merchants shop. (body params)(required)
+* @apiSuccess {object}  API Response shows error status, message, http status code and result.
+* 
+* @apiSuccessExample {object} Success-Response:
+*{
+"error": false,
+"status": 200,
+"message": "merchant geo changed",
+"data": {
+  "n": 1,
+  "nModified": 1,
+  "ok": 1
+}
+}
+* @apiErrorExample Error-Response:
+*{
+"error": true,
+"status": 500,
+"message": "merchantid not found in db",
+"data": null
+}
+*/
 }
 
 

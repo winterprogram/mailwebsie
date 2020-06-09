@@ -329,6 +329,72 @@ define({ "api": [
     "group": "Merchant_Dashbaord",
     "version": "0.0.1",
     "type": "get",
+    "url": "/merchantGeoChange",
+    "title": "api change merchant geocode.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "merchantid",
+            "description": "<p>merchant id  of the merchants. (header params)(required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "latitude",
+            "description": "<p>new latitude of the merchants shop. (body params)(required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "longitude",
+            "description": "<p>new longitude of the merchants shop. (body params)(required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "API",
+            "description": "<p>Response shows error status, message, http status code and result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n\"error\": false,\n\"status\": 200,\n\"message\": \"merchant geo changed\",\n\"data\": {\n  \"n\": 1,\n  \"nModified\": 1,\n  \"ok\": 1\n}\n}",
+          "type": "object"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n\"error\": true,\n\"status\": 500,\n\"message\": \"merchantid not found in db\",\n\"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/merchantapi.js",
+    "groupTitle": "Merchant_Dashbaord",
+    "name": "GetMerchantgeochange"
+  },
+  {
+    "group": "Merchant_Dashbaord",
+    "version": "0.0.1",
+    "type": "get",
     "url": "/merchantShopNameChange",
     "title": "api change merchant shop name.",
     "parameter": {

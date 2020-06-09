@@ -280,7 +280,7 @@ let saveBankDataForMerchant = async (req, res) => {
             res.send(response)
         }
     } catch (err) {
-        logger.error('something went wrong while storing bank data for merchant', 'saveBankDataForMerchant()')
+        logger.error('something went wrong while storing bank data for merchant', 'saveBankDataForMerchant()',5)
         let response = api.apiresponse(false, 500, 'something went wrong while storing bank data for merchant', err)
         res.send(response)
     }
@@ -307,7 +307,7 @@ let merchantEditShopName = async (req, res) => {
             }
         }
     } catch (err) {
-        logger.error('something went wrong while updating the merchant shop name', 'merchantEditShopName()')
+        logger.error('something went wrong while updating the merchant shop name', 'merchantEditShopName()',5)
         let response = api.apiresponse(false, 500, 'something went wrong while updating the merchant shop name', err)
         res.send(response)
     }
@@ -334,7 +334,7 @@ let merchantEditEmail = async (req, res) => {
             }
         }
     } catch (err) {
-        logger.error('something went wrong while updating the merchant email', 'merchantEditEmail()')
+        logger.error('something went wrong while updating the merchant email', 'merchantEditEmail()',5)
         let response = api.apiresponse(false, 500, 'something went wrong while updating the merchant email', err)
         res.send(response)
     }
@@ -361,7 +361,7 @@ let merchantEditAddress = async (req, res) => {
             }
         }
     } catch (err) {
-        logger.error('something went wrong while updating the merchant address', 'merchantEditAddress()')
+        logger.error('something went wrong while updating the merchant address', 'merchantEditAddress()',5)
         let response = api.apiresponse(false, 500, 'something went wrong while updating the merchant address', err)
         res.send(response)
     }
@@ -387,7 +387,7 @@ let merchantEditZipCode = async (req, res) => {
             }
         }
     } catch (err) {
-        logger.error('something went wrong while updating the merchant zipcode', 'merchantEditZipCode()')
+        logger.error('something went wrong while updating the merchant zipcode', 'merchantEditZipCode()',5)
         let response = api.apiresponse(false, 500, 'something went wrong while updating the merchant zipcode', err)
         res.send(response)
     }
@@ -413,12 +413,38 @@ let merchantEditCity = async (req, res) => {
             }
         }
     } catch (err) {
-        logger.error('something went wrong while updating the merchant city', 'merchantEditCity()')
+        logger.error('something went wrong while updating the merchant city', 'merchantEditCity()',5)
         let response = api.apiresponse(false, 500, 'something went wrong while updating the merchant city', err)
         res.send(response)
     }
 }
 
+
+let merchantEditGeoLocation = async (req, res) => {
+    try {
+        let findmerchant = await merchant.find({ merchantid: req.headers.merchantid })
+        if (emptyCheck.emptyCheck(findmerchant)) {
+            logger.error('merchantid not found in db', 'merchantEditCity()', 10)
+            let response = api.apiresponse(true, 500, 'merchantid not found in db', null)
+            res.send(response)
+        } else {
+            let updateLocation = await merchant.update({ merchantid: req.headers.merchantid }, { $set: { latitude: req.body.latitude, longitude: req.body.longitude} })
+            if (updateLocation.nModified == 0) {
+                logger.error('failed while updating merchant geo', 'merchantEditCity()', 10)
+                let response = api.apiresponse(true, 400, 'failed while updating merchant geo', null)
+                res.send(response)
+            } else {
+                logger.info('merchant geo changed', 'merchantEditCity()')
+                let response = api.apiresponse(false, 200, 'merchant geo changed', updateLocation)
+                res.send(response)
+            }
+        }
+    } catch (err) {
+        logger.error('something went wrong while updating the merchant geo', 'merchantEditCity()',5)
+        let response = api.apiresponse(false, 500, 'something went wrong while updating the merchant geo', err)
+        res.send(response)
+    }
+}
 module.exports = {
     paymentTransactionOfMerchant,
     noOfDistributedCoupon,
@@ -428,5 +454,6 @@ module.exports = {
     merchantEditEmail,
     merchantEditAddress,
     merchantEditZipCode,
-    merchantEditCity
+    merchantEditCity,
+    merchantEditGeoLocation
 }
