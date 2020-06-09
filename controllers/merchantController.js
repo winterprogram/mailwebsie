@@ -307,8 +307,35 @@ let merchantEditShopName = async (req, res) => {
             }
         }
     } catch (err) {
-        logger.error('something went wrong while updating the merchant shop name', 'saveBankDataForMerchant()')
+        logger.error('something went wrong while updating the merchant shop name', 'merchantEditShopName()')
         let response = api.apiresponse(false, 500, 'something went wrong while updating the merchant shop name', err)
+        res.send(response)
+    }
+}
+
+let merchantEditEmail = async (req, res) => {
+    try {
+        let findmerchant = await merchant.find({ merchantid: req.headers.merchantid })
+        if (emptyCheck.emptyCheck(findmerchant)) {
+            logger.error('merchantid not found in db', 'merchantEditEmail()', 10)
+            let response = api.apiresponse(true, 500, 'merchantid not found in db', null)
+            res.send(response)
+        } else {
+            let updateEmail = await merchant.update({ merchantid: req.headers.merchantid }, { $set: { email: req.body.email } })
+            console.log(updateEmail)
+            if (updateEmail.nModified == 0) {
+                logger.error('failed while updating merchant email', 'merchantEditEmail()', 10)
+                let response = api.apiresponse(true, 400, 'failed while updating merchant email', null)
+                res.send(response)
+            } else {
+                logger.info('merchant email changed', 'merchantEditEmail()')
+                let response = api.apiresponse(false, 200, 'merchant email changed', updateEmail)
+                res.send(response)
+            }
+        }
+    } catch (err) {
+        logger.error('something went wrong while updating the merchant email', 'merchantEditEmail()')
+        let response = api.apiresponse(false, 500, 'something went wrong while updating the merchant email', err)
         res.send(response)
     }
 }
@@ -318,5 +345,6 @@ module.exports = {
     noOfDistributedCoupon,
     countOfRedeemedCoupon,
     saveBankDataForMerchant,
-    merchantEditShopName
+    merchantEditShopName,
+    merchantEditEmail
 }
