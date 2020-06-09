@@ -367,7 +367,31 @@ let merchantEditAddress = async (req, res) => {
     }
 }
 
-
+let merchantEditZipCode = async (req, res) => {
+    try {
+        let findmerchant = await merchant.find({ merchantid: req.headers.merchantid })
+        if (emptyCheck.emptyCheck(findmerchant)) {
+            logger.error('merchantid not found in db', 'merchantEditZipCode()', 10)
+            let response = api.apiresponse(true, 500, 'merchantid not found in db', null)
+            res.send(response)
+        } else {
+            let updatezipcode = await merchant.update({ merchantid: req.headers.merchantid }, { $set: { zipcode: req.body.zipcode } })
+            if (updatezipcode.nModified == 0) {
+                logger.error('failed while updating merchant zipcode', 'merchantEditZipCode()', 10)
+                let response = api.apiresponse(true, 400, 'failed while updating merchant zipcode', null)
+                res.send(response)
+            } else {
+                logger.info('merchant zipcode changed', 'merchantEditZipCode()')
+                let response = api.apiresponse(false, 200, 'merchant zipcode changed', updatezipcode)
+                res.send(response)
+            }
+        }
+    } catch (err) {
+        logger.error('something went wrong while updating the merchant zipcode', 'merchantEditZipCode()')
+        let response = api.apiresponse(false, 500, 'something went wrong while updating the merchant zipcode', err)
+        res.send(response)
+    }
+}
 
 module.exports = {
     paymentTransactionOfMerchant,
@@ -376,5 +400,6 @@ module.exports = {
     saveBankDataForMerchant,
     merchantEditShopName,
     merchantEditEmail,
-    merchantEditAddress
+    merchantEditAddress,
+    merchantEditZipCode
 }
