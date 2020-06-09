@@ -393,6 +393,32 @@ let merchantEditZipCode = async (req, res) => {
     }
 }
 
+let merchantEditCity = async (req, res) => {
+    try {
+        let findmerchant = await merchant.find({ merchantid: req.headers.merchantid })
+        if (emptyCheck.emptyCheck(findmerchant)) {
+            logger.error('merchantid not found in db', 'merchantEditCity()', 10)
+            let response = api.apiresponse(true, 500, 'merchantid not found in db', null)
+            res.send(response)
+        } else {
+            let updateCity = await merchant.update({ merchantid: req.headers.merchantid }, { $set: { city: req.body.city } })
+            if (updateCity.nModified == 0) {
+                logger.error('failed while updating merchant city', 'merchantEditCity()', 10)
+                let response = api.apiresponse(true, 400, 'failed while updating merchant city', null)
+                res.send(response)
+            } else {
+                logger.info('merchant city changed', 'merchantEditCity()')
+                let response = api.apiresponse(false, 200, 'merchant city changed', updateCity)
+                res.send(response)
+            }
+        }
+    } catch (err) {
+        logger.error('something went wrong while updating the merchant city', 'merchantEditCity()')
+        let response = api.apiresponse(false, 500, 'something went wrong while updating the merchant city', err)
+        res.send(response)
+    }
+}
+
 module.exports = {
     paymentTransactionOfMerchant,
     noOfDistributedCoupon,
@@ -401,5 +427,6 @@ module.exports = {
     merchantEditShopName,
     merchantEditEmail,
     merchantEditAddress,
-    merchantEditZipCode
+    merchantEditZipCode,
+    merchantEditCity
 }

@@ -280,7 +280,7 @@ app.put('/merchantZipcodeChange', merchantDashboard.merchantEditZipCode)
 /**
 * @apiGroup Merchant Dashbaord
 * @apiVersion 0.0.1
-* @api {get} /merchantAddressChange api change merchant zipcode.
+* @api {get} /merchantZipcodeChange api change merchant zipcode.
 * 
 * @apiParam {string} merchantid merchant id  of the merchants. (header params)(required)
 * @apiParam {string} zipcode new zipcode of the merchants. (body params)(required)
@@ -291,6 +291,37 @@ app.put('/merchantZipcodeChange', merchantDashboard.merchantEditZipCode)
 "error": false,
 "status": 200,
 "message": "merchant zipcode changed",
+"data": {
+  "n": 1,
+  "nModified": 1,
+  "ok": 1
+}
+}
+* @apiErrorExample Error-Response:
+*{
+"error": true,
+"status": 500,
+"message": "merchantid not found in db",
+"data": null
+}
+*/
+
+app.put('/merchantCityChange', merchantDashboard.merchantEditCity)
+
+/**
+* @apiGroup Merchant Dashbaord
+* @apiVersion 0.0.1
+* @api {get} /merchantCityChange api change merchant city.
+* 
+* @apiParam {string} merchantid merchant id  of the merchants. (header params)(required)
+* @apiParam {string} city new city of the merchants. (body params)(required)
+* @apiSuccess {object}  API Response shows error status, message, http status code and result.
+* 
+* @apiSuccessExample {object} Success-Response:
+*{
+"error": false,
+"status": 200,
+"message": "merchant city changed",
 "data": {
   "n": 1,
   "nModified": 1,
