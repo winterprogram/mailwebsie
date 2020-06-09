@@ -191,7 +191,7 @@ let routes = (app) => {
   * @api {get} /merchantShopNameChange api change merchant shop name.
   * 
   * @apiParam {string} merchantid merchant id  of the merchants. (header params)(required)
-  * @apiParam {string} shopname new shop-name  of the merchants. (header params)(required)
+  * @apiParam {string} shopname new shop-name  of the merchants. (body params)(required)
   * @apiSuccess {object}  API Response shows error status, message, http status code and result.
   * 
   * @apiSuccessExample {object} Success-Response:
@@ -221,7 +221,7 @@ app.put('/merchantEmailChange', merchantDashboard.merchantEditEmail)
 * @api {get} /merchantEmailChange api change merchant email.
 * 
 * @apiParam {string} merchantid merchant id  of the merchants. (header params)(required)
-* @apiParam {string} email new email of the merchants. (header params)(required)
+* @apiParam {string} email new email of the merchants. (body params)(required)
 * @apiSuccess {object}  API Response shows error status, message, http status code and result.
 * 
 * @apiSuccessExample {object} Success-Response:
@@ -243,6 +243,39 @@ app.put('/merchantEmailChange', merchantDashboard.merchantEditEmail)
 "data": null
 }
 */
+
+app.put('/merchantAddressChange', merchantDashboard.merchantEditAddress)
+
+/**
+* @apiGroup Merchant Dashbaord
+* @apiVersion 0.0.1
+* @api {get} /merchantAddressChange api change merchant address.
+* 
+* @apiParam {string} merchantid merchant id  of the merchants. (header params)(required)
+* @apiParam {string} address new address of the merchants. (body params)(required)
+* @apiSuccess {object}  API Response shows error status, message, http status code and result.
+* 
+* @apiSuccessExample {object} Success-Response:
+*{
+"error": false,
+"status": 200,
+"message": "merchant address changed",
+"data": {
+  "n": 1,
+  "nModified": 1,
+  "ok": 1
+}
+}
+* @apiErrorExample Error-Response:
+*{
+"error": true,
+"status": 500,
+"message": "merchantid not found in db",
+"data": null
+}
+*/
+
+
 }
 
 

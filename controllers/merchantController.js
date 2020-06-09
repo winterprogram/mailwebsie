@@ -340,11 +340,41 @@ let merchantEditEmail = async (req, res) => {
     }
 }
 
+
+let merchantEditAddress = async (req, res) => {
+    try {
+        let findmerchant = await merchant.find({ merchantid: req.headers.merchantid })
+        if (emptyCheck.emptyCheck(findmerchant)) {
+            logger.error('merchantid not found in db', 'merchantEditAddress()', 10)
+            let response = api.apiresponse(true, 500, 'merchantid not found in db', null)
+            res.send(response)
+        } else {
+            let updateAddress = await merchant.update({ merchantid: req.headers.merchantid }, { $set: { address: req.body.address } })
+            if (updateAddress.nModified == 0) {
+                logger.error('failed while updating merchant address', 'merchantEditAddress()', 10)
+                let response = api.apiresponse(true, 400, 'failed while updating merchant address', null)
+                res.send(response)
+            } else {
+                logger.info('merchant address changed', 'merchantEditAddress()')
+                let response = api.apiresponse(false, 200, 'merchant address changed', updateAddress)
+                res.send(response)
+            }
+        }
+    } catch (err) {
+        logger.error('something went wrong while updating the merchant address', 'merchantEditAddress()')
+        let response = api.apiresponse(false, 500, 'something went wrong while updating the merchant address', err)
+        res.send(response)
+    }
+}
+
+
+
 module.exports = {
     paymentTransactionOfMerchant,
     noOfDistributedCoupon,
     countOfRedeemedCoupon,
     saveBankDataForMerchant,
     merchantEditShopName,
-    merchantEditEmail
+    merchantEditEmail,
+    merchantEditAddress
 }
