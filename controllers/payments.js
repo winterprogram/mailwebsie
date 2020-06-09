@@ -34,8 +34,8 @@ const Razorpay = require('razorpay')
 const fcmpush = require('./firebase')
 
 let instance = new Razorpay({
-    key_id: 'rzp_test_4Mu3PQaOJWjgyV',
-    key_secret: 'vohB9Xj17vQf5GxOokCO1ldQ',
+    key_id: '',
+    key_secret: '',
 })
 
 let storePayments = (req, res) => {

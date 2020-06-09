@@ -21,6 +21,6 @@ let passcheck = (pass, oldpass, callback) => {
 
 
 module.exports = {
-    passhash: passhash,
-    passcheck: passcheck
+    passhash,
+    passcheck
 }

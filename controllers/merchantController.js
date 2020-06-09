@@ -286,9 +286,37 @@ let saveBankDataForMerchant = async (req, res) => {
     }
 }
 
+let merchantEditShopName = async (req, res) => {
+    try {
+        let findmerchant = await merchant.find({ merchantid: req.headers.merchantid })
+        if (emptyCheck.emptyCheck(findmerchant)) {
+            logger.error('merchantid not found in db', 'merchantEditShopName()', 10)
+            let response = api.apiresponse(true, 500, 'merchantid not found in db', null)
+            res.send(response)
+        } else {
+            let updateShopName = await merchant.update({ merchantid: req.headers.merchantid }, { $set: { shopname: req.body.shopname } })
+            console.log(updateShopName)
+            if (updateShopName.nModified == 0) {
+                logger.error('failed while updating merchant shopname', 'merchantEditShopName()', 10)
+                let response = api.apiresponse(true, 400, 'failed while updating merchant shopname', null)
+                res.send(response)
+            } else {
+                logger.info('merchant shop name changed', 'merchantEditShopName()')
+                let response = api.apiresponse(false, 200, 'merchant shop name changed', updateShopName)
+                res.send(response)
+            }
+        }
+    } catch (err) {
+        logger.error('something went wrong while updating the merchant shop name', 'saveBankDataForMerchant()')
+        let response = api.apiresponse(false, 500, 'something went wrong while updating the merchant shop name', err)
+        res.send(response)
+    }
+}
+
 module.exports = {
     paymentTransactionOfMerchant,
     noOfDistributedCoupon,
     countOfRedeemedCoupon,
-    saveBankDataForMerchant
+    saveBankDataForMerchant,
+    merchantEditShopName
 }

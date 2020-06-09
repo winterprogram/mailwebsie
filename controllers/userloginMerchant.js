@@ -226,35 +226,48 @@ let merchantresetpass = (req, res) => {
             })
         })
     }
-
-    let updatepass = (result) => {
+    let oldPassMatch = (result) => {
         return new Promise((resolve, reject) => {
-            let password = passencry.passhash(req.body.password)
-            merchant.updateOne({ merchantid: result.merchantid }, { $set: { password: password } }).exec((error, data) => {
-                if (error) {
-                    logger.error('error while updating password', 'updatepass : merchantresetpass()', 10)
-                    let response = api.apiresponse(true, 500, 'error while fetching merchant details', null)
+            passencry.passcheck(req.body.password, result[0].password, (err, passcheck) => {
+                if (err) {
+                    logger.error('error while verifying password', 'oldPassMatch : merchantresetpass()', 10)
+                    let response = api.apiresponse(true, 500, 'error while verifying password', null)
                     reject(response)
-                } else if (emptyCheck.emptyCheck(data)) {
-                    logger.error('error password can\'t be blank', 'updatepass : merchantresetpass()', 10)
-                    let response = api.apiresponse(true, 404, 'error merchnat not found in db', null)
-                    reject(response)
+                } else if (passcheck) {
+                    logger.info('password matched', 'oldPassMatch : merchantresetpass()')
+                    let password = passencry.passhash(req.body.password)
+                    merchant.updateOne({ merchantid: result.merchantid }, { $set: { password: password } }).exec((error, data) => {
+                        if (error) {
+                            logger.error('error while updating password', 'updatepass : merchantresetpass()', 10)
+                            let response = api.apiresponse(true, 500, 'error while fetching merchant details', null)
+                            reject(response)
+                        } else if (emptyCheck.emptyCheck(data)) {
+                            logger.error('error password can\'t be blank', 'updatepass : merchantresetpass()', 10)
+                            let response = api.apiresponse(true, 404, 'error merchnat not found in db', null)
+                            reject(response)
+                        } else {
+                            logger.info('password updated', 'updatepass : merchantresetpass()')
+                            resolve(data)
+                        }
+                    })
                 } else {
-                    logger.info('password updated', 'updatepass()')
-                    resolve(data)
+                    logger.error('password didn\'t matched', 'updatepass : merchantresetpass()')
+                    let response = api.apiresponse(true, 500, 'password didn\'t matched', null)
+                    reject(response)
                 }
             })
         })
     }
-    verifyclaim(req, res).then(findmerchant).then(updatepass).then((resolve) => {
+
+
+    verifyclaim(req, res).then(findmerchant).then(oldPassMatch).then((resolve) => {
 
         logger.info('password updated', 'merchantresetpass()')
         let response = api.apiresponse(false, 200, 'password updated successfully', resolve)
         res.send(response)
     }).catch((err) => {
         logger.error('password update failed', 'merchantresetpass()')
-        let response = api.apiresponse(false, 404, 'password update failed', err)
-        res.send(response)
+        res.send(err)
     })
 }
 

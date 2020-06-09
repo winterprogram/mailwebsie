@@ -152,6 +152,58 @@ define({ "api": [
     "group": "Merchant_Dashbaord",
     "version": "0.0.1",
     "type": "get",
+    "url": "/merchantShopNameChange",
+    "title": "api change merchant shop name.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "merchantid",
+            "description": "<p>merchant id  of the merchants. (header params)(required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "API",
+            "description": "<p>Response shows error status, message, http status code and result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"error\": false,\n    \"status\": 200,\n    \"message\": \"merchant shop name changed\",\n    \"data\": {\n        \"n\": 1,\n        \"nModified\": 1,\n        \"ok\": 1\n    }\n}",
+          "type": "object"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n    \"error\": true,\n    \"status\": 500,\n    \"message\": \"merchantid not found in db\",\n    \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/merchantapi.js",
+    "groupTitle": "Merchant_Dashbaord",
+    "name": "GetMerchantshopnamechange"
+  },
+  {
+    "group": "Merchant_Dashbaord",
+    "version": "0.0.1",
+    "type": "get",
     "url": "/merchantTransaction",
     "title": "api to fetch merchant wise transaction which is sorted date wise",
     "parameter": {
