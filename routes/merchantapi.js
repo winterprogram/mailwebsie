@@ -368,6 +368,36 @@ app.put('/merchantGeoChange', merchantDashboard.merchantEditGeoLocation)
 "data": null
 }
 */
+app.put('/merchantBankChange', merchantDashboard.updateBankDetails)
+
+/**
+* @apiGroup Merchant Dashbaord
+* @apiVersion 0.0.1
+* @api {get} /merchantBankChange api change merchant bank.
+* 
+* @apiParam {string} merchantid merchant id  of the merchants. (header params)(required)
+* 
+* 
+* @apiSuccessExample {object} Success-Response:
+*{
+"error": false,
+"status": 200,
+"message": "bank data updated",
+"data": {
+  "n": 1,
+  "nModified": 1,
+  "ok": 1
+}
+}
+* @apiErrorExample Error-Response:
+*{
+"error": true,
+"status": 500,
+"message": "merchantid not found in db",
+"data": null
+}
+*/
+
 }
 
 
