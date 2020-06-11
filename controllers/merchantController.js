@@ -469,12 +469,31 @@ let updateBankDetails = async (req, res) => {
             } else {
                 logger.info('bank details upadted', 'updateBankDetails()')
                 let response = api.apiresponse(false, 200, 'bank data updated', updatebank)
-                res.save(response)
+                res.send(response)
             }
         }
     } catch (err) {
         logger.error('something went wrong while updating the merchant bank deatils', 'updateBankDetails()', 5)
         let response = api.apiresponse(false, 500, 'something went wrong while updating the merchant bank deatils', err)
+        res.send(response)
+    }
+}
+
+let merchantBankDeatils = async (req, res) => {
+    try {
+        let getBankDeatils = await bankData.find({ merchantid: req.headers.merchantid })
+        if (emptyCheck.emptyCheck(getBankDeatils)) {
+            logger.error('no bank deatils found', 'merchantBankDeatils()', 10)
+            let response = api.apiresponse(true, 404, 'no bank deatils found', null)
+            res.send(response)
+        } else {
+            logger.info('bank deatils found', 'merchantBankDeatils()')
+            let response = api.apiresponse(false, 200, 'bank deatils found', getBankDeatils)
+            res.send(response)
+        }
+    } catch (err) {
+        logger.error('something went wrong while finding the merchant bank deatils', 'merchantBankDeatils()', 5)
+        let response = api.apiresponse(false, 500, 'something went wrong while finding the merchant bank deatils', err)
         res.send(response)
     }
 }
@@ -489,5 +508,6 @@ module.exports = {
     merchantEditZipCode,
     merchantEditCity,
     merchantEditGeoLocation,
-    updateBankDetails
+    updateBankDetails,
+    merchantBankDeatils
 }

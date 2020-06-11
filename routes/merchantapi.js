@@ -397,7 +397,7 @@ app.put('/merchantBankChange', merchantDashboard.updateBankDetails)
 "data": null
 }
 */
-
+app.get('/merchantBankDeatils',merchantDashboard.merchantBankDeatils)
 }
 
 
