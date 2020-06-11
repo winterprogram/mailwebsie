@@ -235,7 +235,7 @@ let merchantresetpass = (req, res) => {
                     reject(response)
                 } else if (passcheck) {
                     logger.info('password matched', 'oldPassMatch : merchantresetpass()')
-                    let password = passencry.passhash(req.body.password)
+                    let password = passencry.passhash(req.body.newpassword)
                     merchant.updateOne({ merchantid: result.merchantid }, { $set: { password: password } }).exec((error, data) => {
                         if (error) {
                             logger.error('error while updating password', 'updatepass : merchantresetpass()', 10)
