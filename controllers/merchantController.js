@@ -448,13 +448,14 @@ let merchantEditGeoLocation = async (req, res) => {
 
 let updateBankDetails = async (req, res) => {
     try {
-        let findMerchant = await bankData.find({ merchant: req.headers.merchantid })
+        let findMerchant = await bankData.find({ merchantid: req.headers.merchantid })
+        console.log(findMerchant)
         if (emptyCheck.emptyCheck(findMerchant)) {
             logger.error('entry of the merchant doesn\'t exist', 'updateBankDetails()', 10)
             let response = api.apiresponse(true, 404, 'entry of the merchant doesn\'t exist', null)
             res.send(response)
         } else {
-            let updatebank = await bankData.update({ merchant: findMerchant[0].merchantid }, {
+            let updatebank = await bankData.update({ merchantid: findMerchant[0].merchantid }, {
                 $set: {
                     merchantid: req.headers.merchantid,
                     bankAccount: req.body.bankAccount,
