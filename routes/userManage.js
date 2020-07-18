@@ -374,8 +374,6 @@ let routes = (app) => {
   app.get('/getmerchantinfo', admin.merchantregisterData)
 
   app.get('/getuserData', admin.userauthdeatils)
-
-  app.get('/getBankDetail', test.aaa)
 }
 
 

@@ -158,6 +158,7 @@ let merchantData = (req, res) => {
                         geolocation: req.body.geolocation,
                         category: req.body.category,
                         valid: valid,
+                        onlineBu: req.body.onlineBu,
                         createdon: Date.now()
                     })
                     userinfo.save((err, result) => {

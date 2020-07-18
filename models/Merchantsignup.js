@@ -63,6 +63,10 @@ const merchant = new Schema({
     },
     createdon: {
         type: Date
+    },
+    onlineBu: {
+        type: Boolean,
+        default: false
     }
 })
 
