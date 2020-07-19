@@ -11,6 +11,7 @@ const middlewareOnRoute = require('./middleware/errorOnRoutes')
 const cookieparser = require('cookie-parser')
 const bodyparser = require('body-parser')
 const helmet = require('helmet')
+require('dotenv').config();
 const empty = require('./libs/emptyCheck')
 const api = require('./libs/apiresponse')
 var cors = require('cors');
